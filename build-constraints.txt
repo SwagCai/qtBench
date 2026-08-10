@@ -1,0 +1,5 @@
+# Used by the CI distribution build. This pins and verifies the PEP 517 backend
+# input; it does not claim that archives are byte-for-byte reproducible.
+# Update the version and PyPI wheel hash together.
+setuptools==83.0.0 \
+    --hash=sha256:29b23c360f22f414dc7336bb39178cc7bcbf6021ed2733cde173f09dba19abb3

@@ -1,0 +1,344 @@
+{
+  "schema_version": "0.1",
+  "problem_id": 28,
+  "problem_name": "shifted_setvalued_pq_weight_bijection",
+  "object_family": "set_valued_shifted_tableaux",
+  "case_count": 7,
+  "cases": [
+    {
+      "case_id": "f01",
+      "mu": [
+        3,
+        1
+      ],
+      "content": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "count": 8,
+      "entries": [
+        {
+          "tableau": "Q;3,1;3,1;1|3|5|7",
+          "entry_count": 4
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|3|5|8",
+          "entry_count": 4
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|3|6|7",
+          "entry_count": 4
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|3|6|8",
+          "entry_count": 4
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|3|7|5",
+          "entry_count": 4
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|3|7|6",
+          "entry_count": 4
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|3|8|5",
+          "entry_count": 4
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|3|8|6",
+          "entry_count": 4
+        }
+      ]
+    },
+    {
+      "case_id": "f02",
+      "mu": [
+        3,
+        1
+      ],
+      "content": [
+        2,
+        1,
+        1
+      ],
+      "count": 8,
+      "entries": [
+        {
+          "tableau": "Q;3,1;3,1;1|2|3|5",
+          "entry_count": 4
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|2|3|6",
+          "entry_count": 4
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|2|4|5",
+          "entry_count": 4
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|2|4|6",
+          "entry_count": 4
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|2|5|3",
+          "entry_count": 4
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|2|5|4",
+          "entry_count": 4
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|2|6|3",
+          "entry_count": 4
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|2|6|4",
+          "entry_count": 4
+        }
+      ]
+    },
+    {
+      "case_id": "f03",
+      "mu": [
+        3,
+        1
+      ],
+      "content": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "count": 8,
+      "entries": [
+        {
+          "tableau": "Q;3,1;3,1;1|3|5|7.9",
+          "entry_count": 5
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|3|5|7.10",
+          "entry_count": 5
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|3|5|8.9",
+          "entry_count": 5
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|3|5|8.10",
+          "entry_count": 5
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|3|6|7.9",
+          "entry_count": 5
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|3|6|7.10",
+          "entry_count": 5
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|3|6|8.9",
+          "entry_count": 5
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|3|6|8.10",
+          "entry_count": 5
+        }
+      ]
+    },
+    {
+      "case_id": "f04",
+      "mu": [
+        3,
+        1
+      ],
+      "content": [
+        2,
+        2,
+        1
+      ],
+      "count": 8,
+      "entries": [
+        {
+          "tableau": "Q;3,1;3,1;1|2|3|3.5",
+          "entry_count": 5
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|2|3|3.6",
+          "entry_count": 5
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|2|3|4.5",
+          "entry_count": 5
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|2|3|4.6",
+          "entry_count": 5
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|2|4|3.5",
+          "entry_count": 5
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|2|4|3.6",
+          "entry_count": 5
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|2|4|4.5",
+          "entry_count": 5
+        },
+        {
+          "tableau": "Q;3,1;3,1;1|2|4|4.6",
+          "entry_count": 5
+        }
+      ]
+    },
+    {
+      "case_id": "f05",
+      "mu": [
+        3,
+        2
+      ],
+      "content": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "count": 8,
+      "entries": [
+        {
+          "tableau": "Q;3,2;3,2;1|3|5|7|9",
+          "entry_count": 5
+        },
+        {
+          "tableau": "Q;3,2;3,2;1|3|5|7|10",
+          "entry_count": 5
+        },
+        {
+          "tableau": "Q;3,2;3,2;1|3|5|8|9",
+          "entry_count": 5
+        },
+        {
+          "tableau": "Q;3,2;3,2;1|3|5|8|10",
+          "entry_count": 5
+        },
+        {
+          "tableau": "Q;3,2;3,2;1|3|6|7|9",
+          "entry_count": 5
+        },
+        {
+          "tableau": "Q;3,2;3,2;1|3|6|7|10",
+          "entry_count": 5
+        },
+        {
+          "tableau": "Q;3,2;3,2;1|3|6|8|9",
+          "entry_count": 5
+        },
+        {
+          "tableau": "Q;3,2;3,2;1|3|6|8|10",
+          "entry_count": 5
+        }
+      ]
+    },
+    {
+      "case_id": "f06",
+      "mu": [
+        3,
+        2
+      ],
+      "content": [
+        3,
+        2,
+        1,
+        1
+      ],
+      "count": 8,
+      "entries": [
+        {
+          "tableau": "Q;3,2;3,2;1|2|2|3|4.5.7",
+          "entry_count": 7
+        },
+        {
+          "tableau": "Q;3,2;3,2;1|2|2|3|4.5.8",
+          "entry_count": 7
+        },
+        {
+          "tableau": "Q;3,2;3,2;1|2|2|3|4.6.7",
+          "entry_count": 7
+        },
+        {
+          "tableau": "Q;3,2;3,2;1|2|2|3|4.6.8",
+          "entry_count": 7
+        },
+        {
+          "tableau": "Q;3,2;3,2;1|2|2|4|4.5.7",
+          "entry_count": 7
+        },
+        {
+          "tableau": "Q;3,2;3,2;1|2|2|4|4.5.8",
+          "entry_count": 7
+        },
+        {
+          "tableau": "Q;3,2;3,2;1|2|2|4|4.6.7",
+          "entry_count": 7
+        },
+        {
+          "tableau": "Q;3,2;3,2;1|2|2|4|4.6.8",
+          "entry_count": 7
+        }
+      ]
+    },
+    {
+      "case_id": "f07",
+      "mu": [
+        3,
+        2
+      ],
+      "content": [
+        4,
+        2,
+        1
+      ],
+      "count": 8,
+      "entries": [
+        {
+          "tableau": "Q;3,2;3,2;1.2|2|2|3|4.5",
+          "entry_count": 7
+        },
+        {
+          "tableau": "Q;3,2;3,2;1.2|2|2|3|4.6",
+          "entry_count": 7
+        },
+        {
+          "tableau": "Q;3,2;3,2;1.2|2|2|4|4.5",
+          "entry_count": 7
+        },
+        {
+          "tableau": "Q;3,2;3,2;1.2|2|2|4|4.6",
+          "entry_count": 7
+        },
+        {
+          "tableau": "Q;3,2;3,2;1.2|2|2|3.4|5",
+          "entry_count": 7
+        },
+        {
+          "tableau": "Q;3,2;3,2;1.2|2|2|3.4|6",
+          "entry_count": 7
+        },
+        {
+          "tableau": "Q;3,2;3,2;1.2|2|2.3|3|5",
+          "entry_count": 7
+        },
+        {
+          "tableau": "Q;3,2;3,2;1.2|2|2.3|3|6",
+          "entry_count": 7
+        }
+      ]
+    }
+  ]
+}

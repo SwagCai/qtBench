@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "id": 25,
+  "name": "parking_area_dinv_exchange",
+  "title": "Parking-function area/dinv exchanging bijection",
+  "task_type": "exchanging_bijection",
+  "object_family": "parking_functions",
+  "known_statistics": ["area", "dinv"],
+  "known_statistics_file": "known_statistics.py",
+  "submission_signature": "forward(parking) -> str, inverse(parking) -> str",
+  "evaluator_kind": "parking-area-dinv",
+  "public_cases": {"size_min": 1, "size_max": 7},
+  "scoring": {
+    "gate_order": ["capability_screen", "source_economy", "area_dinv_exchange_identities_and_distribution", "fresh_namespace_shuffled_replay", "value_audit", "resource_and_identity_probes"],
+    "case_score": "1 if forward and inverse are mutually inverse same-size parking-function maps exchanging area and dinv and the induced distribution matches, else 0",
+    "problem_score": "all public sizes must pass, then shuffled replay, the value audit, and identity/resource gates must pass; passing is necessary, not sufficient"
+  }
+}

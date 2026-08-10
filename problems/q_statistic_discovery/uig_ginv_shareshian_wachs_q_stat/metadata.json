@@ -1,0 +1,21 @@
+{
+  "schema_version": "0.1",
+  "id": 8,
+  "title": "Shareshian-Wachs chromatic e-positivity composition witness",
+  "task_type": "q_statistic_discovery",
+  "object_family": "unit_interval_graph_permutations",
+  "known_statistic": "ginv",
+  "known_statistic_file": "known_statistic.py",
+  "submission_signature": "statistic(graph_permutation) -> composition of n (tuple of positive ints)",
+  "evaluator_kind": "uig",
+  "public_cases": {
+    "size_min": 1,
+    "size_max": 7
+  },
+  "scoring": {
+    "gate_order": ["capability_screen", "source_economy", "public_q_equals_1_and_exact_polynomials", "fresh_namespace_shuffled_replay", "value_audit", "resource_probes"],
+    "case_score": "1 if every generated partition-graded coefficient equals the public target coefficient, else 0",
+    "problem_score": "all public Dyck-graph fibers must match, then shuffled replay, the value audit, and resource gates must pass; passing is necessary, not sufficient"
+  },
+  "name": "uig_ginv_shareshian_wachs_q_stat"
+}

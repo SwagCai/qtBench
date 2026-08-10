@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "qtBench problem registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "problems"],
+  "properties": {
+    "schema_version": { "const": "0.1" },
+    "problems": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "title", "task_type", "object_family", "status", "data", "problem_statement"],
+        "properties": {
+          "id": { "type": "integer", "minimum": 1 },
+          "name": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+          "title": { "type": "string", "minLength": 1 },
+          "task_type": {
+            "enum": ["t_statistic_discovery", "q_statistic_discovery", "exchanging_bijection"]
+          },
+          "object_family": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["draft", "active", "calibration", "expert_review", "retired"] },
+          "data": { "type": "string", "pattern": "^problems/[a-z_]+/[a-z][a-z0-9_]*/data$" },
+          "problem_statement": { "type": "string", "pattern": "^problems/[a-z_]+/[a-z][a-z0-9_]*/problem\\.md$" }
+        }
+      }
+    }
+  }
+}

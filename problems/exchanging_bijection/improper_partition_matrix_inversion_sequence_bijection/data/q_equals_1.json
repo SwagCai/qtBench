@@ -1,0 +1,91 @@
+{
+  "schema_version": "0.1",
+  "problem_id": 30,
+  "problem_name": "improper_partition_matrix_inversion_sequence_bijection",
+  "variables": [],
+  "specialization": {
+    "grading": 1
+  },
+  "meaning": "Unrefined cardinality of each size fiber.",
+  "public_max_n": 9,
+  "case_count": 7,
+  "cases": [
+    {
+      "case_id": "n03",
+      "n": 3,
+      "count": 3,
+      "term_count": 1,
+      "terms": [
+        [
+          3
+        ]
+      ]
+    },
+    {
+      "case_id": "n04",
+      "n": 4,
+      "count": 7,
+      "term_count": 1,
+      "terms": [
+        [
+          7
+        ]
+      ]
+    },
+    {
+      "case_id": "n05",
+      "n": 5,
+      "count": 21,
+      "term_count": 1,
+      "terms": [
+        [
+          21
+        ]
+      ]
+    },
+    {
+      "case_id": "n06",
+      "n": 6,
+      "count": 67,
+      "term_count": 1,
+      "terms": [
+        [
+          67
+        ]
+      ]
+    },
+    {
+      "case_id": "n07",
+      "n": 7,
+      "count": 237,
+      "term_count": 1,
+      "terms": [
+        [
+          237
+        ]
+      ]
+    },
+    {
+      "case_id": "n08",
+      "n": 8,
+      "count": 907,
+      "term_count": 1,
+      "terms": [
+        [
+          907
+        ]
+      ]
+    },
+    {
+      "case_id": "n09",
+      "n": 9,
+      "count": 3741,
+      "term_count": 1,
+      "terms": [
+        [
+          3741
+        ]
+      ]
+    }
+  ]
+}

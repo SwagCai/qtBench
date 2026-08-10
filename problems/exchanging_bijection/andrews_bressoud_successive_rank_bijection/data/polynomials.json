@@ -1,0 +1,194 @@
+{
+  "schema_version": "0.1",
+  "problem_id": 29,
+  "problem_name": "andrews_bressoud_successive_rank_bijection",
+  "variables": [
+    "weight"
+  ],
+  "statistics": {
+    "weight": "sum_of_parts"
+  },
+  "case_count": 12,
+  "cases": [
+    {
+      "case_id": "m06_r01_n12",
+      "modulus": 6,
+      "residue": 1,
+      "weight": 12,
+      "count": 11,
+      "target_count": 11,
+      "term_count": 1,
+      "terms": [
+        [
+          12,
+          11
+        ]
+      ]
+    },
+    {
+      "case_id": "m06_r01_n20",
+      "modulus": 6,
+      "residue": 1,
+      "weight": 20,
+      "count": 43,
+      "target_count": 43,
+      "term_count": 1,
+      "terms": [
+        [
+          20,
+          43
+        ]
+      ]
+    },
+    {
+      "case_id": "m06_r01_n28",
+      "modulus": 6,
+      "residue": 1,
+      "weight": 28,
+      "count": 142,
+      "target_count": 142,
+      "term_count": 1,
+      "terms": [
+        [
+          28,
+          142
+        ]
+      ]
+    },
+    {
+      "case_id": "m06_r02_n12",
+      "modulus": 6,
+      "residue": 2,
+      "weight": 12,
+      "count": 15,
+      "target_count": 15,
+      "term_count": 1,
+      "terms": [
+        [
+          12,
+          15
+        ]
+      ]
+    },
+    {
+      "case_id": "m06_r02_n20",
+      "modulus": 6,
+      "residue": 2,
+      "weight": 20,
+      "count": 64,
+      "target_count": 64,
+      "term_count": 1,
+      "terms": [
+        [
+          20,
+          64
+        ]
+      ]
+    },
+    {
+      "case_id": "m06_r02_n28",
+      "modulus": 6,
+      "residue": 2,
+      "weight": 28,
+      "count": 222,
+      "target_count": 222,
+      "term_count": 1,
+      "terms": [
+        [
+          28,
+          222
+        ]
+      ]
+    },
+    {
+      "case_id": "m07_r02_n12",
+      "modulus": 7,
+      "residue": 2,
+      "weight": 12,
+      "count": 21,
+      "target_count": 21,
+      "term_count": 1,
+      "terms": [
+        [
+          12,
+          21
+        ]
+      ]
+    },
+    {
+      "case_id": "m07_r02_n20",
+      "modulus": 7,
+      "residue": 2,
+      "weight": 20,
+      "count": 99,
+      "target_count": 99,
+      "term_count": 1,
+      "terms": [
+        [
+          20,
+          99
+        ]
+      ]
+    },
+    {
+      "case_id": "m07_r02_n28",
+      "modulus": 7,
+      "residue": 2,
+      "weight": 28,
+      "count": 379,
+      "target_count": 379,
+      "term_count": 1,
+      "terms": [
+        [
+          28,
+          379
+        ]
+      ]
+    },
+    {
+      "case_id": "m07_r03_n12",
+      "modulus": 7,
+      "residue": 3,
+      "weight": 12,
+      "count": 25,
+      "target_count": 25,
+      "term_count": 1,
+      "terms": [
+        [
+          12,
+          25
+        ]
+      ]
+    },
+    {
+      "case_id": "m07_r03_n20",
+      "modulus": 7,
+      "residue": 3,
+      "weight": 20,
+      "count": 121,
+      "target_count": 121,
+      "term_count": 1,
+      "terms": [
+        [
+          20,
+          121
+        ]
+      ]
+    },
+    {
+      "case_id": "m07_r03_n28",
+      "modulus": 7,
+      "residue": 3,
+      "weight": 28,
+      "count": 462,
+      "target_count": 462,
+      "term_count": 1,
+      "terms": [
+        [
+          28,
+          462
+        ]
+      ]
+    }
+  ]
+}

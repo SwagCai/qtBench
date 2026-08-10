@@ -1,0 +1,100 @@
+{
+  "schema_version": "0.1",
+  "problem_id": 27,
+  "problem_name": "asm_dpp_weight_q_stat",
+  "variables": [
+    "n"
+  ],
+  "specialization": {
+    "q": 1
+  },
+  "meaning": "DPP(n,1) is the number of n by n alternating sign matrices.",
+  "public_max_n": 7,
+  "case_count": 7,
+  "cases": [
+    {
+      "case_id": "n01",
+      "n": 1,
+      "count": 1,
+      "term_count": 1,
+      "terms": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "case_id": "n02",
+      "n": 2,
+      "count": 2,
+      "term_count": 1,
+      "terms": [
+        [
+          2,
+          2
+        ]
+      ]
+    },
+    {
+      "case_id": "n03",
+      "n": 3,
+      "count": 7,
+      "term_count": 1,
+      "terms": [
+        [
+          3,
+          7
+        ]
+      ]
+    },
+    {
+      "case_id": "n04",
+      "n": 4,
+      "count": 42,
+      "term_count": 1,
+      "terms": [
+        [
+          4,
+          42
+        ]
+      ]
+    },
+    {
+      "case_id": "n05",
+      "n": 5,
+      "count": 429,
+      "term_count": 1,
+      "terms": [
+        [
+          5,
+          429
+        ]
+      ]
+    },
+    {
+      "case_id": "n06",
+      "n": 6,
+      "count": 7436,
+      "term_count": 1,
+      "terms": [
+        [
+          6,
+          7436
+        ]
+      ]
+    },
+    {
+      "case_id": "n07",
+      "n": 7,
+      "count": 218348,
+      "term_count": 1,
+      "terms": [
+        [
+          7,
+          218348
+        ]
+      ]
+    }
+  ]
+}

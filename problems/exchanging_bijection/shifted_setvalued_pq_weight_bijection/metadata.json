@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "id": 28,
+  "name": "shifted_setvalued_pq_weight_bijection",
+  "title": "Set-valued shifted P/Q weight-preserving bijection",
+  "task_type": "exchanging_bijection",
+  "object_family": "set_valued_shifted_tableaux",
+  "known_statistics": ["entry_count"],
+  "known_statistics_file": "known_statistics.py",
+  "submission_signature": "forward(tableau) -> str, inverse(tableau) -> str",
+  "evaluator_kind": "shifted-pq",
+  "public_cases": {"shape_count": 2, "fiber_count": 7},
+  "scoring": {
+    "gate_order": ["capability_screen", "source_economy", "content_preserving_corollary_4_1_bijection", "fresh_namespace_shuffled_replay", "value_audit", "resource_and_identity_probes"],
+    "case_score": "1 if forward and inverse are mutually inverse canonical maps between the Corollary 4.1 unions and preserve the complete content vector, else 0",
+    "problem_score": "all public fibers must pass, then shuffled replay, the value audit, and identity/resource gates must pass; passing is necessary, not sufficient"
+  }
+}

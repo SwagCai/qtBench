@@ -1,0 +1,21 @@
+{
+  "schema_version": "0.1",
+  "id": 3,
+  "title": "Type B q,t-Catalan area partner",
+  "task_type": "t_statistic_discovery",
+  "object_family": "type_b_catalan_paths",
+  "known_statistic": "area",
+  "known_statistic_file": "known_statistic.py",
+  "submission_signature": "statistic(path) -> int",
+  "evaluator_kind": "type-b",
+  "public_cases": {
+    "n_min": 1,
+    "n_max": 9
+  },
+  "scoring": {
+    "gate_order": ["capability_screen", "source_economy", "public_q_equals_1_and_exact_polynomials", "fresh_namespace_shuffled_replay", "value_audit", "resource_probes"],
+    "case_score": "1 if every generated coefficient equals the public target coefficient, else 0",
+    "problem_score": "all public sizes must match, then shuffled replay, the value audit, and resource gates must pass; a pass establishes agreement with the committed targets, including the conditional n=7,8,9 completions, not an independent certification of their derivation"
+  },
+  "name": "type_b_area_qt_catalan_second_stat"
+}

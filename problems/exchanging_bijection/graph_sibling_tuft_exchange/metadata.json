@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "id": 26,
+  "name": "graph_sibling_tuft_exchange",
+  "title": "Connected-graph sibling/tuft exchanging bijection",
+  "task_type": "exchanging_bijection",
+  "object_family": "unlabeled_connected_graphs",
+  "known_statistics": ["sibling_number", "tuft_number"],
+  "known_statistics_file": "known_statistics.py",
+  "submission_signature": "forward(graph) -> str, inverse(graph) -> str",
+  "evaluator_kind": "graph-sibling-tuft",
+  "public_cases": {"size_min": 1, "size_max": 7},
+  "scoring": {
+    "gate_order": ["capability_screen", "source_economy", "sibling_tuft_exchange_identities_and_distribution", "fresh_namespace_shuffled_replay", "value_audit", "resource_and_identity_probes"],
+    "case_score": "1 if forward and inverse are mutually inverse same-size canonical graph maps exchanging sibling and tuft numbers and preserving reduction, else 0",
+    "problem_score": "all public sizes must pass, then shuffled replay, the value audit, and identity/resource gates must pass; passing is necessary, not sufficient"
+  }
+}

@@ -1,0 +1,248 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_BUILD_JOBS: "1"
+  MKL_NUM_THREADS: "1"
+  NUMEXPR_NUM_THREADS: "1"
+  OMP_NUM_THREADS: "1"
+  OPENBLAS_NUM_THREADS: "1"
+  RAYON_NUM_THREADS: "1"
+  UV_CONCURRENT_BUILDS: "1"
+  VECLIB_MAXIMUM_THREADS: "1"
+
+jobs:
+  test:
+    name: test (3.13, ${{ matrix.shard }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 19
+      matrix:
+        include:
+          - shard: combinatorics
+            pytest_args: tests/combinatorics
+            sync_args: --extra dev
+          - shard: admission
+            pytest_args: tests/evaluation/test_admission.py
+            sync_args: --extra dev
+          - shard: evaluation
+            pytest_args: tests/evaluation --ignore=tests/evaluation/test_admission.py
+            sync_args: --all-extras
+          - shard: problems-promotion
+            pytest_args: tests/problems/test_promotion_problem.py
+            sync_args: --extra dev
+          - shard: problems-kreweras
+            pytest_args: tests/problems/test_kreweras_problem.py
+            sync_args: --extra dev
+          - shard: problems-qgamma
+            pytest_args: tests/problems/test_qgamma_problem.py
+            sync_args: --extra dev
+          - shard: problems-mjack
+            pytest_args: tests/problems/test_mjack_problem.py
+            sync_args: --extra dev
+          - shard: problems-involution
+            pytest_args: tests/problems/test_involution_problem.py
+            sync_args: --extra dev
+          - shard: problems-kostka
+            pytest_args: tests/problems/test_kostka_problem.py
+            sync_args: --extra dev
+          - shard: problems-gpf
+            pytest_args: tests/problems/test_gpf_problem.py
+            sync_args: --extra dev
+          - shard: problems-new-adapters
+            pytest_args: >-
+              tests/problems/test_graph_sibling_tuft_problem.py
+              tests/problems/test_parking_area_dinv_problem.py
+              tests/problems/test_shifted_pq_problem.py
+            sync_args: --extra dev
+          - shard: problems-llt-uig
+            pytest_args: >-
+              tests/problems/test_llt_problem.py
+              tests/problems/test_uig_problem.py
+            sync_args: --extra dev
+          - shard: problems-tgt-rtt
+            pytest_args: >-
+              tests/problems/test_tgt_problem.py
+              tests/problems/test_rtt_problem.py
+            sync_args: --extra dev
+          - shard: problems-midweight
+            pytest_args: >-
+              tests/problems/test_lrp_problem.py
+              tests/problems/test_mld_problem.py
+              tests/problems/test_ttree_problem.py
+              tests/problems/test_tamari_problem.py
+              tests/problems/test_ddyck_problem.py
+            sync_args: --extra dev
+          - shard: problems-contracts
+            pytest_args: >-
+              tests/problems/test_registry.py
+              tests/problems/test_public_data_consistency.py
+              tests/problems/test_instance_sample_bounds.py
+              tests/problems/test_submission_api.py
+            sync_args: --extra dev
+          - shard: problems-generators
+            pytest_args: >-
+              tests/problems/test_generator_cli_validation.py
+              tests/problems/test_generator_oracle_loading.py
+              tests/problems/test_public_problem.py
+            sync_args: --extra dev
+          - shard: problems-specialized
+            pytest_args: >-
+              tests/problems/test_macdonald_filling_problem.py
+              tests/problems/test_partition_matrix_inversion_problem.py
+              tests/problems/test_successive_rank_problem.py
+            sync_args: --extra dev
+          - shard: problems-remaining
+            pytest_args: >-
+              tests/problems/test_area_bounce_problem.py
+              tests/problems/test_asm_dpp_problem.py
+              tests/problems/test_lpp_problem.py
+              tests/problems/test_polyomino_area_bounce_problem.py
+              tests/problems/test_polyomino_transpose_problem.py
+              tests/problems/test_type_b_problem.py
+            sync_args: --extra dev
+          - shard: private-release
+            pytest_args: tests/test_release_cli.py
+            sync_args: --extra dev
+            private_release: true
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7
+        with:
+          version: "0.12.3"
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.13"
+      - run: uv sync --python "3.13" ${{ matrix.sync_args }} --locked
+      - name: Run deterministic tests
+        if: ${{ matrix.private_release != true || hashFiles('tests/test_release_cli.py') != '' }}
+        env:
+          PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"
+          PYTHONHASHSEED: "0"
+          QTBENCH_RUN_SEED: "1"
+        run: uv run --no-sync python -m pytest -q ${{ matrix.pytest_args }}
+
+  compatibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        python-version: ["3.11", "3.12", "3.14"]
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7
+        with:
+          version: "0.12.3"
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: uv sync --python "${{ matrix.python-version }}" --extra dev --locked
+      - name: Verify representative imports
+        run: uv run --no-sync python -c "import qtbench; import qtbench.ai_judge; import qtbench.generation; import qtbench.combinatorics.alternating_sign_matrix; import qtbench.combinatorics.connected_graph; import qtbench.combinatorics.improper_partition_matrix; import qtbench.combinatorics.shifted_setvalued; import qtbench.combinatorics.successive_rank_partition; import qtbench.combinatorics.type_a.macdonald_filling; import qtbench.combinatorics.type_a.parking_function; import qtbench.evaluation.admission; import qtbench.evaluation.runner"
+      - name: Run deterministic compatibility smoke tests
+        env:
+          PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"
+          PYTHONHASHSEED: "0"
+          QTBENCH_RUN_SEED: "1"
+        run: uv run --no-sync python -m pytest -q tests/evaluation/test_platform_support.py tests/evaluation/test_scored_cli.py
+
+  windows-scorer:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        python-version: ["3.11", "3.14"]
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7
+        with:
+          version: "0.12.3"
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: uv sync --python "${{ matrix.python-version }}" --extra dev --locked
+      - name: Run deterministic Windows smoke tests
+        env:
+          PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"
+          PYTHONHASHSEED: "0"
+          QTBENCH_RUN_SEED: "1"
+        run: uv run --no-sync python -m pytest -q tests/evaluation/test_platform_support.py tests/evaluation/test_scored_cli.py
+      - run: uv run --no-sync python scripts/evaluate/evaluate_scored_submission.py noncrossing examples/noncrossing_calibration_submission.py
+
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78 # v7
+        with:
+          version: "0.12.3"
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.13"
+      - name: Sync the documented locked base environment
+        run: uv sync --locked
+      - name: Compile all Python sources on 3.13
+        run: uv run --locked python -m compileall -q src scripts problems examples tests
+      - name: Verify the documented Quick Start
+        run: uv run --locked python scripts/evaluate/evaluate_scored_submission.py noncrossing examples/noncrossing_calibration_submission.py
+      - name: Build distributions with a hash-pinned backend
+        run: uv build --no-sources --build-constraint build-constraints.txt --require-hashes
+      - name: Smoke-test wheel and sdist outside the checkout
+        shell: bash
+        working-directory: ${{ runner.temp }}
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+
+          wheels=("$GITHUB_WORKSPACE"/dist/*.whl)
+          sdists=("$GITHUB_WORKSPACE"/dist/*.tar.gz)
+          test "${#wheels[@]}" -eq 1
+          test "${#sdists[@]}" -eq 1
+
+          imports='from importlib.metadata import version; import qtbench; assert version("qtbench") == qtbench.__version__; import qtbench.ai_judge; import qtbench.generation; import qtbench.combinatorics.alternating_sign_matrix; import qtbench.combinatorics.connected_graph; import qtbench.combinatorics.improper_partition_matrix; import qtbench.combinatorics.shifted_setvalued; import qtbench.combinatorics.successive_rank_partition; import qtbench.combinatorics.type_a.macdonald_filling; import qtbench.combinatorics.type_a.parking_function; import qtbench.evaluation.admission; import qtbench.evaluation.runner'
+          for artifact in "${wheels[0]}" "${sdists[0]}"; do
+            cache_dir="$(mktemp -d "$RUNNER_TEMP/qtbench-uv-cache.XXXXXX")"
+            export UV_BUILD_CONSTRAINT="$GITHUB_WORKSPACE/build-constraints.txt"
+            export UV_CACHE_DIR="$cache_dir"
+            export PYTHONPATH=
+            uv run --python "3.13" --no-project --with "$artifact" python -c "$imports"
+            uv run --python "3.13" --no-project --with "$artifact" qtbench-ai-judge --help
+          done

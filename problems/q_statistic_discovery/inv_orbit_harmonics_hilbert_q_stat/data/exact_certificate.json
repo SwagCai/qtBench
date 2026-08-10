@@ -1,0 +1,531 @@
+{
+  "schema_version": "0.1",
+  "problem_id": 15,
+  "problem_name": "inv_orbit_harmonics_hilbert_q_stat",
+  "method": "proof-enabled sparse row echelon form over QQ",
+  "sage_version": "SageMath version 10.8, Release Date: 2025-12-18",
+  "polynomials_sha256": "7eddf5388679f18752f7ed68997e6580a4404944c7d97985ac57b2290dfecb6f",
+  "case_count": 35,
+  "cases": [
+    {
+      "case_id": "n01_a01",
+      "n": 1,
+      "a": 1,
+      "point_count": 1,
+      "cumulative_ranks": [
+        1
+      ],
+      "hilbert_series": [
+        1
+      ]
+    },
+    {
+      "case_id": "n02_a00",
+      "n": 2,
+      "a": 0,
+      "point_count": 1,
+      "cumulative_ranks": [
+        1
+      ],
+      "hilbert_series": [
+        1
+      ]
+    },
+    {
+      "case_id": "n02_a02",
+      "n": 2,
+      "a": 2,
+      "point_count": 1,
+      "cumulative_ranks": [
+        1
+      ],
+      "hilbert_series": [
+        1
+      ]
+    },
+    {
+      "case_id": "n03_a01",
+      "n": 3,
+      "a": 1,
+      "point_count": 3,
+      "cumulative_ranks": [
+        1,
+        3
+      ],
+      "hilbert_series": [
+        1,
+        2
+      ]
+    },
+    {
+      "case_id": "n03_a03",
+      "n": 3,
+      "a": 3,
+      "point_count": 1,
+      "cumulative_ranks": [
+        1
+      ],
+      "hilbert_series": [
+        1
+      ]
+    },
+    {
+      "case_id": "n04_a00",
+      "n": 4,
+      "a": 0,
+      "point_count": 3,
+      "cumulative_ranks": [
+        1,
+        3
+      ],
+      "hilbert_series": [
+        1,
+        2
+      ]
+    },
+    {
+      "case_id": "n04_a02",
+      "n": 4,
+      "a": 2,
+      "point_count": 6,
+      "cumulative_ranks": [
+        1,
+        6
+      ],
+      "hilbert_series": [
+        1,
+        5
+      ]
+    },
+    {
+      "case_id": "n04_a04",
+      "n": 4,
+      "a": 4,
+      "point_count": 1,
+      "cumulative_ranks": [
+        1
+      ],
+      "hilbert_series": [
+        1
+      ]
+    },
+    {
+      "case_id": "n05_a01",
+      "n": 5,
+      "a": 1,
+      "point_count": 15,
+      "cumulative_ranks": [
+        1,
+        10,
+        15
+      ],
+      "hilbert_series": [
+        1,
+        9,
+        5
+      ]
+    },
+    {
+      "case_id": "n05_a03",
+      "n": 5,
+      "a": 3,
+      "point_count": 10,
+      "cumulative_ranks": [
+        1,
+        10
+      ],
+      "hilbert_series": [
+        1,
+        9
+      ]
+    },
+    {
+      "case_id": "n05_a05",
+      "n": 5,
+      "a": 5,
+      "point_count": 1,
+      "cumulative_ranks": [
+        1
+      ],
+      "hilbert_series": [
+        1
+      ]
+    },
+    {
+      "case_id": "n06_a00",
+      "n": 6,
+      "a": 0,
+      "point_count": 15,
+      "cumulative_ranks": [
+        1,
+        10,
+        15
+      ],
+      "hilbert_series": [
+        1,
+        9,
+        5
+      ]
+    },
+    {
+      "case_id": "n06_a02",
+      "n": 6,
+      "a": 2,
+      "point_count": 45,
+      "cumulative_ranks": [
+        1,
+        15,
+        45
+      ],
+      "hilbert_series": [
+        1,
+        14,
+        30
+      ]
+    },
+    {
+      "case_id": "n06_a04",
+      "n": 6,
+      "a": 4,
+      "point_count": 15,
+      "cumulative_ranks": [
+        1,
+        15
+      ],
+      "hilbert_series": [
+        1,
+        14
+      ]
+    },
+    {
+      "case_id": "n06_a06",
+      "n": 6,
+      "a": 6,
+      "point_count": 1,
+      "cumulative_ranks": [
+        1
+      ],
+      "hilbert_series": [
+        1
+      ]
+    },
+    {
+      "case_id": "n07_a01",
+      "n": 7,
+      "a": 1,
+      "point_count": 105,
+      "cumulative_ranks": [
+        1,
+        21,
+        91,
+        105
+      ],
+      "hilbert_series": [
+        1,
+        20,
+        70,
+        14
+      ]
+    },
+    {
+      "case_id": "n07_a03",
+      "n": 7,
+      "a": 3,
+      "point_count": 105,
+      "cumulative_ranks": [
+        1,
+        21,
+        105
+      ],
+      "hilbert_series": [
+        1,
+        20,
+        84
+      ]
+    },
+    {
+      "case_id": "n07_a05",
+      "n": 7,
+      "a": 5,
+      "point_count": 21,
+      "cumulative_ranks": [
+        1,
+        21
+      ],
+      "hilbert_series": [
+        1,
+        20
+      ]
+    },
+    {
+      "case_id": "n07_a07",
+      "n": 7,
+      "a": 7,
+      "point_count": 1,
+      "cumulative_ranks": [
+        1
+      ],
+      "hilbert_series": [
+        1
+      ]
+    },
+    {
+      "case_id": "n08_a00",
+      "n": 8,
+      "a": 0,
+      "point_count": 105,
+      "cumulative_ranks": [
+        1,
+        21,
+        91,
+        105
+      ],
+      "hilbert_series": [
+        1,
+        20,
+        70,
+        14
+      ]
+    },
+    {
+      "case_id": "n08_a02",
+      "n": 8,
+      "a": 2,
+      "point_count": 420,
+      "cumulative_ranks": [
+        1,
+        28,
+        210,
+        420
+      ],
+      "hilbert_series": [
+        1,
+        27,
+        182,
+        210
+      ]
+    },
+    {
+      "case_id": "n08_a04",
+      "n": 8,
+      "a": 4,
+      "point_count": 210,
+      "cumulative_ranks": [
+        1,
+        28,
+        210
+      ],
+      "hilbert_series": [
+        1,
+        27,
+        182
+      ]
+    },
+    {
+      "case_id": "n08_a06",
+      "n": 8,
+      "a": 6,
+      "point_count": 28,
+      "cumulative_ranks": [
+        1,
+        28
+      ],
+      "hilbert_series": [
+        1,
+        27
+      ]
+    },
+    {
+      "case_id": "n08_a08",
+      "n": 8,
+      "a": 8,
+      "point_count": 1,
+      "cumulative_ranks": [
+        1
+      ],
+      "hilbert_series": [
+        1
+      ]
+    },
+    {
+      "case_id": "n09_a01",
+      "n": 9,
+      "a": 1,
+      "point_count": 945,
+      "cumulative_ranks": [
+        1,
+        36,
+        351,
+        903,
+        945
+      ],
+      "hilbert_series": [
+        1,
+        35,
+        315,
+        552,
+        42
+      ]
+    },
+    {
+      "case_id": "n09_a03",
+      "n": 9,
+      "a": 3,
+      "point_count": 1260,
+      "cumulative_ranks": [
+        1,
+        36,
+        378,
+        1260
+      ],
+      "hilbert_series": [
+        1,
+        35,
+        342,
+        882
+      ]
+    },
+    {
+      "case_id": "n09_a05",
+      "n": 9,
+      "a": 5,
+      "point_count": 378,
+      "cumulative_ranks": [
+        1,
+        36,
+        378
+      ],
+      "hilbert_series": [
+        1,
+        35,
+        342
+      ]
+    },
+    {
+      "case_id": "n09_a07",
+      "n": 9,
+      "a": 7,
+      "point_count": 36,
+      "cumulative_ranks": [
+        1,
+        36
+      ],
+      "hilbert_series": [
+        1,
+        35
+      ]
+    },
+    {
+      "case_id": "n09_a09",
+      "n": 9,
+      "a": 9,
+      "point_count": 1,
+      "cumulative_ranks": [
+        1
+      ],
+      "hilbert_series": [
+        1
+      ]
+    },
+    {
+      "case_id": "n10_a00",
+      "n": 10,
+      "a": 0,
+      "point_count": 945,
+      "cumulative_ranks": [
+        1,
+        36,
+        351,
+        903,
+        945
+      ],
+      "hilbert_series": [
+        1,
+        35,
+        315,
+        552,
+        42
+      ]
+    },
+    {
+      "case_id": "n10_a02",
+      "n": 10,
+      "a": 2,
+      "point_count": 4725,
+      "cumulative_ranks": [
+        1,
+        45,
+        630,
+        3075,
+        4725
+      ],
+      "hilbert_series": [
+        1,
+        44,
+        585,
+        2445,
+        1650
+      ]
+    },
+    {
+      "case_id": "n10_a04",
+      "n": 10,
+      "a": 4,
+      "point_count": 3150,
+      "cumulative_ranks": [
+        1,
+        45,
+        630,
+        3150
+      ],
+      "hilbert_series": [
+        1,
+        44,
+        585,
+        2520
+      ]
+    },
+    {
+      "case_id": "n10_a06",
+      "n": 10,
+      "a": 6,
+      "point_count": 630,
+      "cumulative_ranks": [
+        1,
+        45,
+        630
+      ],
+      "hilbert_series": [
+        1,
+        44,
+        585
+      ]
+    },
+    {
+      "case_id": "n10_a08",
+      "n": 10,
+      "a": 8,
+      "point_count": 45,
+      "cumulative_ranks": [
+        1,
+        45
+      ],
+      "hilbert_series": [
+        1,
+        44
+      ]
+    },
+    {
+      "case_id": "n10_a10",
+      "n": 10,
+      "a": 10,
+      "point_count": 1,
+      "cumulative_ranks": [
+        1
+      ],
+      "hilbert_series": [
+        1
+      ]
+    }
+  ]
+}

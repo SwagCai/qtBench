@@ -1,0 +1,217 @@
+{
+  "schema_version": "0.1",
+  "problem_id": 28,
+  "problem_name": "shifted_setvalued_pq_weight_bijection",
+  "variables": [
+    "entry_count"
+  ],
+  "statistics": {
+    "entry_count": "entry_count"
+  },
+  "case_count": 7,
+  "cases": [
+    {
+      "case_id": "f01",
+      "mu": [
+        3,
+        1
+      ],
+      "content": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "count": 32,
+      "source_component_counts": [
+        [
+          "Q:3,1",
+          32
+        ]
+      ],
+      "target_count": 32,
+      "term_count": 1,
+      "terms": [
+        [
+          4,
+          32
+        ]
+      ]
+    },
+    {
+      "case_id": "f02",
+      "mu": [
+        3,
+        1
+      ],
+      "content": [
+        2,
+        1,
+        1
+      ],
+      "count": 16,
+      "source_component_counts": [
+        [
+          "Q:3,1",
+          16
+        ]
+      ],
+      "target_count": 16,
+      "term_count": 1,
+      "terms": [
+        [
+          4,
+          16
+        ]
+      ]
+    },
+    {
+      "case_id": "f03",
+      "mu": [
+        3,
+        1
+      ],
+      "content": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "count": 320,
+      "source_component_counts": [
+        [
+          "Q:3,1",
+          320
+        ]
+      ],
+      "target_count": 320,
+      "term_count": 1,
+      "terms": [
+        [
+          5,
+          320
+        ]
+      ]
+    },
+    {
+      "case_id": "f04",
+      "mu": [
+        3,
+        1
+      ],
+      "content": [
+        2,
+        2,
+        1
+      ],
+      "count": 64,
+      "source_component_counts": [
+        [
+          "Q:3,1",
+          64
+        ]
+      ],
+      "target_count": 64,
+      "term_count": 1,
+      "terms": [
+        [
+          5,
+          64
+        ]
+      ]
+    },
+    {
+      "case_id": "f05",
+      "mu": [
+        3,
+        2
+      ],
+      "content": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "count": 64,
+      "source_component_counts": [
+        [
+          "Q:3,2",
+          64
+        ]
+      ],
+      "target_count": 64,
+      "term_count": 1,
+      "terms": [
+        [
+          5,
+          64
+        ]
+      ]
+    },
+    {
+      "case_id": "f06",
+      "mu": [
+        3,
+        2
+      ],
+      "content": [
+        3,
+        2,
+        1,
+        1
+      ],
+      "count": 228,
+      "source_component_counts": [
+        [
+          "P:4,3",
+          12
+        ],
+        [
+          "Q:3,2",
+          216
+        ]
+      ],
+      "target_count": 228,
+      "term_count": 1,
+      "terms": [
+        [
+          7,
+          228
+        ]
+      ]
+    },
+    {
+      "case_id": "f07",
+      "mu": [
+        3,
+        2
+      ],
+      "content": [
+        4,
+        2,
+        1
+      ],
+      "count": 16,
+      "source_component_counts": [
+        [
+          "P:4,3",
+          2
+        ],
+        [
+          "Q:3,2",
+          14
+        ]
+      ],
+      "target_count": 16,
+      "term_count": 1,
+      "terms": [
+        [
+          7,
+          16
+        ]
+      ]
+    }
+  ]
+}

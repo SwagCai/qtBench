@@ -1,0 +1,523 @@
+{
+  "schema_version": "0.1",
+  "problem_id": 22,
+  "problem_name": "syt_promotion_csp_q_stat",
+  "variables": [
+    "shape"
+  ],
+  "specialization": {
+    "q": 1
+  },
+  "meaning": "C_lambda(1) = |SYT(lambda)|: the shape and size of the fiber, an object-model check that any statistic satisfies.",
+  "case_count": 22,
+  "cases": [
+    {
+      "case_id": "s03_000",
+      "shape": [
+        2,
+        1
+      ],
+      "cells": 3,
+      "modulus": 6,
+      "count": 2,
+      "term_count": 1,
+      "terms": [
+        [
+          [
+            2,
+            1
+          ],
+          2
+        ]
+      ]
+    },
+    {
+      "case_id": "s06_001",
+      "shape": [
+        3,
+        2,
+        1
+      ],
+      "cells": 6,
+      "modulus": 12,
+      "count": 16,
+      "term_count": 1,
+      "terms": [
+        [
+          [
+            3,
+            2,
+            1
+          ],
+          16
+        ]
+      ]
+    },
+    {
+      "case_id": "s10_002",
+      "shape": [
+        4,
+        3,
+        2,
+        1
+      ],
+      "cells": 10,
+      "modulus": 20,
+      "count": 768,
+      "term_count": 1,
+      "terms": [
+        [
+          [
+            4,
+            3,
+            2,
+            1
+          ],
+          768
+        ]
+      ]
+    },
+    {
+      "case_id": "r04_003",
+      "shape": [
+        2,
+        2
+      ],
+      "cells": 4,
+      "modulus": 4,
+      "count": 2,
+      "term_count": 1,
+      "terms": [
+        [
+          [
+            2,
+            2
+          ],
+          2
+        ]
+      ]
+    },
+    {
+      "case_id": "r06_004",
+      "shape": [
+        2,
+        2,
+        2
+      ],
+      "cells": 6,
+      "modulus": 6,
+      "count": 5,
+      "term_count": 1,
+      "terms": [
+        [
+          [
+            2,
+            2,
+            2
+          ],
+          5
+        ]
+      ]
+    },
+    {
+      "case_id": "r06_005",
+      "shape": [
+        3,
+        3
+      ],
+      "cells": 6,
+      "modulus": 6,
+      "count": 5,
+      "term_count": 1,
+      "terms": [
+        [
+          [
+            3,
+            3
+          ],
+          5
+        ]
+      ]
+    },
+    {
+      "case_id": "r08_006",
+      "shape": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "cells": 8,
+      "modulus": 8,
+      "count": 14,
+      "term_count": 1,
+      "terms": [
+        [
+          [
+            2,
+            2,
+            2,
+            2
+          ],
+          14
+        ]
+      ]
+    },
+    {
+      "case_id": "r08_007",
+      "shape": [
+        4,
+        4
+      ],
+      "cells": 8,
+      "modulus": 8,
+      "count": 14,
+      "term_count": 1,
+      "terms": [
+        [
+          [
+            4,
+            4
+          ],
+          14
+        ]
+      ]
+    },
+    {
+      "case_id": "r09_008",
+      "shape": [
+        3,
+        3,
+        3
+      ],
+      "cells": 9,
+      "modulus": 9,
+      "count": 42,
+      "term_count": 1,
+      "terms": [
+        [
+          [
+            3,
+            3,
+            3
+          ],
+          42
+        ]
+      ]
+    },
+    {
+      "case_id": "r10_009",
+      "shape": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "cells": 10,
+      "modulus": 10,
+      "count": 42,
+      "term_count": 1,
+      "terms": [
+        [
+          [
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          42
+        ]
+      ]
+    },
+    {
+      "case_id": "r10_010",
+      "shape": [
+        5,
+        5
+      ],
+      "cells": 10,
+      "modulus": 10,
+      "count": 42,
+      "term_count": 1,
+      "terms": [
+        [
+          [
+            5,
+            5
+          ],
+          42
+        ]
+      ]
+    },
+    {
+      "case_id": "r12_011",
+      "shape": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "cells": 12,
+      "modulus": 12,
+      "count": 132,
+      "term_count": 1,
+      "terms": [
+        [
+          [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          132
+        ]
+      ]
+    },
+    {
+      "case_id": "r12_012",
+      "shape": [
+        3,
+        3,
+        3,
+        3
+      ],
+      "cells": 12,
+      "modulus": 12,
+      "count": 462,
+      "term_count": 1,
+      "terms": [
+        [
+          [
+            3,
+            3,
+            3,
+            3
+          ],
+          462
+        ]
+      ]
+    },
+    {
+      "case_id": "r12_013",
+      "shape": [
+        4,
+        4,
+        4
+      ],
+      "cells": 12,
+      "modulus": 12,
+      "count": 462,
+      "term_count": 1,
+      "terms": [
+        [
+          [
+            4,
+            4,
+            4
+          ],
+          462
+        ]
+      ]
+    },
+    {
+      "case_id": "r12_014",
+      "shape": [
+        6,
+        6
+      ],
+      "cells": 12,
+      "modulus": 12,
+      "count": 132,
+      "term_count": 1,
+      "terms": [
+        [
+          [
+            6,
+            6
+          ],
+          132
+        ]
+      ]
+    },
+    {
+      "case_id": "r14_015",
+      "shape": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "cells": 14,
+      "modulus": 14,
+      "count": 429,
+      "term_count": 1,
+      "terms": [
+        [
+          [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          429
+        ]
+      ]
+    },
+    {
+      "case_id": "r14_016",
+      "shape": [
+        7,
+        7
+      ],
+      "cells": 14,
+      "modulus": 14,
+      "count": 429,
+      "term_count": 1,
+      "terms": [
+        [
+          [
+            7,
+            7
+          ],
+          429
+        ]
+      ]
+    },
+    {
+      "case_id": "r15_017",
+      "shape": [
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "cells": 15,
+      "modulus": 15,
+      "count": 6006,
+      "term_count": 1,
+      "terms": [
+        [
+          [
+            3,
+            3,
+            3,
+            3,
+            3
+          ],
+          6006
+        ]
+      ]
+    },
+    {
+      "case_id": "r15_018",
+      "shape": [
+        5,
+        5,
+        5
+      ],
+      "cells": 15,
+      "modulus": 15,
+      "count": 6006,
+      "term_count": 1,
+      "terms": [
+        [
+          [
+            5,
+            5,
+            5
+          ],
+          6006
+        ]
+      ]
+    },
+    {
+      "case_id": "r16_019",
+      "shape": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "cells": 16,
+      "modulus": 16,
+      "count": 1430,
+      "term_count": 1,
+      "terms": [
+        [
+          [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          1430
+        ]
+      ]
+    },
+    {
+      "case_id": "r16_020",
+      "shape": [
+        4,
+        4,
+        4,
+        4
+      ],
+      "cells": 16,
+      "modulus": 16,
+      "count": 24024,
+      "term_count": 1,
+      "terms": [
+        [
+          [
+            4,
+            4,
+            4,
+            4
+          ],
+          24024
+        ]
+      ]
+    },
+    {
+      "case_id": "r16_021",
+      "shape": [
+        8,
+        8
+      ],
+      "cells": 16,
+      "modulus": 16,
+      "count": 1430,
+      "term_count": 1,
+      "terms": [
+        [
+          [
+            8,
+            8
+          ],
+          1430
+        ]
+      ]
+    }
+  ]
+}

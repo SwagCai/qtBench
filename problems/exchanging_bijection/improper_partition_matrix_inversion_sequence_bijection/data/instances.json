@@ -1,0 +1,259 @@
+{
+  "schema_version": "0.1",
+  "problem_id": 30,
+  "problem_name": "improper_partition_matrix_inversion_sequence_bijection",
+  "object_family": "improper_partition_matrices_and_restricted_inversion_sequences",
+  "public_max_n": 9,
+  "case_count": 7,
+  "cases": [
+    {
+      "case_id": "n03",
+      "n": 3,
+      "count": 3,
+      "entries": [
+        {
+          "matrix": "M;1,1,1;1,1,1",
+          "semi_weight": 2
+        },
+        {
+          "matrix": "M;1,1,2;1,1,2",
+          "semi_weight": 2
+        },
+        {
+          "matrix": "M;1,2,3;1,2,3",
+          "semi_weight": 3
+        }
+      ]
+    },
+    {
+      "case_id": "n04",
+      "n": 4,
+      "count": 7,
+      "entries": [
+        {
+          "matrix": "M;1,1,1,2;1,2,2,2",
+          "semi_weight": 3
+        },
+        {
+          "matrix": "M;1,1,1,2;1,1,1,2",
+          "semi_weight": 3
+        },
+        {
+          "matrix": "M;1,1,2,3;1,1,2,3",
+          "semi_weight": 3
+        },
+        {
+          "matrix": "M;1,2,2,1;1,2,2,2",
+          "semi_weight": 3
+        },
+        {
+          "matrix": "M;1,2,2,2;1,2,2,2",
+          "semi_weight": 3
+        },
+        {
+          "matrix": "M;1,2,2,3;1,2,2,3",
+          "semi_weight": 3
+        },
+        {
+          "matrix": "M;1,2,3,4;1,2,3,4",
+          "semi_weight": 4
+        }
+      ]
+    },
+    {
+      "case_id": "n05",
+      "n": 5,
+      "count": 8,
+      "entries": [
+        {
+          "matrix": "M;1,1,1,1,1;1,1,1,1,1",
+          "semi_weight": 3
+        },
+        {
+          "matrix": "M;1,1,1,1,2;1,1,2,2,2",
+          "semi_weight": 3
+        },
+        {
+          "matrix": "M;1,1,1,1,2;1,1,1,1,2",
+          "semi_weight": 3
+        },
+        {
+          "matrix": "M;1,1,1,2,3;1,2,2,2,3",
+          "semi_weight": 4
+        },
+        {
+          "matrix": "M;1,1,1,2,3;1,1,1,2,3",
+          "semi_weight": 4
+        },
+        {
+          "matrix": "M;1,1,2,2,3;1,2,3,3,3",
+          "semi_weight": 4
+        },
+        {
+          "matrix": "M;1,1,2,2,1;1,1,2,2,2",
+          "semi_weight": 3
+        },
+        {
+          "matrix": "M;1,1,3,3,2;1,2,3,3,3",
+          "semi_weight": 4
+        }
+      ]
+    },
+    {
+      "case_id": "n06",
+      "n": 6,
+      "count": 8,
+      "entries": [
+        {
+          "matrix": "M;1,1,1,1,1,2;1,2,2,2,2,2",
+          "semi_weight": 4
+        },
+        {
+          "matrix": "M;1,1,1,1,1,2;1,1,1,2,2,2",
+          "semi_weight": 4
+        },
+        {
+          "matrix": "M;1,1,1,1,1,2;1,1,1,1,1,2",
+          "semi_weight": 4
+        },
+        {
+          "matrix": "M;1,1,1,1,2,3;1,1,2,2,2,3",
+          "semi_weight": 4
+        },
+        {
+          "matrix": "M;1,1,1,1,2,3;1,1,1,1,2,3",
+          "semi_weight": 4
+        },
+        {
+          "matrix": "M;1,1,1,2,2,1;1,2,2,2,2,2",
+          "semi_weight": 4
+        },
+        {
+          "matrix": "M;1,1,1,2,2,2;1,2,2,2,2,2",
+          "semi_weight": 4
+        },
+        {
+          "matrix": "M;1,1,1,2,2,3;1,2,2,3,3,3",
+          "semi_weight": 4
+        }
+      ]
+    },
+    {
+      "case_id": "n07",
+      "n": 7,
+      "count": 8,
+      "entries": [
+        {
+          "matrix": "M;1,1,1,1,1,1,1;1,1,1,1,1,1,1",
+          "semi_weight": 4
+        },
+        {
+          "matrix": "M;1,1,1,1,1,1,2;1,1,2,2,2,2,2",
+          "semi_weight": 4
+        },
+        {
+          "matrix": "M;1,1,1,1,1,1,2;1,1,1,1,2,2,2",
+          "semi_weight": 4
+        },
+        {
+          "matrix": "M;1,1,1,1,1,1,2;1,1,1,1,1,1,2",
+          "semi_weight": 4
+        },
+        {
+          "matrix": "M;1,1,1,1,1,2,3;1,2,2,2,2,2,3",
+          "semi_weight": 5
+        },
+        {
+          "matrix": "M;1,1,1,1,1,2,3;1,1,1,2,2,2,3",
+          "semi_weight": 5
+        },
+        {
+          "matrix": "M;1,1,1,1,1,2,3;1,1,1,1,1,2,3",
+          "semi_weight": 5
+        },
+        {
+          "matrix": "M;1,1,1,1,2,2,3;1,2,3,3,3,3,3",
+          "semi_weight": 5
+        }
+      ]
+    },
+    {
+      "case_id": "n08",
+      "n": 8,
+      "count": 8,
+      "entries": [
+        {
+          "matrix": "M;1,1,1,1,1,1,1,2;1,2,2,2,2,2,2,2",
+          "semi_weight": 5
+        },
+        {
+          "matrix": "M;1,1,1,1,1,1,1,2;1,1,1,2,2,2,2,2",
+          "semi_weight": 5
+        },
+        {
+          "matrix": "M;1,1,1,1,1,1,1,2;1,1,1,1,1,2,2,2",
+          "semi_weight": 5
+        },
+        {
+          "matrix": "M;1,1,1,1,1,1,1,2;1,1,1,1,1,1,1,2",
+          "semi_weight": 5
+        },
+        {
+          "matrix": "M;1,1,1,1,1,1,2,3;1,1,2,2,2,2,2,3",
+          "semi_weight": 5
+        },
+        {
+          "matrix": "M;1,1,1,1,1,1,2,3;1,1,1,1,2,2,2,3",
+          "semi_weight": 5
+        },
+        {
+          "matrix": "M;1,1,1,1,1,1,2,3;1,1,1,1,1,1,2,3",
+          "semi_weight": 5
+        },
+        {
+          "matrix": "M;1,1,1,1,1,2,2,1;1,2,2,2,2,2,2,2",
+          "semi_weight": 5
+        }
+      ]
+    },
+    {
+      "case_id": "n09",
+      "n": 9,
+      "count": 8,
+      "entries": [
+        {
+          "matrix": "M;1,1,1,1,1,1,1,1,1;1,1,1,1,1,1,1,1,1",
+          "semi_weight": 5
+        },
+        {
+          "matrix": "M;1,1,1,1,1,1,1,1,2;1,1,2,2,2,2,2,2,2",
+          "semi_weight": 5
+        },
+        {
+          "matrix": "M;1,1,1,1,1,1,1,1,2;1,1,1,1,2,2,2,2,2",
+          "semi_weight": 5
+        },
+        {
+          "matrix": "M;1,1,1,1,1,1,1,1,2;1,1,1,1,1,1,2,2,2",
+          "semi_weight": 5
+        },
+        {
+          "matrix": "M;1,1,1,1,1,1,1,1,2;1,1,1,1,1,1,1,1,2",
+          "semi_weight": 5
+        },
+        {
+          "matrix": "M;1,1,1,1,1,1,1,2,3;1,2,2,2,2,2,2,2,3",
+          "semi_weight": 6
+        },
+        {
+          "matrix": "M;1,1,1,1,1,1,1,2,3;1,1,1,2,2,2,2,2,3",
+          "semi_weight": 6
+        },
+        {
+          "matrix": "M;1,1,1,1,1,1,1,2,3;1,1,1,1,1,2,2,2,3",
+          "semi_weight": 6
+        }
+      ]
+    }
+  ]
+}

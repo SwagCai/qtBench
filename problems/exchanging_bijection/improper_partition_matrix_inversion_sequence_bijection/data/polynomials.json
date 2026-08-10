@@ -1,0 +1,171 @@
+{
+  "schema_version": "0.1",
+  "problem_id": 30,
+  "problem_name": "improper_partition_matrix_inversion_sequence_bijection",
+  "variables": [
+    "grading"
+  ],
+  "statistics": {
+    "source": "semi_weight",
+    "target": "distinct_entries"
+  },
+  "public_max_n": 9,
+  "case_count": 7,
+  "cases": [
+    {
+      "case_id": "n03",
+      "n": 3,
+      "count": 3,
+      "target_count": 3,
+      "term_count": 2,
+      "terms": [
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          1
+        ]
+      ]
+    },
+    {
+      "case_id": "n04",
+      "n": 4,
+      "count": 7,
+      "target_count": 7,
+      "term_count": 2,
+      "terms": [
+        [
+          3,
+          6
+        ],
+        [
+          4,
+          1
+        ]
+      ]
+    },
+    {
+      "case_id": "n05",
+      "n": 5,
+      "count": 21,
+      "target_count": 21,
+      "term_count": 3,
+      "terms": [
+        [
+          3,
+          6
+        ],
+        [
+          4,
+          14
+        ],
+        [
+          5,
+          1
+        ]
+      ]
+    },
+    {
+      "case_id": "n06",
+      "n": 6,
+      "count": 67,
+      "target_count": 67,
+      "term_count": 3,
+      "terms": [
+        [
+          4,
+          36
+        ],
+        [
+          5,
+          30
+        ],
+        [
+          6,
+          1
+        ]
+      ]
+    },
+    {
+      "case_id": "n07",
+      "n": 7,
+      "count": 237,
+      "target_count": 237,
+      "term_count": 4,
+      "terms": [
+        [
+          4,
+          24
+        ],
+        [
+          5,
+          150
+        ],
+        [
+          6,
+          62
+        ],
+        [
+          7,
+          1
+        ]
+      ]
+    },
+    {
+      "case_id": "n08",
+      "n": 8,
+      "count": 907,
+      "target_count": 907,
+      "term_count": 4,
+      "terms": [
+        [
+          5,
+          240
+        ],
+        [
+          6,
+          540
+        ],
+        [
+          7,
+          126
+        ],
+        [
+          8,
+          1
+        ]
+      ]
+    },
+    {
+      "case_id": "n09",
+      "n": 9,
+      "count": 3741,
+      "target_count": 3741,
+      "term_count": 5,
+      "terms": [
+        [
+          5,
+          120
+        ],
+        [
+          6,
+          1560
+        ],
+        [
+          7,
+          1806
+        ],
+        [
+          8,
+          254
+        ],
+        [
+          9,
+          1
+        ]
+      ]
+    }
+  ]
+}

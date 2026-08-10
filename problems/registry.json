@@ -1,0 +1,305 @@
+{
+  "schema_version": "0.1",
+  "problems": [
+    {
+      "id": 1,
+      "title": "Noncrossing q,t-Narayana area partner",
+      "task_type": "t_statistic_discovery",
+      "object_family": "noncrossing_partitions",
+      "status": "calibration",
+      "data": "problems/t_statistic_discovery/nc_area_qt_narayana_second_stat/data",
+      "problem_statement": "problems/t_statistic_discovery/nc_area_qt_narayana_second_stat/problem.md",
+      "name": "nc_area_qt_narayana_second_stat"
+    },
+    {
+      "id": 2,
+      "title": "Dyck area/bounce exchanging bijection",
+      "task_type": "exchanging_bijection",
+      "object_family": "dyck_paths",
+      "status": "active",
+      "data": "problems/exchanging_bijection/dyck_area_bounce_exchange/data",
+      "problem_statement": "problems/exchanging_bijection/dyck_area_bounce_exchange/problem.md",
+      "name": "dyck_area_bounce_exchange"
+    },
+    {
+      "id": 3,
+      "title": "Type B q,t-Catalan area partner",
+      "task_type": "t_statistic_discovery",
+      "object_family": "type_b_catalan_paths",
+      "status": "active",
+      "data": "problems/t_statistic_discovery/type_b_area_qt_catalan_second_stat/data",
+      "problem_statement": "problems/t_statistic_discovery/type_b_area_qt_catalan_second_stat/problem.md",
+      "name": "type_b_area_qt_catalan_second_stat"
+    },
+    {
+      "id": 4,
+      "title": "Parallelogram polyomino area/bounce exchanging bijection",
+      "task_type": "exchanging_bijection",
+      "object_family": "parallelogram_polyominoes",
+      "status": "active",
+      "data": "problems/exchanging_bijection/polyomino_area_bounce_exchange/data",
+      "problem_statement": "problems/exchanging_bijection/polyomino_area_bounce_exchange/problem.md",
+      "name": "polyomino_area_bounce_exchange"
+    },
+    {
+      "id": 5,
+      "title": "Parallelogram polyomino m,n-transpose bijection",
+      "task_type": "exchanging_bijection",
+      "object_family": "parallelogram_polyominoes",
+      "status": "active",
+      "data": "problems/exchanging_bijection/polyomino_area_bounce_transpose/data",
+      "problem_statement": "problems/exchanging_bijection/polyomino_area_bounce_transpose/problem.md",
+      "name": "polyomino_area_bounce_transpose"
+    },
+    {
+      "id": 6,
+      "title": "Labelled parallelogram polyomino Theta-operator area partner",
+      "task_type": "t_statistic_discovery",
+      "object_family": "labelled_parallelogram_polyominoes",
+      "status": "active",
+      "data": "problems/t_statistic_discovery/lpp_area_qt_theta_second_stat/data",
+      "problem_statement": "problems/t_statistic_discovery/lpp_area_qt_theta_second_stat/problem.md",
+      "name": "lpp_area_qt_theta_second_stat"
+    },
+    {
+      "id": 7,
+      "title": "Doubly decorated Dyck path unified-Delta area partner",
+      "task_type": "t_statistic_discovery",
+      "object_family": "decorated_labelled_dyck_paths",
+      "status": "active",
+      "data": "problems/t_statistic_discovery/ddyck_area_qt_unified_delta_second_stat/data",
+      "problem_statement": "problems/t_statistic_discovery/ddyck_area_qt_unified_delta_second_stat/problem.md",
+      "name": "ddyck_area_qt_unified_delta_second_stat"
+    },
+    {
+      "id": 8,
+      "title": "Shareshian-Wachs chromatic e-positivity composition witness",
+      "task_type": "q_statistic_discovery",
+      "object_family": "unit_interval_graph_permutations",
+      "status": "active",
+      "data": "problems/q_statistic_discovery/uig_ginv_shareshian_wachs_q_stat/data",
+      "problem_statement": "problems/q_statistic_discovery/uig_ginv_shareshian_wachs_q_stat/problem.md",
+      "name": "uig_ginv_shareshian_wachs_q_stat"
+    },
+    {
+      "id": 9,
+      "title": "Zero-rooted tiered tree Xi-operator inv partner",
+      "task_type": "t_statistic_discovery",
+      "object_family": "zero_rooted_tiered_trees",
+      "status": "active",
+      "data": "problems/t_statistic_discovery/ttree_inv_qt_xi_second_stat/data",
+      "problem_statement": "problems/t_statistic_discovery/ttree_inv_qt_xi_second_stat/problem.md",
+      "name": "ttree_inv_qt_xi_second_stat"
+    },
+    {
+      "id": 10,
+      "title": "Multi-labelled Dyck path super-nabla area partner",
+      "task_type": "t_statistic_discovery",
+      "object_family": "multi_labelled_dyck_paths",
+      "status": "active",
+      "data": "problems/t_statistic_discovery/mld_area_qt_super_nabla_second_stat/data",
+      "problem_statement": "problems/t_statistic_discovery/mld_area_qt_super_nabla_second_stat/problem.md",
+      "name": "mld_area_qt_super_nabla_second_stat"
+    },
+    {
+      "id": 11,
+      "title": "Rise-decorated rectangular path Delta area partner",
+      "task_type": "t_statistic_discovery",
+      "object_family": "labelled_rectangular_paths",
+      "status": "active",
+      "data": "problems/t_statistic_discovery/lrp_area_qt_rectangular_delta_second_stat/data",
+      "problem_statement": "problems/t_statistic_discovery/lrp_area_qt_rectangular_delta_second_stat/problem.md",
+      "name": "lrp_area_qt_rectangular_delta_second_stat"
+    },
+    {
+      "id": 12,
+      "title": "Tamari trivariate Hilbert-series-shadow third statistic",
+      "task_type": "t_statistic_discovery",
+      "object_family": "tamari_parking_pairs",
+      "status": "active",
+      "data": "problems/t_statistic_discovery/tamari_park_trivariate_third_stat/data",
+      "problem_statement": "problems/t_statistic_discovery/tamari_park_trivariate_third_stat/problem.md",
+      "name": "tamari_park_trivariate_third_stat"
+    },
+    {
+      "id": 13,
+      "title": "Modified (q,t)-Kostka standard tableau statistic pair",
+      "task_type": "t_statistic_discovery",
+      "object_family": "kostka_standard_tableaux",
+      "status": "active",
+      "data": "problems/t_statistic_discovery/syt_qt_kostka_macdonald_pair_stat/data",
+      "problem_statement": "problems/t_statistic_discovery/syt_qt_kostka_macdonald_pair_stat/problem.md",
+      "name": "syt_qt_kostka_macdonald_pair_stat"
+    },
+    {
+      "id": 14,
+      "title": "Unicellular LLT Schur coefficient statistic",
+      "task_type": "q_statistic_discovery",
+      "object_family": "unit_interval_graph_tableaux",
+      "status": "active",
+      "data": "problems/q_statistic_discovery/uig_syt_llt_schur_q_stat/data",
+      "problem_statement": "problems/q_statistic_discovery/uig_syt_llt_schur_q_stat/problem.md",
+      "name": "uig_syt_llt_schur_q_stat"
+    },
+    {
+      "id": 15,
+      "title": "Involution orbit-harmonics Hilbert series statistic",
+      "task_type": "q_statistic_discovery",
+      "object_family": "involutions",
+      "status": "active",
+      "data": "problems/q_statistic_discovery/inv_orbit_harmonics_hilbert_q_stat/data",
+      "problem_statement": "problems/q_statistic_discovery/inv_orbit_harmonics_hilbert_q_stat/problem.md",
+      "name": "inv_orbit_harmonics_hilbert_q_stat"
+    },
+    {
+      "id": 16,
+      "title": "Matchings-Jack statistic for Jack connection coefficients",
+      "task_type": "q_statistic_discovery",
+      "object_family": "jack_matchings",
+      "status": "active",
+      "data": "problems/q_statistic_discovery/match_jack_connection_q_stat/data",
+      "problem_statement": "problems/q_statistic_discovery/match_jack_connection_q_stat/problem.md",
+      "name": "match_jack_connection_q_stat"
+    },
+    {
+      "id": 17,
+      "title": "qtBench-proposed q-Eulerian gamma statistic challenge",
+      "task_type": "q_statistic_discovery",
+      "object_family": "gamma_permutations",
+      "status": "active",
+      "data": "problems/q_statistic_discovery/perm_q_eulerian_gamma_q_stat/data",
+      "problem_statement": "problems/q_statistic_discovery/perm_q_eulerian_gamma_q_stat/problem.md",
+      "name": "perm_q_eulerian_gamma_q_stat"
+    },
+    {
+      "id": 18,
+      "title": "Selected-area gamma-parking function Delta-Xi partner",
+      "task_type": "t_statistic_discovery",
+      "object_family": "gamma_parking_selections",
+      "status": "active",
+      "data": "problems/t_statistic_discovery/gpf_sel_ut_delta_xi_second_stat/data",
+      "problem_statement": "problems/t_statistic_discovery/gpf_sel_ut_delta_xi_second_stat/problem.md",
+      "name": "gpf_sel_ut_delta_xi_second_stat"
+    },
+    {
+      "id": 19,
+      "title": "Rooted tiered tree Theta-operator inv partner",
+      "task_type": "t_statistic_discovery",
+      "object_family": "rooted_tiered_trees",
+      "status": "active",
+      "data": "problems/t_statistic_discovery/rtt_inv_qt_theta_second_stat/data",
+      "problem_statement": "problems/t_statistic_discovery/rtt_inv_qt_theta_second_stat/problem.md",
+      "name": "rtt_inv_qt_theta_second_stat"
+    },
+    {
+      "id": 20,
+      "title": "Selected-area lattice gamma-parking function Delta-Xi Schur partner",
+      "task_type": "t_statistic_discovery",
+      "object_family": "lattice_gamma_parking_selections",
+      "status": "active",
+      "data": "problems/t_statistic_discovery/lgpf_sel_ut_delta_xi_schur_second_stat/data",
+      "problem_statement": "problems/t_statistic_discovery/lgpf_sel_ut_delta_xi_schur_second_stat/problem.md",
+      "name": "lgpf_sel_ut_delta_xi_schur_second_stat"
+    },
+    {
+      "id": 21,
+      "title": "Threshold graph spanning tree flow-polytope Ehrhart inv partner",
+      "task_type": "t_statistic_discovery",
+      "object_family": "threshold_graph_spanning_trees",
+      "status": "active",
+      "data": "problems/t_statistic_discovery/tgt_inv_qt_ehrhart_second_stat/data",
+      "problem_statement": "problems/t_statistic_discovery/tgt_inv_qt_ehrhart_second_stat/problem.md",
+      "name": "tgt_inv_qt_ehrhart_second_stat"
+    },
+    {
+      "id": 22,
+      "title": "Promotion intrinsic statistic (expert review required)",
+      "task_type": "q_statistic_discovery",
+      "object_family": "promotion_tableaux",
+      "status": "expert_review",
+      "data": "problems/q_statistic_discovery/syt_promotion_csp_q_stat/data",
+      "problem_statement": "problems/q_statistic_discovery/syt_promotion_csp_q_stat/problem.md",
+      "name": "syt_promotion_csp_q_stat"
+    },
+    {
+      "id": 23,
+      "title": "qtBench-proposed q-Kreweras natural-statistic challenge",
+      "task_type": "q_statistic_discovery",
+      "object_family": "noncrossing_partitions",
+      "status": "active",
+      "data": "problems/q_statistic_discovery/nc_q_kreweras_q_stat/data",
+      "problem_statement": "problems/q_statistic_discovery/nc_q_kreweras_q_stat/problem.md",
+      "name": "nc_q_kreweras_q_stat"
+    },
+    {
+      "id": 24,
+      "title": "Macdonald standard-filling inv/maj exchanging bijection",
+      "task_type": "exchanging_bijection",
+      "object_family": "standard_macdonald_fillings",
+      "status": "active",
+      "data": "problems/exchanging_bijection/macdonald_fillings_inv_maj_exchange/data",
+      "problem_statement": "problems/exchanging_bijection/macdonald_fillings_inv_maj_exchange/problem.md",
+      "name": "macdonald_fillings_inv_maj_exchange"
+    },
+    {
+      "id": 25,
+      "title": "Parking-function area/dinv exchanging bijection",
+      "task_type": "exchanging_bijection",
+      "object_family": "parking_functions",
+      "status": "active",
+      "data": "problems/exchanging_bijection/parking_area_dinv_exchange/data",
+      "problem_statement": "problems/exchanging_bijection/parking_area_dinv_exchange/problem.md",
+      "name": "parking_area_dinv_exchange"
+    },
+    {
+      "id": 26,
+      "title": "Connected-graph sibling/tuft exchanging bijection",
+      "task_type": "exchanging_bijection",
+      "object_family": "unlabeled_connected_graphs",
+      "status": "active",
+      "data": "problems/exchanging_bijection/graph_sibling_tuft_exchange/data",
+      "problem_statement": "problems/exchanging_bijection/graph_sibling_tuft_exchange/problem.md",
+      "name": "graph_sibling_tuft_exchange"
+    },
+    {
+      "id": 27,
+      "title": "Alternating-sign-matrix DPP weight statistic",
+      "task_type": "q_statistic_discovery",
+      "object_family": "alternating_sign_matrices",
+      "status": "active",
+      "data": "problems/q_statistic_discovery/asm_dpp_weight_q_stat/data",
+      "problem_statement": "problems/q_statistic_discovery/asm_dpp_weight_q_stat/problem.md",
+      "name": "asm_dpp_weight_q_stat"
+    },
+    {
+      "id": 28,
+      "title": "Set-valued shifted P/Q weight-preserving bijection",
+      "task_type": "exchanging_bijection",
+      "object_family": "set_valued_shifted_tableaux",
+      "status": "active",
+      "data": "problems/exchanging_bijection/shifted_setvalued_pq_weight_bijection/data",
+      "problem_statement": "problems/exchanging_bijection/shifted_setvalued_pq_weight_bijection/problem.md",
+      "name": "shifted_setvalued_pq_weight_bijection"
+    },
+    {
+      "id": 29,
+      "title": "Andrews--Bressoud successive-rank weight-preserving bijection",
+      "task_type": "exchanging_bijection",
+      "object_family": "integer_partitions_with_successive_rank_or_residue_constraints",
+      "status": "active",
+      "data": "problems/exchanging_bijection/andrews_bressoud_successive_rank_bijection/data",
+      "problem_statement": "problems/exchanging_bijection/andrews_bressoud_successive_rank_bijection/problem.md",
+      "name": "andrews_bressoud_successive_rank_bijection"
+    },
+    {
+      "id": 30,
+      "title": "Improper partition-matrix/inversion-sequence bijection",
+      "task_type": "exchanging_bijection",
+      "object_family": "improper_partition_matrices_and_restricted_inversion_sequences",
+      "status": "active",
+      "data": "problems/exchanging_bijection/improper_partition_matrix_inversion_sequence_bijection/data",
+      "problem_statement": "problems/exchanging_bijection/improper_partition_matrix_inversion_sequence_bijection/problem.md",
+      "name": "improper_partition_matrix_inversion_sequence_bijection"
+    }
+  ]
+}

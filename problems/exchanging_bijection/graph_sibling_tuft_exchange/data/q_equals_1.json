@@ -1,0 +1,160 @@
+{
+  "schema_version": "0.1",
+  "problem_id": 26,
+  "problem_name": "graph_sibling_tuft_exchange",
+  "variables": [
+    "t"
+  ],
+  "specialization": {
+    "q": 1
+  },
+  "meaning": "Tuft-number marginal; necessary for the exchange.",
+  "public_max_n": 7,
+  "case_count": 7,
+  "cases": [
+    {
+      "case_id": "n01",
+      "n": 1,
+      "count": 1,
+      "term_count": 1,
+      "terms": [
+        [
+          0,
+          1
+        ]
+      ]
+    },
+    {
+      "case_id": "n02",
+      "n": 2,
+      "count": 1,
+      "term_count": 1,
+      "terms": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "case_id": "n03",
+      "n": 3,
+      "count": 2,
+      "term_count": 2,
+      "terms": [
+        [
+          0,
+          1
+        ],
+        [
+          2,
+          1
+        ]
+      ]
+    },
+    {
+      "case_id": "n04",
+      "n": 4,
+      "count": 6,
+      "term_count": 3,
+      "terms": [
+        [
+          0,
+          3
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          3,
+          1
+        ]
+      ]
+    },
+    {
+      "case_id": "n05",
+      "n": 5,
+      "count": 21,
+      "term_count": 4,
+      "terms": [
+        [
+          0,
+          11
+        ],
+        [
+          1,
+          7
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          4,
+          1
+        ]
+      ]
+    },
+    {
+      "case_id": "n06",
+      "n": 6,
+      "count": 112,
+      "term_count": 5,
+      "terms": [
+        [
+          0,
+          61
+        ],
+        [
+          1,
+          40
+        ],
+        [
+          2,
+          8
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          5,
+          1
+        ]
+      ]
+    },
+    {
+      "case_id": "n07",
+      "n": 7,
+      "count": 853,
+      "term_count": 6,
+      "terms": [
+        [
+          0,
+          507
+        ],
+        [
+          1,
+          289
+        ],
+        [
+          2,
+          46
+        ],
+        [
+          3,
+          8
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          6,
+          1
+        ]
+      ]
+    }
+  ]
+}

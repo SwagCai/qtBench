@@ -1,0 +1,341 @@
+{
+  "schema_version": "0.1",
+  "problem_id": 17,
+  "problem_name": "perm_q_eulerian_gamma_q_stat",
+  "variables": [
+    "descents"
+  ],
+  "specialization": {
+    "q": 1
+  },
+  "meaning": "a_{n,k}(1) = |Gamma_{n,k}|, the classical Eulerian gamma-coefficient: the fiber's descent count and size, an object-model check that any statistic satisfies.",
+  "public_max_n": 9,
+  "case_count": 25,
+  "cases": [
+    {
+      "case_id": "n01_k01",
+      "n": 1,
+      "k": 1,
+      "count": 1,
+      "term_count": 1,
+      "terms": [
+        [
+          0,
+          1
+        ]
+      ]
+    },
+    {
+      "case_id": "n02_k01",
+      "n": 2,
+      "k": 1,
+      "count": 1,
+      "term_count": 1,
+      "terms": [
+        [
+          0,
+          1
+        ]
+      ]
+    },
+    {
+      "case_id": "n03_k01",
+      "n": 3,
+      "k": 1,
+      "count": 1,
+      "term_count": 1,
+      "terms": [
+        [
+          0,
+          1
+        ]
+      ]
+    },
+    {
+      "case_id": "n03_k02",
+      "n": 3,
+      "k": 2,
+      "count": 2,
+      "term_count": 1,
+      "terms": [
+        [
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "case_id": "n04_k01",
+      "n": 4,
+      "k": 1,
+      "count": 1,
+      "term_count": 1,
+      "terms": [
+        [
+          0,
+          1
+        ]
+      ]
+    },
+    {
+      "case_id": "n04_k02",
+      "n": 4,
+      "k": 2,
+      "count": 8,
+      "term_count": 1,
+      "terms": [
+        [
+          1,
+          8
+        ]
+      ]
+    },
+    {
+      "case_id": "n05_k01",
+      "n": 5,
+      "k": 1,
+      "count": 1,
+      "term_count": 1,
+      "terms": [
+        [
+          0,
+          1
+        ]
+      ]
+    },
+    {
+      "case_id": "n05_k02",
+      "n": 5,
+      "k": 2,
+      "count": 22,
+      "term_count": 1,
+      "terms": [
+        [
+          1,
+          22
+        ]
+      ]
+    },
+    {
+      "case_id": "n05_k03",
+      "n": 5,
+      "k": 3,
+      "count": 16,
+      "term_count": 1,
+      "terms": [
+        [
+          2,
+          16
+        ]
+      ]
+    },
+    {
+      "case_id": "n06_k01",
+      "n": 6,
+      "k": 1,
+      "count": 1,
+      "term_count": 1,
+      "terms": [
+        [
+          0,
+          1
+        ]
+      ]
+    },
+    {
+      "case_id": "n06_k02",
+      "n": 6,
+      "k": 2,
+      "count": 52,
+      "term_count": 1,
+      "terms": [
+        [
+          1,
+          52
+        ]
+      ]
+    },
+    {
+      "case_id": "n06_k03",
+      "n": 6,
+      "k": 3,
+      "count": 136,
+      "term_count": 1,
+      "terms": [
+        [
+          2,
+          136
+        ]
+      ]
+    },
+    {
+      "case_id": "n07_k01",
+      "n": 7,
+      "k": 1,
+      "count": 1,
+      "term_count": 1,
+      "terms": [
+        [
+          0,
+          1
+        ]
+      ]
+    },
+    {
+      "case_id": "n07_k02",
+      "n": 7,
+      "k": 2,
+      "count": 114,
+      "term_count": 1,
+      "terms": [
+        [
+          1,
+          114
+        ]
+      ]
+    },
+    {
+      "case_id": "n07_k03",
+      "n": 7,
+      "k": 3,
+      "count": 720,
+      "term_count": 1,
+      "terms": [
+        [
+          2,
+          720
+        ]
+      ]
+    },
+    {
+      "case_id": "n07_k04",
+      "n": 7,
+      "k": 4,
+      "count": 272,
+      "term_count": 1,
+      "terms": [
+        [
+          3,
+          272
+        ]
+      ]
+    },
+    {
+      "case_id": "n08_k01",
+      "n": 8,
+      "k": 1,
+      "count": 1,
+      "term_count": 1,
+      "terms": [
+        [
+          0,
+          1
+        ]
+      ]
+    },
+    {
+      "case_id": "n08_k02",
+      "n": 8,
+      "k": 2,
+      "count": 240,
+      "term_count": 1,
+      "terms": [
+        [
+          1,
+          240
+        ]
+      ]
+    },
+    {
+      "case_id": "n08_k03",
+      "n": 8,
+      "k": 3,
+      "count": 3072,
+      "term_count": 1,
+      "terms": [
+        [
+          2,
+          3072
+        ]
+      ]
+    },
+    {
+      "case_id": "n08_k04",
+      "n": 8,
+      "k": 4,
+      "count": 3968,
+      "term_count": 1,
+      "terms": [
+        [
+          3,
+          3968
+        ]
+      ]
+    },
+    {
+      "case_id": "n09_k01",
+      "n": 9,
+      "k": 1,
+      "count": 1,
+      "term_count": 1,
+      "terms": [
+        [
+          0,
+          1
+        ]
+      ]
+    },
+    {
+      "case_id": "n09_k02",
+      "n": 9,
+      "k": 2,
+      "count": 494,
+      "term_count": 1,
+      "terms": [
+        [
+          1,
+          494
+        ]
+      ]
+    },
+    {
+      "case_id": "n09_k03",
+      "n": 9,
+      "k": 3,
+      "count": 11616,
+      "term_count": 1,
+      "terms": [
+        [
+          2,
+          11616
+        ]
+      ]
+    },
+    {
+      "case_id": "n09_k04",
+      "n": 9,
+      "k": 4,
+      "count": 34304,
+      "term_count": 1,
+      "terms": [
+        [
+          3,
+          34304
+        ]
+      ]
+    },
+    {
+      "case_id": "n09_k05",
+      "n": 9,
+      "k": 5,
+      "count": 7936,
+      "term_count": 1,
+      "terms": [
+        [
+          4,
+          7936
+        ]
+      ]
+    }
+  ]
+}

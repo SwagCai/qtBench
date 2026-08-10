@@ -1,0 +1,21 @@
+{
+  "schema_version": "0.1",
+  "id": 5,
+  "title": "Parallelogram polyomino m,n-transpose bijection",
+  "task_type": "exchanging_bijection",
+  "object_family": "parallelogram_polyominoes",
+  "known_statistics": ["area", "bounce"],
+  "known_statistics_file": "known_statistics.py",
+  "submission_signature": "forward(polyomino) -> str, inverse(polyomino) -> str",
+  "evaluator_kind": "polyomino-transpose",
+  "public_cases": {
+    "semiperimeter_min": 2,
+    "semiperimeter_max": 14
+  },
+  "scoring": {
+    "gate_order": ["capability_screen", "source_economy", "transpose_identities_and_distribution", "fresh_namespace_shuffled_replay", "value_audit", "resource_and_identity_probes"],
+    "case_score": "1 if forward maps the m x n box bijectively onto the n x m box with area(forward(P))=area(P) and bounce(forward(P))=bounce(P) and the induced distribution matches, else 0",
+    "problem_score": "all public boxes must pass, then shuffled replay, the value audit, and identity/resource gates must pass; passing is necessary, not sufficient"
+  },
+  "name": "polyomino_area_bounce_transpose"
+}

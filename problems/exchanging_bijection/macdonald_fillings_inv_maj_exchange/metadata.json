@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "id": 24,
+  "name": "macdonald_fillings_inv_maj_exchange",
+  "title": "Macdonald standard-filling inv/maj exchanging bijection",
+  "task_type": "exchanging_bijection",
+  "object_family": "standard_macdonald_fillings",
+  "known_statistics": ["inv", "maj"],
+  "known_statistics_file": "known_statistics.py",
+  "submission_signature": "forward(filling) -> str, inverse(filling) -> str",
+  "evaluator_kind": "macdonald-fillings",
+  "public_cases": {"size_min": 4, "size_max": 8, "shapes": "all non-hook partitions"},
+  "scoring": {
+    "gate_order": ["capability_screen", "source_economy", "inv_maj_exchange_identities_and_distribution", "fresh_namespace_shuffled_replay", "value_audit", "resource_and_identity_probes"],
+    "case_score": "1 if forward and inverse are mutually inverse conjugate-shape maps exchanging HHL inv and maj and the induced distribution matches, else 0",
+    "problem_score": "all public shapes must pass, then shuffled replay, the value audit, and identity/resource gates must pass; passing is necessary, not sufficient"
+  }
+}
