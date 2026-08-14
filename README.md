@@ -193,6 +193,14 @@ checker plus problem-specific consistency and reproducibility checks. See
 [`docs/data_generation.md`](docs/data_generation.md) for the generation commands,
 independent derivations, and documented exceptions.
 
+## Contributing
+
+We welcome proposals for new statistic- and bijection-discovery problems.
+Before doing substantial implementation work or submitting a problem, read
+the [`CONTRIBUTING.md`](CONTRIBUTING.md) guide for selection criteria, the
+proposal workflow, required data and checker files, reproducibility, and
+validation.
+
 ## Documentation
 
 - [`docs/checker.md`](docs/checker.md): the checker, stage by stage, including its deliberate limitations.
