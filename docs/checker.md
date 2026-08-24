@@ -15,6 +15,80 @@ A hard gate should enforce a necessary, clearly auditable property of a
 submitted statistic or bijection. More opaque heuristics belong in the cheating
 taxonomy unless their false-rejection tradeoff is explicitly accepted.
 
+## Semantic integrity: gaming the checker is not a solution
+
+qtBench is a mathematical-discovery benchmark. Its purpose is to find a
+structural statistic or bijection that could explain an identity uniformly, not
+just a program whose output agrees with the committed finite data. A candidate
+is therefore not an acceptable solution when its rule is chosen primarily to
+manufacture a good checker score, even if the program is short, pure,
+deterministic, polynomial-time, and accepted by every mechanical stage.
+Gaming the checker in this way is wrong: it violates qtBench's semantic
+integrity requirement and must not be presented as mathematical progress.
+
+This policy covers both direct cheating and the broader benchmark-gaming
+behavior that a mechanical checker cannot reliably recognize. Unacceptable
+strategies include:
+
+- embedding or reconstructing target answers, assigning values by object rank
+  or call order, matching source and target objects by enumeration rank, or
+  recomputing the defining action that the requested construction is meant to
+  explain;
+- fitting only the public size range, recognizing known probes, returning a
+  fallback outside that range, or adding literal public objects, exact
+  parameter tuples, or named residual shapes as score-repair exceptions;
+- using public checker distance as the objective for an expressive search over
+  coefficients, edge or vertex orders, thresholds, chambers, case splits, or
+  combinations of formulas, and then submitting the winner without an
+  independent mathematical derivation;
+- repeatedly mining the remaining coefficient errors and adding narrower
+  branches whose only justification is that they close those errors; and
+- exploiting checker behavior, configuration, resource probes, replay order,
+  runtime capabilities, or mutable state instead of addressing the
+  mathematical problem.
+
+The third item matters even when every member of the searched family is a
+well-defined statistic and preserves a theorem-backed marginal. A marginal
+theorem does not make a joint statistic meaningful when its particular
+parameters and case structure were selected chiefly by full-range score
+optimization. Likewise, rewriting a fitted exception in structural-looking
+language does not by itself make the construction explanatory.
+
+Public targets and checker feedback may still be used as empirical evidence.
+It is legitimate to test a small, mathematically motivated family, compare
+conventions, diagnose implementation errors, investigate a known subfamily, or
+reject a structural conjecture after it fails. Computation may also reveal a
+pattern that leads to a new conjecture. Before that conjecture is treated as a
+candidate solution, however, its rule and every material constant or branch
+must have a reason that is independent of the finite score and must make a
+genuine prediction beyond the residual cases from which it arose.
+
+An exact exceptional case is not automatically gaming: singular parameters and
+proved subfamilies can be mathematically essential. The burden is to explain
+the exception from the underlying objects or theory, state it as part of a
+uniform family, and test consequences not used to select it. “This fixes the
+last public fiber” is evidence of fit, not a mathematical justification.
+
+A useful counterfactual is:
+
+> If the checker, public coefficients, enumeration order, and scored-size
+> boundary disappeared, would the same rule still be natural to state, would
+> each branch still have a structural reason, and could the rule plausibly be
+> the subject of a proof that does not assume the target identity?
+
+If the answer is no, the candidate must not be reported as a qtBench solution.
+Semantic review should identify it as cheating or benchmark-dependent gaming
+regardless of numerical distance or automatic verdict. Disclosure is required
+for auditability, but candidly describing a fitted mechanism does not make that
+mechanism acceptable. Honest partial progress or a failed natural conjecture is
+strictly preferable to a lower score obtained by gaming the finite benchmark.
+
+The stable mechanical attack identifiers and their current mitigations are
+recorded in the [cheating taxonomy](cheating/taxonomy.md). That catalog does
+not exhaust this semantic policy: score-conditioned formula fitting can be
+unacceptable even when it does not instantiate a mechanically recognizable
+ranker, lookup table, cutoff, or exploit.
+
 ## Supported platform
 
 The official scored CLI targets Linux and Windows, and the package requires
