@@ -11,8 +11,8 @@
   "evaluator_kind": "shifted-pq",
   "public_cases": {"shape_count": 2, "fiber_count": 7},
   "scoring": {
-    "gate_order": ["capability_screen", "source_economy", "content_preserving_corollary_4_1_bijection", "fresh_namespace_shuffled_replay", "value_audit", "resource_and_identity_probes"],
+    "gate_order": ["capability_screen", "source_economy", "content_preserving_corollary_4_1_bijection", "fresh_namespace_shuffled_replay", "resource_and_identity_probes"],
     "case_score": "1 if forward and inverse are mutually inverse canonical maps between the Corollary 4.1 unions and preserve the complete content vector, else 0",
-    "problem_score": "all public fibers must pass, then shuffled replay, the value audit, and identity/resource gates must pass; passing is necessary, not sufficient"
+    "problem_score": "all public fibers must pass, then shuffled replay, identity/resource gates must pass; passing is necessary, not sufficient"
   }
 }

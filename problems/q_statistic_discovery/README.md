@@ -60,8 +60,9 @@ Current problems:
   Its `problem.md` explains that the checker cannot distinguish the intended
   answer from a known shortcut: because the target is defined from the promotion
   orbits, a submission that walks an orbit and returns a position passes every
-  numerical gate without mathematical content. Automatic scoring is therefore
-  disabled and any proposal requires expert source review.
+  numerical gate without mathematical content. The ordinary automatic checker
+  issues a mechanical verdict; subsequent semantic review must detect this
+  shortcut before mathematical acceptance.
 - id `23`, `nc_q_kreweras_q_stat`: a QtBench-proposed natural-statistic challenge,
   not a source-verified open problem. Its objects are noncrossing partitions --
   the object family of problem `1` -- and its target is the type A `q`-Kreweras
@@ -80,8 +81,8 @@ public cases and reproduces the target distribution on every fiber.
 Do not use the known polynomial to hand out values that satisfy the coefficient
 constraints without describing a general statistic. After capability and
 source-economy screening, scoring eliminates numerically wrong proposals, then
-checks numerically correct code with fresh-namespace shuffled replay, an
-integer-value audit, and large adversarial time/memory probes. A proposal must
+checks numerically correct code with fresh-namespace shuffled replay and large
+adversarial time/memory probes. A proposal must
 pass every stage. Problem `16` has an additional pointwise large-probe gate:
 the submitted value must be zero exactly on bipartite matchings. Passing is a
 necessary, not a sufficient, condition for a genuine statistic (see
@@ -163,8 +164,7 @@ uv run --frozen python scripts/evaluate/evaluate_scored_submission.py \
 The evaluator kind is `uig` for problem `8`, `llt` for problem `14`,
 `involution` for problem `15`, `mjack` for problem `16`, `qgamma` for problem `17`,
 `promotion` for problem `22`, `kreweras` for problem `23`, and `asm-q` for
-problem `27`. The `promotion` command intentionally exits with an expert-review
-gate error; all other scored commands print a short report and exit successfully
+problem `27`. All scored commands print a short report and exit successfully
 only if every gate passes. Each report shows the `q = 1` marginal before the
 full comparison.
 

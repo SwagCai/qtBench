@@ -137,8 +137,8 @@ statements.
 
 Evaluation: after the capability and source-economy screens, the evaluator
 compares the submitted distribution with every configured public target exactly.
-Only a numerical match proceeds to fresh-namespace shuffled replay, the
-integer-value audit, and the resource gate. Passing verifies the scored public
+Only a numerical match proceeds to fresh-namespace shuffled replay and the
+resource gate. Passing verifies the scored public
 cases; it is not, by itself, a proof for the full infinite family.
 
 <a id="t_statistic_discovery"></a>
@@ -319,7 +319,7 @@ checks the explicit marginal in `data/q_equals_1.json` -- the leading grading va
 so `q = 1`, or `u = 1` for problems `18` and `20`, which always constrains the
 last, missing exponent -- and every configured public joint polynomial in one
 enumeration pass. Only a numerical match proceeds to fresh-namespace shuffled
-replay, the integer-value audit, and the resource gate. Every stage is mandatory
+replay and the resource gate. Every stage is mandatory
 for success, and passing is a
 necessary, not a sufficient, condition (see `checker.md`).
 
@@ -487,8 +487,8 @@ Submission: two functions `forward(object)` and `inverse(object)`.
 Evaluation: after the capability and source-economy screens, the evaluator
 checks on every public object that `forward`/`inverse` are mutually inverse
 canonical bijections satisfying the declared pointwise identities, then checks
-the public target. Only a complete match proceeds to fresh-namespace shuffled replay, the
-integer-value audit, and large adversarial objects, on which both exchange
+the public target. Only a complete match proceeds to fresh-namespace shuffled replay and
+large adversarial objects, on which both exchange
 identities are re-checked pointwise (they are self-checking, so no target is
 needed there). For problems `28`--`30`, the corresponding self-checking
 identities are side membership and preservation of content, weight, or grading.

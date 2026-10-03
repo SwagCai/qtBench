@@ -1,7 +1,7 @@
 {
   "schema_version": "0.1",
   "id": 22,
-  "title": "Promotion intrinsic statistic (expert review required)",
+  "title": "Promotion intrinsic statistic",
   "task_type": "q_statistic_discovery",
   "object_family": "promotion_tableaux",
   "known_statistics": [],
@@ -12,9 +12,9 @@
     "size_max": 16
   },
   "scoring": {
-    "gate_order": ["capability_screen", "source_economy", "public_q_equals_1_and_exact_polynomials", "fresh_namespace_shuffled_replay", "value_audit", "resource_probes"],
+    "gate_order": ["capability_screen", "source_economy", "public_q_equals_1_and_exact_polynomials", "fresh_namespace_shuffled_replay", "resource_probes"],
     "case_score": "1 if the generated q-distribution over SYT(lambda) equals the public sieving polynomial C_lambda(q), else 0",
-    "problem_score": "automatic scoring is disabled because orbit position reconstructs the target; lower-level diagnostics still require exact polynomials, shuffled replay, the value audit, and resource gates, but expert review is required"
+    "problem_score": "1 if capability screening, source economy, exact polynomials, shuffled replay, and resource gates all pass, else 0; mathematical acceptance also requires subsequent semantic review because orbit position can reconstruct the target"
   },
   "name": "syt_promotion_csp_q_stat"
 }

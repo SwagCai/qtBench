@@ -9,17 +9,14 @@ from pathlib import Path
 import pytest
 
 from qtbench.combinatorics import (
-    gamma_permutation_size,
     iter_gamma_permutations_for_descents,
 )
 from qtbench.evaluation import (
-    ResourceGateError,
     adversarial_gamma_permutations,
     adversarial_qgamma_probes,
     evaluate_qgamma_polynomial_checks,
     evaluate_qgamma_submission,
     run_resource_gate,
-    run_value_audit,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -346,7 +343,6 @@ def test_valid_but_wrong_statistic_short_circuits_at_numerical_end_to_end():
     )
     assert not result["passed"]
     assert result["checker_stage"] == "numerical"
-    assert result["value_audit"] is None
 
 
 @pytest.mark.parametrize("invalid", [True, 1.0, "1", (0,)])
@@ -365,31 +361,6 @@ def test_probes_span_a_spread_of_fibers_of_one_size():
     assert all(1 <= obj.descents + 1 <= 33 for obj in odd)
 
 
-def test_value_audit_wired_for_gamma_permutations():
-    genuine = "def statistic(permutation):\n    return permutation.maj()\n"
-    run_value_audit(
-        genuine,
-        adversarial_qgamma_probes(64),
-        value_exponent=8,
-        timeout_seconds=5.0,
-        size_of=gamma_permutation_size,
-    )
-
-    counting = (
-        "def statistic(permutation):\n"
-        "    total = 1\n"
-        "    for _ in range(permutation.n):\n"
-        "        total = total + total\n"
-        "    return total\n"
-    )
-    with pytest.raises(ResourceGateError, match="magnitude bound|bit integer"):
-        run_value_audit(
-            counting,
-            adversarial_qgamma_probes(64),
-            value_exponent=8,
-            timeout_seconds=5.0,
-            size_of=gamma_permutation_size,
-        )
 
 
 def test_resource_gate_accepts_a_polynomial_statistic_on_large_objects():

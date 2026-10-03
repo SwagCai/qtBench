@@ -89,7 +89,7 @@ After the capability and source-economy screens, the evaluator enumerates each
 public `NC(n,k)` fiber once. From the same submitted values, it checks every
 explicit marginal in `data/q_equals_1.json` and every coefficient in
 `data/polynomials.json`. Only a complete numerical match proceeds to
-fresh-namespace shuffled replay, the integer-value audit, and large adversarial
+fresh-namespace shuffled replay and large adversarial
 noncrossing partitions under CPU and memory limits. A mismatch stops the
 evaluation, and passing q=1 alone is insufficient. Every stage must pass, though
 a pass is necessary but not sufficient for a genuine statistic (see

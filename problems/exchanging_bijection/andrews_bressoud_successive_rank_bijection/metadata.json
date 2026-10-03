@@ -11,8 +11,8 @@
   "evaluator_kind": "successive-rank",
   "public_cases": {"moduli": [6, 7], "weights": [12, 20, 28]},
   "scoring": {
-    "gate_order": ["capability_screen", "source_economy", "weight_preserving_bijection_and_distribution", "fresh_namespace_shuffled_replay", "value_audit", "resource_and_identity_probes"],
+    "gate_order": ["capability_screen", "source_economy", "weight_preserving_bijection_and_distribution", "fresh_namespace_shuffled_replay", "resource_and_identity_probes"],
     "case_score": "1 if forward and inverse are mutually inverse canonical maps between the two partition classes with the same parameters and weight, else 0",
-    "problem_score": "all public fibers must pass, then shuffled replay, the value audit, and identity/resource gates must pass; passing is necessary, not sufficient"
+    "problem_score": "all public fibers must pass, then shuffled replay, identity/resource gates must pass; passing is necessary, not sufficient"
   }
 }

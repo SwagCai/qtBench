@@ -1,49 +1,47 @@
 # Problems
 
-This catalogue indexes all 30 benchmark problems. Return to the [main README](../README.md) for installation, evaluation, and submission instructions.
+All 30 problems are listed below with stable IDs and links to their statements.
+See the [main README](README.md) for setup and submission instructions.
 
-The stable IDs below link to the full mathematical statements. Problems with
-related themes remain separate when their object fibers or required identities
-differ. `Type` is the reader-facing label for the directory-level task type; the
-number of public statistics is recorded in `metadata.json`. The evaluator kind
-is the first argument to the command in
-[Submission API](../README.md#submission-api).
+`Type` names the task category; `metadata.json` records the number of public
+statistics. Pass the evaluator kind as the first argument in the
+[Submission API](README.md#submission-api) command. Related problems stay separate
+when their objects or required identities differ.
 
 | ID | Problem | Type | Evaluator kind |
 |---:|---|---|---|
-| 1 | [`nc_area_qt_narayana_second_stat`](../problems/t_statistic_discovery/nc_area_qt_narayana_second_stat/problem.md) | t-statistic | `noncrossing` |
-| 2 | [`dyck_area_bounce_exchange`](../problems/exchanging_bijection/dyck_area_bounce_exchange/problem.md) | bijection (exchange) | `area-bounce` |
-| 3 | [`type_b_area_qt_catalan_second_stat`](../problems/t_statistic_discovery/type_b_area_qt_catalan_second_stat/problem.md) | t-statistic | `type-b` |
-| 4 | [`polyomino_area_bounce_exchange`](../problems/exchanging_bijection/polyomino_area_bounce_exchange/problem.md) | bijection (exchange) | `polyomino-area-bounce` |
-| 5 | [`polyomino_area_bounce_transpose`](../problems/exchanging_bijection/polyomino_area_bounce_transpose/problem.md) | bijection (transpose) | `polyomino-transpose` |
-| 6 | [`lpp_area_qt_theta_second_stat`](../problems/t_statistic_discovery/lpp_area_qt_theta_second_stat/problem.md) | t-statistic | `lpp` |
-| 7 | [`ddyck_area_qt_unified_delta_second_stat`](../problems/t_statistic_discovery/ddyck_area_qt_unified_delta_second_stat/problem.md) | t-statistic | `ddyck` |
-| 8 | [`uig_ginv_shareshian_wachs_q_stat`](../problems/q_statistic_discovery/uig_ginv_shareshian_wachs_q_stat/problem.md) | q-statistic | `uig` |
-| 9 | [`ttree_inv_qt_xi_second_stat`](../problems/t_statistic_discovery/ttree_inv_qt_xi_second_stat/problem.md) | t-statistic | `ttree` |
-| 10 | [`mld_area_qt_super_nabla_second_stat`](../problems/t_statistic_discovery/mld_area_qt_super_nabla_second_stat/problem.md) | t-statistic | `mld` |
-| 11 | [`lrp_area_qt_rectangular_delta_second_stat`](../problems/t_statistic_discovery/lrp_area_qt_rectangular_delta_second_stat/problem.md) | t-statistic | `lrp` |
-| 12 | [`tamari_park_trivariate_third_stat`](../problems/t_statistic_discovery/tamari_park_trivariate_third_stat/problem.md) | t-statistic | `tamari` |
-| 13 | [`syt_qt_kostka_macdonald_pair_stat`](../problems/t_statistic_discovery/syt_qt_kostka_macdonald_pair_stat/problem.md) | t-statistic | `kostka` |
-| 14 | [`uig_syt_llt_schur_q_stat`](../problems/q_statistic_discovery/uig_syt_llt_schur_q_stat/problem.md) | q-statistic | `llt` |
-| 15 | [`inv_orbit_harmonics_hilbert_q_stat`](../problems/q_statistic_discovery/inv_orbit_harmonics_hilbert_q_stat/problem.md) | q-statistic | `involution` |
-| 16 | [`match_jack_connection_q_stat`](../problems/q_statistic_discovery/match_jack_connection_q_stat/problem.md) | q-statistic | `mjack` |
-| 17 | [`perm_q_eulerian_gamma_q_stat`](../problems/q_statistic_discovery/perm_q_eulerian_gamma_q_stat/problem.md) | qtBench-proposed q-statistic | `qgamma` |
-| 18 | [`gpf_sel_ut_delta_xi_second_stat`](../problems/t_statistic_discovery/gpf_sel_ut_delta_xi_second_stat/problem.md) | t-statistic | `gpf` |
-| 19 | [`rtt_inv_qt_theta_second_stat`](../problems/t_statistic_discovery/rtt_inv_qt_theta_second_stat/problem.md) | t-statistic | `rtt` |
-| 20 | [`lgpf_sel_ut_delta_xi_schur_second_stat`](../problems/t_statistic_discovery/lgpf_sel_ut_delta_xi_schur_second_stat/problem.md) | t-statistic | `lgpf` |
-| 21 | [`tgt_inv_qt_ehrhart_second_stat`](../problems/t_statistic_discovery/tgt_inv_qt_ehrhart_second_stat/problem.md) | t-statistic | `tgt` |
-| 22 | [`syt_promotion_csp_q_stat`](../problems/q_statistic_discovery/syt_promotion_csp_q_stat/problem.md) | expert review only | `promotion` (automatic scoring disabled) |
-| 23 | [`nc_q_kreweras_q_stat`](../problems/q_statistic_discovery/nc_q_kreweras_q_stat/problem.md) | qtBench-proposed q-statistic | `kreweras` |
-| 24 | [`macdonald_fillings_inv_maj_exchange`](../problems/exchanging_bijection/macdonald_fillings_inv_maj_exchange/problem.md) | bijection (exchange) | `macdonald-fillings` |
-| 25 | [`parking_area_dinv_exchange`](../problems/exchanging_bijection/parking_area_dinv_exchange/problem.md) | bijection (exchange) | `parking-area-dinv` |
-| 26 | [`graph_sibling_tuft_exchange`](../problems/exchanging_bijection/graph_sibling_tuft_exchange/problem.md) | bijection (exchange) | `graph-sibling-tuft` |
-| 27 | [`asm_dpp_weight_q_stat`](../problems/q_statistic_discovery/asm_dpp_weight_q_stat/problem.md) | q-statistic | `asm-q` |
-| 28 | [`shifted_setvalued_pq_weight_bijection`](../problems/exchanging_bijection/shifted_setvalued_pq_weight_bijection/problem.md) | bijection (weight-preserving) | `shifted-pq` |
-| 29 | [`andrews_bressoud_successive_rank_bijection`](../problems/exchanging_bijection/andrews_bressoud_successive_rank_bijection/problem.md) | bijection (weight-preserving) | `successive-rank` |
-| 30 | [`improper_partition_matrix_inversion_sequence_bijection`](../problems/exchanging_bijection/improper_partition_matrix_inversion_sequence_bijection/problem.md) | bijection (grading-preserving) | `partition-matrix-inversion` |
+| 1 | [`nc_area_qt_narayana_second_stat`](problems/t_statistic_discovery/nc_area_qt_narayana_second_stat/problem.md) | t-statistic | `noncrossing` |
+| 2 | [`dyck_area_bounce_exchange`](problems/exchanging_bijection/dyck_area_bounce_exchange/problem.md) | bijection (exchange) | `area-bounce` |
+| 3 | [`type_b_area_qt_catalan_second_stat`](problems/t_statistic_discovery/type_b_area_qt_catalan_second_stat/problem.md) | t-statistic | `type-b` |
+| 4 | [`polyomino_area_bounce_exchange`](problems/exchanging_bijection/polyomino_area_bounce_exchange/problem.md) | bijection (exchange) | `polyomino-area-bounce` |
+| 5 | [`polyomino_area_bounce_transpose`](problems/exchanging_bijection/polyomino_area_bounce_transpose/problem.md) | bijection (transpose) | `polyomino-transpose` |
+| 6 | [`lpp_area_qt_theta_second_stat`](problems/t_statistic_discovery/lpp_area_qt_theta_second_stat/problem.md) | t-statistic | `lpp` |
+| 7 | [`ddyck_area_qt_unified_delta_second_stat`](problems/t_statistic_discovery/ddyck_area_qt_unified_delta_second_stat/problem.md) | t-statistic | `ddyck` |
+| 8 | [`uig_ginv_shareshian_wachs_q_stat`](problems/q_statistic_discovery/uig_ginv_shareshian_wachs_q_stat/problem.md) | q-statistic | `uig` |
+| 9 | [`ttree_inv_qt_xi_second_stat`](problems/t_statistic_discovery/ttree_inv_qt_xi_second_stat/problem.md) | t-statistic | `ttree` |
+| 10 | [`mld_area_qt_super_nabla_second_stat`](problems/t_statistic_discovery/mld_area_qt_super_nabla_second_stat/problem.md) | t-statistic | `mld` |
+| 11 | [`lrp_area_qt_rectangular_delta_second_stat`](problems/t_statistic_discovery/lrp_area_qt_rectangular_delta_second_stat/problem.md) | t-statistic | `lrp` |
+| 12 | [`tamari_park_trivariate_third_stat`](problems/t_statistic_discovery/tamari_park_trivariate_third_stat/problem.md) | t-statistic | `tamari` |
+| 13 | [`syt_qt_kostka_macdonald_pair_stat`](problems/t_statistic_discovery/syt_qt_kostka_macdonald_pair_stat/problem.md) | t-statistic | `kostka` |
+| 14 | [`uig_syt_llt_schur_q_stat`](problems/q_statistic_discovery/uig_syt_llt_schur_q_stat/problem.md) | q-statistic | `llt` |
+| 15 | [`inv_orbit_harmonics_hilbert_q_stat`](problems/q_statistic_discovery/inv_orbit_harmonics_hilbert_q_stat/problem.md) | q-statistic | `involution` |
+| 16 | [`match_jack_connection_q_stat`](problems/q_statistic_discovery/match_jack_connection_q_stat/problem.md) | q-statistic | `mjack` |
+| 17 | [`perm_q_eulerian_gamma_q_stat`](problems/q_statistic_discovery/perm_q_eulerian_gamma_q_stat/problem.md) | qtBench-proposed q-statistic | `qgamma` |
+| 18 | [`gpf_sel_ut_delta_xi_second_stat`](problems/t_statistic_discovery/gpf_sel_ut_delta_xi_second_stat/problem.md) | t-statistic | `gpf` |
+| 19 | [`rtt_inv_qt_theta_second_stat`](problems/t_statistic_discovery/rtt_inv_qt_theta_second_stat/problem.md) | t-statistic | `rtt` |
+| 20 | [`lgpf_sel_ut_delta_xi_schur_second_stat`](problems/t_statistic_discovery/lgpf_sel_ut_delta_xi_schur_second_stat/problem.md) | t-statistic | `lgpf` |
+| 21 | [`tgt_inv_qt_ehrhart_second_stat`](problems/t_statistic_discovery/tgt_inv_qt_ehrhart_second_stat/problem.md) | t-statistic | `tgt` |
+| 22 | [`syt_promotion_csp_q_stat`](problems/q_statistic_discovery/syt_promotion_csp_q_stat/problem.md) | q-statistic | `promotion` |
+| 23 | [`nc_q_kreweras_q_stat`](problems/q_statistic_discovery/nc_q_kreweras_q_stat/problem.md) | qtBench-proposed q-statistic | `kreweras` |
+| 24 | [`macdonald_fillings_inv_maj_exchange`](problems/exchanging_bijection/macdonald_fillings_inv_maj_exchange/problem.md) | bijection (exchange) | `macdonald-fillings` |
+| 25 | [`parking_area_dinv_exchange`](problems/exchanging_bijection/parking_area_dinv_exchange/problem.md) | bijection (exchange) | `parking-area-dinv` |
+| 26 | [`graph_sibling_tuft_exchange`](problems/exchanging_bijection/graph_sibling_tuft_exchange/problem.md) | bijection (exchange) | `graph-sibling-tuft` |
+| 27 | [`asm_dpp_weight_q_stat`](problems/q_statistic_discovery/asm_dpp_weight_q_stat/problem.md) | q-statistic | `asm-q` |
+| 28 | [`shifted_setvalued_pq_weight_bijection`](problems/exchanging_bijection/shifted_setvalued_pq_weight_bijection/problem.md) | bijection (weight-preserving) | `shifted-pq` |
+| 29 | [`andrews_bressoud_successive_rank_bijection`](problems/exchanging_bijection/andrews_bressoud_successive_rank_bijection/problem.md) | bijection (weight-preserving) | `successive-rank` |
+| 30 | [`improper_partition_matrix_inversion_sequence_bijection`](problems/exchanging_bijection/improper_partition_matrix_inversion_sequence_bijection/problem.md) | bijection (grading-preserving) | `partition-matrix-inversion` |
 
-Registry status is `calibration` for problem `1`, `expert_review` for problem
-`22`, and `active` for the other 28 problems.
+Registry status is `calibration` for problem `1` and `active` for the other 29 problems.
 
 The catalogue below gives the mathematical content of each problem and notes
 the distinctions that matter for evaluation.
@@ -69,7 +67,7 @@ the distinctions that matter for evaluation.
 - id `19`, `rtt_inv_qt_theta_second_stat`: find the t-statistic paired with `inv` on standard rooted tiered trees whose distribution is `<Theta_{e_mu} e_1, e_{1^{|mu|+1}}>`, the first identity in Problem 6.5 of arXiv:2202.05706. This is not problem `9`: there the root has the extra label `0` and is compatible with every vertex; here it has an ordinary label and participates in the compatibility relation. Consequently the fibers differ: `|stRTT(1,1,1)| = 60`, whereas `|RTT_0(1,1,1)| = 39`. In the source paper, the `t = 1` specialization is a theorem rather than a conjecture.
 - id `20`, `lgpf_sel_ut_delta_xi_schur_second_stat`: the Schur-input companion to problem `18`. Find the t-statistic paired with `#S` on a lattice gamma-parking function of content `lambda'` and a subset of its area cells. The distribution must give the elementary coefficients of `Delta_{m_gamma} Xi s_lambda` at `q = 1 + u`. Theorem 1.2 of arXiv:2203.10342 proves the `t = 1` case, and the paper poses the unspecialized problem. The lattice-word condition is a global tableau-like constraint not present in problem `18`.
 - id `21`, `tgt_inv_qt_ehrhart_second_stat`: find the t-statistic paired with `inv` on spanning trees of connected threshold graphs whose distribution is the `(q,t)`-Ehrhart function `Ehr_{q,t}(F_G(-n,1,...,1))` of the graph's flow polytope. Liu-Meszaros-Morales pose the problem in Section 6.1 of arXiv:1610.08370 and conjecture the required q,t-positivity. The `t = 1` marginal is a theorem; for the complete graph, the target is the bigraded Hilbert series of diagonal harmonics, recovering the classical spanning-tree model. The graph is part of the object, and the statistic cannot depend on the labelled tree alone.
-- id `22`, `syt_promotion_csp_q_stat`: seek an intrinsic statistic on standard Young tableaux of rectangular or staircase shape whose distribution is the least-degree cyclic-sieving polynomial `C_lambda(q)` for Schuetzenberger promotion. Rectangles are solved by Rhoades' theorem, with `(maj - n(lambda)) mod N`; staircases are Problem 1.1 of Pon-Wang (arXiv:1003.2728), open since 2010. Because orbit position reconstructs the target tautologically and cheaply, automatic scoring is disabled; proposals require expert source review.
+- id `22`, `syt_promotion_csp_q_stat`: seek an intrinsic statistic on standard Young tableaux of rectangular or staircase shape whose distribution is the least-degree cyclic-sieving polynomial `C_lambda(q)` for Schuetzenberger promotion. Rectangles are solved by Rhoades' theorem, with `(maj - n(lambda)) mod N`; staircases are Problem 1.1 of Pon-Wang (arXiv:1003.2728), open since 2010. Because orbit position reconstructs the target tautologically and cheaply, the ordinary automatic score is a mechanical result; subsequent semantic review must assess whether the proposal is intrinsic.
 - id `23`, `nc_q_kreweras_q_stat`: this is a qtBench-proposed natural-statistic challenge on noncrossing partitions, not a source-verified open problem. It asks for a statistic realizing the type A q-Kreweras numbers `Krew_lambda(q)` of Reiner-Sommers (arXiv:1605.09172), graded by block type. Summing over block types gives the MacMahon q-Catalan number; the known cyclic-sieving result is an identity at roots of unity, not an objectwise statistic.
 - id `24`, `macdonald_fillings_inv_maj_exchange`: construct a bijection from standard HHL fillings of a non-hook partition shape `mu` to standard fillings of its conjugate `mu'`, exchanging the public `inv` and `maj` statistics. Gillespie's Problem 1.15 asks for the general content-preserving map; full bijections are known for hooks and only specializations or restricted families beyond them. This differs from problem `13`, whose objects are standard Young tableaux and whose two statistics are both unknown.
 - id `25`, `parking_area_dinv_exchange`: construct a bijection on classical parking functions exchanging `area` and `dinv`, giving a direct combinatorial proof of the q,t-symmetry of the diagonal-coinvariant Hilbert series. McCammond--Thomas--Williams call the stronger involution problem long-standing and still wide open even for the alternating subspace. Unlike problem `2`, these are labelled parking functions and the target is not the q,t-Catalan polynomial.
@@ -86,12 +84,11 @@ is specified by `data/polynomials.json` and `metadata.json`. Most target-emissio
 entry points are adjacent to their problem; problems `4` and `5` share
 `scripts/generate/generate_polyomino_data.py`, and problem `3` re-emits committed
 target records rather than independently deriving them. The complete reproduction
-contract is in [`data_generation.md`](data_generation.md). Proposals should be
+contract is in [`data_generation.md`](docs/data_generation.md). Proposals should be
 tested on the scored range, not only on any smaller sample.
 
 Each `metadata.json` gives the public range for its problem. Problem `1` includes
 every `NC(n,k)` with `1 <= n <= 10`, while problem `23` includes every
 noncrossing partition with `1 <= n <= 11`. After capability and source-economy
 screening, the evaluator compares the resulting coefficients exactly with the
-public targets. Only a numerical match reaches shuffled replay, the integer
-audit, and the resource gate.
+public targets. Only a numerical match reaches shuffled replay and the resource gate.

@@ -14,9 +14,9 @@
     "k_values": "all 1 <= k <= n"
   },
   "scoring": {
-    "gate_order": ["capability_screen", "source_economy", "public_q_equals_1_and_exact_polynomials", "fresh_namespace_shuffled_replay", "value_audit", "resource_probes"],
+    "gate_order": ["capability_screen", "source_economy", "public_q_equals_1_and_exact_polynomials", "fresh_namespace_shuffled_replay", "resource_probes"],
     "case_score": "1 if every generated coefficient equals the public target coefficient, else 0",
-    "problem_score": "all public cases must match, then shuffled replay, the value audit, and resource gates must pass; this solved calibration is a pipeline check, not a discovery result"
+    "problem_score": "all public cases must match, then shuffled replay and resource gates must pass; this solved calibration is a pipeline check, not a discovery result"
   },
   "name": "nc_area_qt_narayana_second_stat"
 }

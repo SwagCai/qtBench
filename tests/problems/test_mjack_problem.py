@@ -11,7 +11,6 @@ from qtbench.combinatorics import (
     canonical_jack_matching,
     iter_jack_matchings_for_partition,
     iter_partitions,
-    jack_matching_size,
 )
 from qtbench.evaluation import (
     ResourceGateError,
@@ -20,7 +19,6 @@ from qtbench.evaluation import (
     evaluate_mjack_polynomial_checks,
     evaluate_mjack_submission,
     run_resource_gate,
-    run_value_audit,
 )
 from qtbench.evaluation import admission
 
@@ -355,7 +353,6 @@ def test_valid_but_wrong_statistic_short_circuits_at_numerical_end_to_end():
     )
     assert not result["passed"]
     assert result["checker_stage"] == "numerical"
-    assert result["value_audit"] is None
 
 
 @pytest.mark.parametrize("invalid", [True, 1.0, "1", (0,)])
@@ -375,34 +372,6 @@ def test_probes_span_bipartite_and_non_bipartite_objects_of_one_size():
     assert all(sum(obj.lam) == 64 for obj in objects)
 
 
-def test_value_audit_wired_for_jack_matchings():
-    genuine = (
-        "def statistic(jack_matching):\n"
-        "    return jack_matching.n - len(jack_matching.lam)\n"
-    )
-    run_value_audit(
-        genuine,
-        adversarial_mjack_probes(64),
-        value_exponent=8,
-        timeout_seconds=5.0,
-        size_of=jack_matching_size,
-    )
-
-    counting = (
-        "def statistic(jack_matching):\n"
-        "    total = 1\n"
-        "    for _ in range(jack_matching.n):\n"
-        "        total = total + total\n"
-        "    return total\n"
-    )
-    with pytest.raises(ResourceGateError, match="magnitude bound|bit integer"):
-        run_value_audit(
-            counting,
-            adversarial_mjack_probes(64),
-            value_exponent=8,
-            timeout_seconds=5.0,
-            size_of=jack_matching_size,
-        )
 
 
 def test_resource_gate_accepts_a_polynomial_statistic_on_large_objects():

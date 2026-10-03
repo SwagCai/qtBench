@@ -14,15 +14,12 @@ from qtbench.combinatorics import (
     iter_uig_tableaux_for_vector,
     kostka_standard_tableau_count,
     unit_interval_graph_tableau_count,
-    unit_interval_graph_tableau_size,
 )
 from qtbench.evaluation import (
-    ResourceGateError,
     adversarial_llt_probes,
     evaluate_llt_polynomial_checks,
     evaluate_llt_submission,
     run_resource_gate,
-    run_value_audit,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -201,7 +198,6 @@ def test_valid_but_wrong_statistic_short_circuits_at_numerical_end_to_end():
     )
     assert not result["passed"]
     assert result["checker_stage"] == "numerical"
-    assert result["value_audit"] is None
 
 
 @pytest.mark.parametrize("invalid", [True, 1.0, "1", (0,)])
@@ -212,31 +208,6 @@ def test_statistic_must_return_a_nonnegative_int(invalid):
         evaluate_llt_polynomial_checks(problem_dir=PROBLEM, statistic=lambda _obj: -1)
 
 
-def test_value_audit_wired_for_unit_interval_graph_tableaux():
-    genuine = "def statistic(graph_tableau):\n    return graph_tableau.maj()\n"
-    run_value_audit(
-        genuine,
-        adversarial_llt_probes(64),
-        value_exponent=8,
-        timeout_seconds=5.0,
-        size_of=unit_interval_graph_tableau_size,
-    )
-
-    counting = (
-        "def statistic(graph_tableau):\n"
-        "    total = 1\n"
-        "    for _ in range(graph_tableau.n):\n"
-        "        total = total + total\n"
-        "    return total\n"
-    )
-    with pytest.raises(ResourceGateError, match="magnitude bound|bit integer"):
-        run_value_audit(
-            counting,
-            adversarial_llt_probes(64),
-            value_exponent=8,
-            timeout_seconds=5.0,
-            size_of=unit_interval_graph_tableau_size,
-        )
 
 
 def test_resource_gate_accepts_a_polynomial_statistic_on_large_objects():

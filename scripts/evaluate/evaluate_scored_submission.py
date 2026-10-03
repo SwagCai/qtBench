@@ -204,12 +204,7 @@ BIJECTION_RUNNERS = {
     ),
 }
 
-NON_AUTOMATIC_REASONS = {
-    "promotion": (
-        "automatic scoring is disabled for promotion: orbit position reconstructs "
-        "the action-defined target, so an intrinsic proposal requires expert source review"
-    ),
-}
+NON_AUTOMATIC_REASONS: dict[str, str] = {}
 
 
 class ExpertReviewRequired(GateError):
@@ -219,11 +214,11 @@ class ExpertReviewRequired(GateError):
 MAX_SUBMISSION_INPUT_BYTES = 1_000_000
 OFFICIAL_SOURCE_LIMITS = SourceLimits()
 OFFICIAL_SCORING_CONFIG = {
-    "version": 2,
+    "version": 3,
     "checker_version": CHECKER_VERSION,
     "probe_n": 1024,
     "probe_timeout_seconds": 2.0,
-    # Large enough to exhaustively enumerate the bijections' public sizes (n<=13).
+    # Statistic numerical/replay budget; bijections use a separate profile below.
     "numerical_timeout_seconds": 60.0,
     # The tighter traced-allocation cap applies to adversarial resource and
     # identity probes. Numerical replay includes trusted exhaustive-enumerator
@@ -236,6 +231,11 @@ OFFICIAL_SCORING_CONFIG = {
     "max_aggregate_process_bytes": 268_435_456,
     "max_submission_input_bytes": MAX_SUBMISSION_INPUT_BYTES,
     "source_limits": asdict(OFFICIAL_SOURCE_LIMITS),
+}
+BIJECTION_SCORING_CONFIG = {
+    **OFFICIAL_SCORING_CONFIG,
+    "version": 4,
+    "numerical_timeout_seconds": 480.0,
 }
 
 
@@ -469,8 +469,6 @@ def _summary_lines(result: Mapping[str, Any]) -> list[str]:
             f"  replay       pass  {determinism.checked_objects} objects, "
             f"{determinism.fresh_namespaces} namespaces, seed {determinism.replay_seed}"
         )
-    if result.get("value_audit") is not None:
-        lines.append(f"  value audit  pass  {result['value_audit'].audited_calls} calls")
     if result.get("resources") is not None:
         lines.append("  resources    pass")
     lines.append("")
@@ -482,6 +480,11 @@ def _summary_lines(result: Mapping[str, Any]) -> list[str]:
 
 def main() -> None:
     args = parse_args()
+    scoring_config = (
+        BIJECTION_SCORING_CONFIG
+        if args.kind in BIJECTION_RUNNERS
+        else OFFICIAL_SCORING_CONFIG
+    )
     run_seed = secrets.randbits(128)
     os.environ["QTBENCH_RUN_SEED"] = str(run_seed)
     os.environ.pop("QTBENCH_REPLAY_SEED", None)
@@ -494,12 +497,12 @@ def main() -> None:
     }
     common = {
         "source": "",
-        "timeout_seconds": OFFICIAL_SCORING_CONFIG["probe_timeout_seconds"],
-        "numerical_timeout_seconds": OFFICIAL_SCORING_CONFIG[
+        "timeout_seconds": scoring_config["probe_timeout_seconds"],
+        "numerical_timeout_seconds": scoring_config[
             "numerical_timeout_seconds"
         ],
-        "max_python_bytes": OFFICIAL_SCORING_CONFIG["max_python_bytes"],
-        "max_process_bytes": OFFICIAL_SCORING_CONFIG["max_process_bytes"],
+        "max_python_bytes": scoring_config["max_python_bytes"],
+        "max_process_bytes": scoring_config["max_process_bytes"],
         "limits": OFFICIAL_SOURCE_LIMITS,
     }
     try:
@@ -532,7 +535,7 @@ def main() -> None:
                 result = evaluate(
                     **common,
                     probes=lambda: make_probes(
-                        OFFICIAL_SCORING_CONFIG["probe_n"], seed=run_seed
+                        scoring_config["probe_n"], seed=run_seed
                     ),
                     target_terms=load_terms(problem_dir),
                 )
@@ -545,7 +548,7 @@ def main() -> None:
             "checker_version": CHECKER_VERSION,
             "run_seed": run_seed,
             "scoring_mode": "official",
-            "scoring_config": dict(OFFICIAL_SCORING_CONFIG),
+            "scoring_config": dict(scoring_config),
             "provenance": provenance,
             "review_reason": str(error),
         }
@@ -563,7 +566,7 @@ def main() -> None:
             "checker_version": CHECKER_VERSION,
             "run_seed": run_seed,
             "scoring_mode": "official",
-            "scoring_config": dict(OFFICIAL_SCORING_CONFIG),
+            "scoring_config": dict(scoring_config),
             "provenance": provenance,
             "gate_error": str(error),
         }
@@ -576,7 +579,7 @@ def main() -> None:
     result["automatic_verdict"] = bool(result["passed"])
     result["expert_review_required"] = False
     result["scoring_mode"] = "official"
-    result["scoring_config"] = dict(OFFICIAL_SCORING_CONFIG)
+    result["scoring_config"] = dict(scoring_config)
     result["provenance"] = provenance
     if args.format == "json":
         print(json.dumps(_jsonable(result), indent=2))

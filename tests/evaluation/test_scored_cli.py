@@ -26,9 +26,9 @@ def load_cli_module():
 
 
 def assert_official_memory_config(config) -> None:
-    assert admission.CHECKER_VERSION == 16
-    assert config["version"] == 2
-    assert config["checker_version"] == 16
+    assert admission.CHECKER_VERSION == 18
+    assert config["version"] == 3
+    assert config["checker_version"] == 18
     assert config["max_process_bytes"] == 201_326_592
     assert config["max_parent_process_bytes"] == 67_108_864
     assert config["max_aggregate_process_bytes"] == 268_435_456
@@ -50,6 +50,87 @@ def test_cli_dispatch_covers_every_registered_problem() -> None:
     assert {path.resolve() for path in module.DEFAULT_PROBLEM.values()} == {
         ((ROOT / entry["data"]).parent).resolve()
         for entry in registry["problems"]
+    }
+
+
+def test_bijection_profile_keeps_all_public_cases_and_statistic_limits(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    module = load_cli_module()
+    submission = tmp_path / "bijection.py"
+    submission.write_text(
+        "def forward(value):\n    return value\n"
+        "def inverse(value):\n    return value\n",
+        encoding="utf-8",
+    )
+    observed = {}
+
+    def probes(n: int, *, seed: int):
+        observed["probe_n"] = n
+        return []
+
+    def evaluate(**kwargs):
+        observed["case_count"] = len(kwargs["target_terms"])
+        observed["numerical_timeout_seconds"] = kwargs["numerical_timeout_seconds"]
+        kwargs["probes"]()
+        return {"passed": True, "checker_stage": "complete"}
+
+    monkeypatch.setattr(
+        module,
+        "parse_args",
+        lambda: SimpleNamespace(
+            kind="polyomino-transpose", submission=submission, format="json"
+        ),
+    )
+    _, _, load_terms = module.BIJECTION_RUNNERS["polyomino-transpose"]
+    monkeypatch.setitem(
+        module.BIJECTION_RUNNERS,
+        "polyomino-transpose",
+        (evaluate, probes, load_terms),
+    )
+
+    with pytest.raises(SystemExit) as exit_info:
+        module.main()
+
+    assert exit_info.value.code == 0
+    assert observed == {
+        "case_count": 91,
+        "numerical_timeout_seconds": 480.0,
+        "probe_n": 1024,
+    }
+    result = json.loads(capsys.readouterr().out)
+    assert result["scoring_config"] == module.BIJECTION_SCORING_CONFIG
+    assert module.OFFICIAL_SCORING_CONFIG["version"] == 3
+    assert module.OFFICIAL_SCORING_CONFIG["numerical_timeout_seconds"] == 60.0
+
+
+def test_statistic_profile_preserves_official_resource_limits() -> None:
+    module = load_cli_module()
+    config = module.OFFICIAL_SCORING_CONFIG
+
+    assert {
+        "probe_n": config["probe_n"],
+        "probe_timeout_seconds": config["probe_timeout_seconds"],
+        "numerical_timeout_seconds": config["numerical_timeout_seconds"],
+        "max_python_bytes": config["max_python_bytes"],
+        "max_process_bytes": config["max_process_bytes"],
+        "max_parent_process_bytes": config["max_parent_process_bytes"],
+        "max_aggregate_process_bytes": config["max_aggregate_process_bytes"],
+    } == {
+        "probe_n": 1024,
+        "probe_timeout_seconds": 2.0,
+        "numerical_timeout_seconds": 60.0,
+        "max_python_bytes": 32_000_000,
+        "max_process_bytes": 201_326_592,
+        "max_parent_process_bytes": 67_108_864,
+        "max_aggregate_process_bytes": 268_435_456,
+    }
+    assert config["source_limits"] == {
+        "max_bytes": 8_192,
+        "max_lines": 160,
+        "max_tokens": 1_500,
+        "max_ast_nodes": 2_000,
+        "max_literal_bytes": 256,
     }
 
 
@@ -277,7 +358,7 @@ def test_scored_main_records_provenance_and_replaces_inherited_seed_overrides(
     assert admission._AGGREGATE_PROCESS_BUDGET.get() is None
     result = json.loads(capsys.readouterr().out)
     assert result["run_seed"] == 12345
-    assert result["checker_version"] == 16
+    assert result["checker_version"] == 18
     assert_official_memory_config(result["scoring_config"])
     assert result["automatic_verdict"] is True
     assert result["expert_review_required"] is False
@@ -442,9 +523,13 @@ def test_scored_cli_rejects_fifo_without_waiting_for_eof(tmp_path: Path) -> None
     assert "regular file" in result["gate_error"]
 
 
-def test_cli_requires_expert_review_for_promotion(tmp_path: Path) -> None:
-    submission = tmp_path / "orbit_position.py"
-    submission.write_text("def statistic(tableau):\n    return 0\n", encoding="utf-8")
+@pytest.mark.parametrize("source, stage", [
+    ("def statistic(tableau):\n    return 0\n", "numerical"),
+    ("import os\ndef statistic(tableau):\n    return 0\n", "gate_error"),
+])
+def test_cli_scores_promotion(tmp_path: Path, source: str, stage: str) -> None:
+    submission = tmp_path / "submission.py"
+    submission.write_text(source, encoding="utf-8")
 
     completed = subprocess.run(
         [
@@ -464,13 +549,14 @@ def test_cli_requires_expert_review_for_promotion(tmp_path: Path) -> None:
     assert completed.returncode == 1
     result = json.loads(completed.stdout)
     assert result["passed"] is False
-    assert result["automatic_verdict"] is None
-    assert result["expert_review_required"] is True
-    assert result["checker_stage"] == "expert_review"
+    assert result["automatic_verdict"] is False
+    assert result["expert_review_required"] is False
+    assert result["checker_stage"] == stage
     assert result["checker_version"] == admission.CHECKER_VERSION
     assert_official_memory_config(result["scoring_config"])
-    assert "expert source review" in result["review_reason"]
-    assert "gate_error" not in result
+    assert "review_reason" not in result
+    assert ("gate_error" in result) == (stage == "gate_error")
+    assert result["provenance"]["submission_sha256"] == hashlib.sha256(submission.read_bytes()).hexdigest()
     assert result["provenance"]["problem_id"] == 22
     assert result["provenance"]["problem_name"] == "syt_promotion_csp_q_stat"
     assert result["provenance"]["evaluator_kind"] == "promotion"
@@ -494,7 +580,7 @@ def test_cli_defaults_to_a_short_human_readable_report(tmp_path: Path) -> None:
     assert len(completed.stdout.splitlines()) < 20
     assert "did not pass" in completed.stdout
     assert "nc_area_qt_narayana_second_stat (id 1), kind noncrossing" in completed.stdout
-    assert "scoring      official (fixed configuration v2)" in completed.stdout
+    assert "scoring      official (fixed configuration v3)" in completed.stdout
     assert "run seed" in completed.stdout
     assert "necessary, not a sufficient, condition" in completed.stdout
     with pytest.raises(json.JSONDecodeError):

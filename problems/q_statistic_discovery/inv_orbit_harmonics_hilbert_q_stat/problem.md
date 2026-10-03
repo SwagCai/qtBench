@@ -237,7 +237,7 @@ After the capability and source-economy screens, the evaluator enumerates every 
 fiber `M_{n,a}` once, groups the objects by the submitted exponent, and checks the
 resulting `q`-polynomial against `data/polynomials.json`, together with the
 `q = 1` fixed-point marginal. A mismatch stops the evaluation. Only a complete match
-proceeds to the fresh-namespace shuffled replay, the integer-value audit, and
+proceeds to the fresh-namespace shuffled replay and
 large adversarial objects under CPU and memory limits. Every stage must pass,
 though a pass is necessary but not sufficient for a genuine statistic (see
 `docs/checker.md`).

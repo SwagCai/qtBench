@@ -118,6 +118,10 @@ jobs:
             pytest_args: tests/test_release_cli.py
             sync_args: --extra dev
             private_release: true
+          - shard: inference
+            pytest_args: inference/tests
+            sync_args: --extra dev
+            inference: true
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -132,12 +136,31 @@ jobs:
         with:
           python-version: "3.13"
       - run: uv sync --python "3.13" ${{ matrix.sync_args }} --locked
+      - name: Configure bubblewrap for inference sandbox smoke
+        if: ${{ matrix.inference == true && hashFiles('inference/tests/**') != '' }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes bubblewrap apparmor-profiles apparmor-utils
+          if [ -f /usr/share/apparmor/extra-profiles/bwrap-userns-restrict ]; then
+            sudo install -m 0644 \
+              /usr/share/apparmor/extra-profiles/bwrap-userns-restrict \
+              /etc/apparmor.d/bwrap-userns-restrict
+            sudo apparmor_parser -r /etc/apparmor.d/bwrap-userns-restrict
+          fi
+      - name: Install Codex for inference sandbox smoke
+        if: ${{ matrix.inference == true && hashFiles('inference/tests/**') != '' }}
+        run: npm install --global @openai/codex@0.156.1
       - name: Run deterministic tests
-        if: ${{ matrix.private_release != true || hashFiles('tests/test_release_cli.py') != '' }}
+        if: >-
+          ${{
+            (matrix.private_release != true || hashFiles('tests/test_release_cli.py') != '') &&
+            (matrix.inference != true || hashFiles('inference/tests/**') != '')
+          }}
         env:
           PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"
           PYTHONHASHSEED: "0"
           QTBENCH_RUN_SEED: "1"
+          QTBENCH_LIVE_SANDBOX_SMOKE: ${{ matrix.inference == true && '1' || '0' }}
         run: uv run --no-sync python -m pytest -q ${{ matrix.pytest_args }}
 
   compatibility:

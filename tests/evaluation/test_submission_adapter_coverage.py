@@ -19,7 +19,6 @@ TIMEOUT_SECONDS = 5.0
 NUMERICAL_TIMEOUT_SECONDS = 11.0
 MAX_PYTHON_BYTES = 32_000_000
 MAX_PROCESS_BYTES = 192 * 1024 * 1024
-VALUE_AUDIT_SIZE = 8
 
 
 @dataclass(frozen=True)
@@ -27,7 +26,6 @@ class AdapterCase:
     evaluator: str
     numerical_kind: str
     value_probes: str
-    size_of: str
     hardener: str
     identity_gate: str
     scaled_hardening_attribute: str | None = None
@@ -38,7 +36,6 @@ CASES = (
         evaluator="evaluate_parking_area_dinv_submission",
         numerical_kind="parking_area_dinv",
         value_probes="adversarial_parking_function_probes",
-        size_of="parking_function_size",
         hardener="_hardened_parking_functions",
         identity_gate="run_parking_area_dinv_identity_gate",
     ),
@@ -46,7 +43,6 @@ CASES = (
         evaluator="evaluate_graph_sibling_tuft_submission",
         numerical_kind="graph_sibling_tuft",
         value_probes="adversarial_connected_graph_probes",
-        size_of="connected_graph_size",
         hardener="_hardened_connected_graphs",
         identity_gate="run_graph_sibling_tuft_identity_gate",
     ),
@@ -54,7 +50,6 @@ CASES = (
         evaluator="evaluate_shifted_pq_submission",
         numerical_kind="shifted_pq",
         value_probes="adversarial_shifted_pq_probes",
-        size_of="shifted_tableau_size",
         hardener="_hardened_shifted_pq_tableaux",
         identity_gate="run_shifted_pq_identity_gate",
     ),
@@ -62,7 +57,6 @@ CASES = (
         evaluator="evaluate_successive_rank_submission",
         numerical_kind="successive_rank",
         value_probes="adversarial_successive_rank_probes",
-        size_of="successive_rank_partition_size",
         hardener="adversarial_successive_rank_partitions",
         identity_gate="run_successive_rank_identity_gate",
         scaled_hardening_attribute="weight",
@@ -71,7 +65,6 @@ CASES = (
         evaluator="evaluate_partition_matrix_inversion_submission",
         numerical_kind="partition_matrix_inversion",
         value_probes="adversarial_partition_matrix_inversion_probes",
-        size_of="partition_matrix_inversion_size",
         hardener="adversarial_partition_matrix_inversions",
         identity_gate="run_partition_matrix_inversion_identity_gate",
         scaled_hardening_attribute="n",
@@ -96,17 +89,12 @@ def test_scored_bijection_adapter_reaches_every_gate(monkeypatch, case) -> None:
 
     original_capability_screen = admission.check_capability_screen
     original_source_economy = admission.check_source_economy
-    original_value_audit = admission.run_value_audit
     original_value_probes = getattr(admission, case.value_probes)
     original_hardener = getattr(admission, case.hardener)
 
-    limits = admission.SourceLimits(
-        value_audit_size=VALUE_AUDIT_SIZE,
-        value_exponent=7,
-    )
+    limits = admission.SourceLimits()
     target_terms = {"adapter": case.numerical_kind}
     supplied_calls = original_value_probes(8, seed=7)
-    audit_calls = original_value_probes(VALUE_AUDIT_SIZE, seed=13)
     supplied_objects = [arguments[0] for _name, arguments in supplied_calls]
 
     order = []
@@ -134,39 +122,6 @@ def test_scored_bijection_adapter_reaches_every_gate(monkeypatch, case) -> None:
         captured["numerical_kwargs"] = kwargs
         return numerical_report, determinism_report, 0.25, 1_024
 
-    def value_probes(size, *, seed=None):
-        order.append("value-probes")
-        assert size == VALUE_AUDIT_SIZE
-        assert seed is None
-        return audit_calls
-
-    def value_audit(
-        candidate_source,
-        calls,
-        *,
-        value_exponent,
-        timeout_seconds,
-        max_process_bytes,
-        size_of,
-    ):
-        order.append("value-audit")
-        assert candidate_source == SOURCE
-        assert calls is audit_calls
-        assert value_exponent == limits.value_exponent
-        assert timeout_seconds == TIMEOUT_SECONDS
-        assert max_process_bytes == MAX_PROCESS_BYTES
-        assert size_of is getattr(admission, case.size_of)
-        report = original_value_audit(
-            candidate_source,
-            calls,
-            value_exponent=value_exponent,
-            timeout_seconds=timeout_seconds,
-            max_process_bytes=max_process_bytes,
-            size_of=size_of,
-        )
-        captured["value_audit_report"] = report
-        return report
-
     def resolve_probes():
         order.append("supplied-probes")
         return supplied_calls
@@ -175,14 +130,12 @@ def test_scored_bijection_adapter_reaches_every_gate(monkeypatch, case) -> None:
     monkeypatch.setattr(admission, "check_capability_screen", capability_screen)
     monkeypatch.setattr(admission, "check_source_economy", source_economy)
     monkeypatch.setattr(admission, "_run_numerical_isolated", numerical)
-    monkeypatch.setattr(admission, "run_value_audit", value_audit)
     for name in VALUE_PROBE_FACTORIES:
         monkeypatch.setattr(admission, name, _unexpected_adapter_call(name))
     for name in HARDENERS:
         monkeypatch.setattr(admission, name, _unexpected_adapter_call(name))
     for name in IDENTITY_GATES:
         monkeypatch.setattr(admission, name, _unexpected_adapter_call(name))
-    monkeypatch.setattr(admission, case.value_probes, value_probes)
 
     expected_scales = None
     if case.scaled_hardening_attribute is None:
@@ -267,8 +220,6 @@ def test_scored_bijection_adapter_reaches_every_gate(monkeypatch, case) -> None:
         "capability",
         "economy",
         "numerical",
-        "value-probes",
-        "value-audit",
         "supplied-probes",
         "hardened",
         "identity/resource",
@@ -288,6 +239,5 @@ def test_scored_bijection_adapter_reaches_every_gate(monkeypatch, case) -> None:
     assert result["determinism"] is determinism_report
     assert result["numerical_elapsed_seconds"] == 0.25
     assert result["numerical_peak_python_bytes"] == 1_024
-    assert result["value_audit"] is captured["value_audit_report"]
-    assert result["value_audit"].audited_calls == len(audit_calls)
+    assert "value_audit" not in result
     assert result["resources"] is captured["identity_report"]

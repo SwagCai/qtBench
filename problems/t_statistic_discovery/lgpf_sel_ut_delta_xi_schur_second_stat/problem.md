@@ -153,8 +153,8 @@ uv run --frozen python scripts/evaluate/evaluate_scored_submission.py lgpf path/
 
 After the capability and source-economy screens, the evaluator enumerates every
 public fiber once and compares the marginal and full eta-graded polynomial. Only
-a complete numerical match proceeds to fresh-namespace shuffled replay, the
-integer-value audit, and the large-object resource gate. A pass is necessary but
+a complete numerical match proceeds to fresh-namespace shuffled replay and
+the large-object resource gate. A pass is necessary but
 not sufficient evidence of a genuine combinatorial statistic; see
 `docs/checker.md`.
 

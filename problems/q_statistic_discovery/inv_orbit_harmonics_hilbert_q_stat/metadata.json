@@ -12,9 +12,9 @@
     "size_max": 10
   },
   "scoring": {
-    "gate_order": ["capability_screen", "source_economy", "public_q_equals_1_and_exact_polynomials", "fresh_namespace_shuffled_replay", "value_audit", "resource_probes"],
+    "gate_order": ["capability_screen", "source_economy", "public_q_equals_1_and_exact_polynomials", "fresh_namespace_shuffled_replay", "resource_probes"],
     "case_score": "1 if the generated q-distribution over M_{n,a} equals the public Hilbert series H_{n,a}(q), else 0",
-    "problem_score": "all public (n, a) fibers must match, then shuffled replay, the value audit, and resource gates must pass; passing is necessary, not sufficient"
+    "problem_score": "all public (n, a) fibers must match, then shuffled replay and resource gates must pass; passing is necessary, not sufficient"
   },
   "name": "inv_orbit_harmonics_hilbert_q_stat"
 }

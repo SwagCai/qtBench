@@ -31,9 +31,9 @@ Keep these cases separate in any summary:
 
 - Problem `1` is a solved calibration. Report it as a pipeline check and exclude
   it from discovery rates.
-- Problem `22` has no automatic admission verdict. Report the deterministic
-  checker output, if used diagnostically, separately from the required expert
-  source review.
+- Problem `22` receives the ordinary automatic mechanical verdict. Report it
+  separately from subsequent semantic review: the known orbit-position shortcut
+  can pass every mechanical gate without supplying an intrinsic statistic.
 - A pass on problem `3` establishes agreement with the committed conditional
   targets; it does not independently derive or certify those targets.
 

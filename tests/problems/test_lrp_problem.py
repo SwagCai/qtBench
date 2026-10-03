@@ -11,15 +11,12 @@ import pytest
 from qtbench.combinatorics import (
     iter_labelled_rectangular_paths,
     labelled_rectangular_path_count,
-    labelled_rectangular_path_size,
 )
 from qtbench.evaluation import (
-    ResourceGateError,
     adversarial_lrp_probes,
     evaluate_lrp_polynomial_checks,
     evaluate_lrp_submission,
     run_resource_gate,
-    run_value_audit,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -158,35 +155,8 @@ def test_constant_zero_short_circuits_at_numerical_end_to_end():
     )
     assert not result["passed"]
     assert result["checker_stage"] == "numerical"
-    assert result["value_audit"] is None
 
 
-def test_value_audit_wired_for_rectangular_paths():
-    # a genuine small-valued statistic passes; a counting cheat is blocked
-    genuine = "def statistic(path):\n    return len(path.rises)\n"
-    run_value_audit(
-        genuine,
-        adversarial_lrp_probes(64),
-        value_exponent=8,
-        timeout_seconds=5.0,
-        size_of=labelled_rectangular_path_size,
-    )
-
-    counting = (
-        "def statistic(path):\n"
-        "    total = 1\n"
-        "    for _ in range(path.width + path.height):\n"
-        "        total = total + total\n"
-        "    return total % 3\n"
-    )
-    with pytest.raises(ResourceGateError, match="magnitude bound|bit integer"):
-        run_value_audit(
-            counting,
-            adversarial_lrp_probes(64),
-            value_exponent=8,
-            timeout_seconds=5.0,
-            size_of=labelled_rectangular_path_size,
-        )
 
 
 def test_resource_gate_accepts_a_polynomial_statistic_on_large_paths():

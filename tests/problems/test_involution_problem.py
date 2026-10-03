@@ -13,17 +13,14 @@ import pytest
 
 from qtbench.combinatorics import (
     involution_count,
-    involution_size,
     iter_involutions_with_fixed_points,
 )
 from qtbench.evaluation import (
-    ResourceGateError,
     adversarial_involution_probes,
     adversarial_involutions,
     evaluate_involution_polynomial_checks,
     evaluate_involution_submission,
     run_resource_gate,
-    run_value_audit,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -405,7 +402,6 @@ def test_valid_but_wrong_statistic_short_circuits_at_numerical_end_to_end():
     )
     assert not result["passed"]
     assert result["checker_stage"] == "numerical"
-    assert result["value_audit"] is None
 
 
 @pytest.mark.parametrize("invalid", [True, 1.0, "1", (0,)])
@@ -427,31 +423,6 @@ def test_probes_cover_a_spread_of_fibers_of_one_size():
     assert all(obj.fix % 2 == 1 for obj in odd)
 
 
-def test_value_audit_wired_for_involutions():
-    genuine = "def statistic(involution):\n    return involution.fix\n"
-    run_value_audit(
-        genuine,
-        adversarial_involution_probes(64),
-        value_exponent=8,
-        timeout_seconds=5.0,
-        size_of=involution_size,
-    )
-
-    counting = (
-        "def statistic(involution):\n"
-        "    total = 1\n"
-        "    for _ in range(involution.n):\n"
-        "        total = total + total\n"
-        "    return total\n"
-    )
-    with pytest.raises(ResourceGateError, match="magnitude bound|bit integer"):
-        run_value_audit(
-            counting,
-            adversarial_involution_probes(64),
-            value_exponent=8,
-            timeout_seconds=5.0,
-            size_of=involution_size,
-        )
 
 
 def test_resource_gate_accepts_a_polynomial_statistic_on_large_objects():

@@ -1,4 +1,4 @@
-# Promotion Intrinsic Statistic (Expert Review Required)
+# Promotion Intrinsic Statistic
 
 ## Task
 
@@ -50,7 +50,8 @@ gives the least-degree representative of the coset of CSP polynomials modulo
 `q^N - 1`. The task here is the stronger requirement that this polynomial also
 be the generating function of an **intrinsic statistic** on `X`.
 
-**Automatic scoring is disabled.** Because the target is *defined* from the
+**Automatic scoring is mechanical; mathematical acceptance requires semantic review.**
+Because the target is *defined* from the
 orbits, the construction "walk this tableau's promotion orbit, take its
 lexicographically smallest element as the origin, return the number of steps times
 `N / |O|`" reproduces `C_lambda(q)` exactly, on every shape, rectangles included. It
@@ -62,7 +63,8 @@ probe size. Combined with the published rectangular answer below it passes every
 lower-level evaluator stage, which has been verified. Enlarging the probes does not help: the
 cost grows only like `n^{3/2}`.
 
-Consequently the public CLI refuses to issue an automatic pass for this problem.
+The public CLI runs the ordinary checker and can issue an automatic pass, including
+for this shortcut. A subsequent judge or reviewer must assess mathematical substance.
 What is wanted is an *intrinsic* statistic -- built from
 descents, diagonals or local patterns, in the way the rectangular answer below is --
 and only reading the submission can establish that. Promotion is deliberately not
@@ -200,9 +202,12 @@ To score it:
 uv run --frozen python scripts/evaluate/evaluate_scored_submission.py promotion path/to/submission.py
 ```
 
-This command exits with a gate error explaining that automatic scoring is
-disabled. The lower-level evaluator remains available for regression testing of
-the target and the known bypass, but acceptance requires expert source review.
+This command returns the ordinary automatic verdict after the standard admission
+checks. Passing is necessary but not sufficient for a genuine result: subsequent
+semantic review must distinguish an intrinsic statistic from orbit reconstruction.
+The [inference scaffold](../../../inference/README.md) provides the
+checker-before-judge workflow; this checker itself does not implement semantic
+review.
 
 ### Recommended advisory AI review
 
@@ -235,17 +240,19 @@ provider, privacy and receipt protocol.
 
 ## Scoring
 
-Automatic admission is not available. The lower-level regression evaluator can
-enumerate every public shape, compare the submitted distribution, replay it, and
-run resource probes, but that result is diagnostic only and is never an
-acceptance verdict.
+Automatic admission uses the ordinary checker: capability screening and source
+economy precede public marginal and exact coefficient checks, followed on a
+numerical match by fresh-namespace shuffled replay and resource gates. The CLI
+issues a normal mechanical pass or failure with a
+provenance receipt. A pass is necessary but not sufficient for mathematical
+acceptance; subsequent judge or reviewer assessment must detect semantic cheating.
 
 Here, no checker stage is decisive. The target is defined from the orbits of the
 promotion action, so
 recomputing the definition reproduces it exactly, and doing so is cheap enough to
 clear every numerical gate. Those gates still do their usual work against literal
-answer tables, call-order tricks and counting DPs, but this problem requires expert
-source review. The staircase statistic remains unknown, but this task rests on a
+answer tables, call-order tricks and exhaustive enumeration, but mathematical acceptance
+requires subsequent semantic source review. The staircase statistic remains unknown, but this task rests on a
 weaker automatic-verification footing than
 problems `14`, `15`, `16` and `21`, where recomputing the target is infeasible.
 

@@ -4,7 +4,7 @@ The benchmark currently registers 30 problems and is intended to grow to roughly
 50. The registered distribution is 13 `t_statistic_discovery`, 8
 `q_statistic_discovery`, and 9 `exchanging_bijection`. The catalogue with
 stable IDs and links is in
-[`problems.md`](problems.md); the machine-readable list is
+[`problems.md`](../problems.md); the machine-readable list is
 [`problems/registry.json`](../problems/registry.json).
 
 The long-term bank should retain meaningful coverage of all three task types:

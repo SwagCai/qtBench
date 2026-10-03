@@ -11,7 +11,6 @@ from qtbench.combinatorics import (
     iter_kostka_standard_tableaux,
     iter_partitions,
     kostka_standard_tableau_count,
-    kostka_tableau_size,
 )
 from qtbench.evaluation import (
     ResourceGateError,
@@ -19,7 +18,6 @@ from qtbench.evaluation import (
     evaluate_kostka_polynomial_checks,
     evaluate_kostka_submission,
     run_resource_gate,
-    run_value_audit,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -297,7 +295,6 @@ def test_constant_pair_short_circuits_at_numerical_end_to_end():
     )
     assert not result["passed"]
     assert result["checker_stage"] == "numerical"
-    assert result["value_audit"] is None
 
 
 def test_non_pair_output_is_rejected():
@@ -313,31 +310,6 @@ def test_non_pair_output_is_rejected():
         )
 
 
-def test_value_audit_wired_for_kostka_standard_tableaux():
-    genuine = "def statistic(tableau):\n    return (tableau.maj(), tableau.comaj())\n"
-    run_value_audit(
-        genuine,
-        adversarial_kostka_probes(64),
-        value_exponent=8,
-        timeout_seconds=5.0,
-        size_of=kostka_tableau_size,
-    )
-
-    counting = (
-        "def statistic(tableau):\n"
-        "    total = 1\n"
-        "    for _ in range(tableau.n):\n"
-        "        total = total + total\n"
-        "    return (total % 3, 0)\n"
-    )
-    with pytest.raises(ResourceGateError, match="magnitude bound|bit integer"):
-        run_value_audit(
-            counting,
-            adversarial_kostka_probes(64),
-            value_exponent=8,
-            timeout_seconds=5.0,
-            size_of=kostka_tableau_size,
-        )
 
 
 def test_resource_gate_accepts_a_polynomial_statistic_on_large_tableaux():

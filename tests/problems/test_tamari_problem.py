@@ -10,7 +10,6 @@ import pytest
 from qtbench.combinatorics import (
     iter_tamari_parking_pairs,
     tamari_parking_count,
-    tamari_parking_size,
 )
 from qtbench.evaluation import (
     ResourceGateError,
@@ -18,7 +17,6 @@ from qtbench.evaluation import (
     evaluate_tamari_polynomial_checks,
     evaluate_tamari_submission,
     run_resource_gate,
-    run_value_audit,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -130,35 +128,8 @@ def test_constant_zero_short_circuits_at_numerical_end_to_end():
     )
     assert not result["passed"]
     assert result["checker_stage"] == "numerical"
-    assert result["value_audit"] is None
 
 
-def test_value_audit_wired_for_tamari_parking_pairs():
-    # a genuine small-valued statistic passes; a counting cheat is blocked
-    genuine = "def statistic(pair):\n    return sum(pair.alpha)\n"
-    run_value_audit(
-        genuine,
-        adversarial_tamari_probes(64),
-        value_exponent=8,
-        timeout_seconds=5.0,
-        size_of=tamari_parking_size,
-    )
-
-    counting = (
-        "def statistic(pair):\n"
-        "    total = 1\n"
-        "    for _ in range(pair.n):\n"
-        "        total = total + total\n"
-        "    return total % 3\n"
-    )
-    with pytest.raises(ResourceGateError, match="magnitude bound|bit integer"):
-        run_value_audit(
-            counting,
-            adversarial_tamari_probes(64),
-            value_exponent=8,
-            timeout_seconds=5.0,
-            size_of=tamari_parking_size,
-        )
 
 
 def test_resource_gate_accepts_a_polynomial_statistic_on_large_pairs():

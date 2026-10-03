@@ -227,7 +227,7 @@ every public `lambda` once, groups them by the pair of cycle types and by the
 submitted exponent, and checks the resulting coefficients against
 `data/polynomials.json`, together with the `q = 1` fiber-size marginal. A mismatch
 stops the evaluation. Only a complete match proceeds to fresh-namespace shuffled
-replay, the integer-value audit, and large adversarial objects under CPU and memory
+replay and large adversarial objects under CPU and memory
 limits. On every large object, the resource-result validator also checks the
 zero locus pointwise: the returned exponent must be zero if and only if the
 matching is bipartite. Every stage must pass, though a pass is necessary but not

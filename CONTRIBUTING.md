@@ -19,7 +19,7 @@ Open a GitHub issue before doing substantial implementation work. Include:
 
 Use the issue to agree on scope and reserve a stable numeric problem ID. Do not
 renumber an existing problem. Review the current catalogue in
-[`docs/problems.md`](docs/problems.md) and the selection criteria in
+[`problems.md`](problems.md) and the selection criteria in
 [`docs/problem_bank_plan.md`](docs/problem_bank_plan.md) before proposing an
 addition.
 
@@ -41,7 +41,9 @@ A contribution should:
 
 If the benchmark task is a derived or weakened version of a source problem,
 say so prominently. If automatic scoring cannot distinguish genuine solutions
-from tautological ones, propose `expert_review` status and document why.
+from tautological ones, document the bypass and the need for subsequent semantic
+review. An active task may retain its ordinary mechanical score, as problem `22`
+does; use `expert_review` only when no automatic verdict is offered.
 
 ## Follow the repository layout
 
@@ -68,7 +70,7 @@ At minimum, add:
   `data/instances.json`;
 - `generate_data.py` and any problem-specific oracle or certification code;
 - a scored checker adapter and focused tests; and
-- matching entries in `problems/registry.json`, `docs/problems.md`, and the
+- matching entries in `problems/registry.json`, `problems.md`, and the
   relevant task-type README.
 
 Keep problem-specific generators, oracles, and notes in the problem directory.
@@ -89,8 +91,8 @@ and [`docs/data_generation.md`](docs/data_generation.md) documents the command.
 - Keep generation code separate from scoring. The scored evaluator must use
   metadata and committed public targets; it must never import an oracle.
 - Validate exact coefficients and all object-level identities. A numerically
-  correct submission must then pass fresh-namespace shuffled replay, the value
-  audit, and deterministic large-object resource probes.
+  correct submission must then pass fresh-namespace shuffled replay and
+  deterministic large-object resource probes.
 - Record a new checker attack or confirmed bypass in
   [`docs/cheating/taxonomy.md`](docs/cheating/taxonomy.md), with a regression
   test when the behavior is mechanically enforceable.

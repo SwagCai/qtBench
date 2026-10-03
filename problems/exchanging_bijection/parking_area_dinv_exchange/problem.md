@@ -103,8 +103,8 @@ uv run --frozen python scripts/evaluate/evaluate_scored_submission.py parking-ar
 After capability and source-economy screening, the evaluator checks every public
 parking function for valid same-size images, both round trips, both exchange
 identities, and the complete public distribution. A complete match is replayed
-from a fresh namespace in a secret single-cycle order, followed by the
-integer-value audit and pointwise identity checks on large parking functions
+from a fresh namespace in a secret single-cycle order, followed by
+pointwise identity checks on large parking functions
 under CPU and memory limits. Every stage must pass.
 
 Passing is necessary, not sufficient for a genuine bijection. A uniform

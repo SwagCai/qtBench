@@ -15,9 +15,9 @@
     "admissibility": "length(gamma) <= |lambda|"
   },
   "scoring": {
-    "gate_order": ["capability_screen", "source_economy", "public_q_equals_1_and_exact_polynomials", "fresh_namespace_shuffled_replay", "value_audit", "resource_probes"],
+    "gate_order": ["capability_screen", "source_economy", "public_q_equals_1_and_exact_polynomials", "fresh_namespace_shuffled_replay", "resource_probes"],
     "case_score": "1 if every generated eta-graded coefficient equals the public target coefficient, else 0",
-    "problem_score": "all public fibers must match, then shuffled replay, the value audit, and resource gates must pass; passing is necessary, not sufficient"
+    "problem_score": "all public fibers must match, then shuffled replay and resource gates must pass; passing is necessary, not sufficient"
   },
   "name": "gpf_sel_ut_delta_xi_second_stat"
 }

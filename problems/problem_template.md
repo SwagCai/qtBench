@@ -44,8 +44,8 @@ def statistic(obj) -> int:
 ## Scoring
 
 Describe the capability and source-economy screens, public target cases, exact
-comparison, fresh-namespace shuffled replay, integer-value audit, and resource
-gate. State that passing is a necessary, not a sufficient, condition (see
+comparison, fresh-namespace shuffled replay, and resource gate. State that
+passing is a necessary, not a sufficient, condition (see
 `docs/checker.md`).
 
 ## References

@@ -144,7 +144,7 @@ uv run --frozen python scripts/evaluate/evaluate_scored_submission.py mld path/t
 After the capability and source-economy screens, the evaluator enumerates each
 public `LD_{k^n}` fiber once. From the same submitted values, it checks the
 explicit `q = 1` marginal and every `q,t` coefficient. Only a complete match
-proceeds to fresh-namespace shuffled replay, the integer-value audit, and large
+proceeds to fresh-namespace shuffled replay and large
 adversarial paths under CPU and memory limits. A mismatch stops the evaluation,
 and passing `q = 1` alone is insufficient. Every stage must pass, though a pass
 is necessary but not sufficient for a genuine statistic (see `docs/checker.md`).

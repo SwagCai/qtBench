@@ -34,7 +34,6 @@ from .admission import (
     ResourceGateError,
     ResourceReport,
     SourceLimits,
-    ValueAuditReport,
     adversarial_ddyck_probes,
     adversarial_asm_probes,
     adversarial_connected_graph_probes,
@@ -141,7 +140,6 @@ from .admission import (
     run_polyomino_area_bounce_identity_gate,
     run_polyomino_transpose_identity_gate,
     run_resource_gate,
-    run_value_audit,
     source_sha256,
 )
 from .submission import load_statistic_function
@@ -156,7 +154,6 @@ __all__ = [
     "ResourceReport",
     "SourceLimits",
     "UnsupportedDiagnosticProblemError",
-    "ValueAuditReport",
     "adversarial_ddyck_probes",
     "adversarial_asm_probes",
     "adversarial_connected_graph_probes",
@@ -288,6 +285,5 @@ __all__ = [
     "run_polyomino_area_bounce_identity_gate",
     "run_polyomino_transpose_identity_gate",
     "run_resource_gate",
-    "run_value_audit",
     "source_sha256",
 ]

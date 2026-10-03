@@ -52,7 +52,7 @@ Do not use the known polynomial to assign arbitrary t-values that satisfy
 coefficient constraints without describing a general statistic. After
 capability and source-economy screening, scoring eliminates numerically wrong
 proposals, then checks numerically correct code with fresh-namespace shuffled
-replay, an integer-value audit, and large adversarial time/memory probes. A
+replay and large adversarial time/memory probes. A
 proposal must pass every stage. Passing is a necessary, not a sufficient,
 condition for a genuine statistic (see `docs/checker.md`).
 

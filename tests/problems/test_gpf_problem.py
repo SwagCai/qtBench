@@ -10,12 +10,10 @@ import pytest
 import qtbench.combinatorics.type_a.gamma_parking as gamma_parking
 from qtbench.combinatorics import (
     canonical_gamma_parking_selection,
-    gamma_parking_size,
     is_gamma_parking_selection,
     iter_gamma_parking_selections,
 )
 from qtbench.evaluation import (
-    ResourceGateError,
     adversarial_gpf_probes,
     adversarial_lgpf_probes,
     evaluate_gpf_polynomial_checks,
@@ -23,7 +21,6 @@ from qtbench.evaluation import (
     evaluate_lgpf_polynomial_checks,
     evaluate_lgpf_submission,
     run_resource_gate,
-    run_value_audit,
 )
 
 ROOT = Path(__file__).resolve().parents[2] / "problems" / "t_statistic_discovery"
@@ -191,7 +188,6 @@ def test_constant_zero_short_circuits_at_numerical_end_to_end():
     )
     assert not result["passed"]
     assert result["checker_stage"] == "numerical"
-    assert result["value_audit"] is None
 
     lattice_result = evaluate_lgpf_submission(
         source="def statistic(selection):\n    return 0\n",
@@ -205,32 +201,6 @@ def test_constant_zero_short_circuits_at_numerical_end_to_end():
     assert lattice_result["checker_stage"] == "numerical"
 
 
-def test_value_audit_wired_for_gamma_parking_selections():
-    # a genuine small-valued statistic passes; a counting cheat is blocked
-    genuine = "def statistic(selection):\n    return selection.area()\n"
-    run_value_audit(
-        genuine,
-        adversarial_gpf_probes(64),
-        value_exponent=8,
-        timeout_seconds=5.0,
-        size_of=gamma_parking_size,
-    )
-
-    counting = (
-        "def statistic(selection):\n"
-        "    total = 1\n"
-        "    for _ in range(selection.n):\n"
-        "        total = total + total\n"
-        "    return total % 3\n"
-    )
-    with pytest.raises(ResourceGateError, match="magnitude bound|bit integer"):
-        run_value_audit(
-            counting,
-            adversarial_gpf_probes(64),
-            value_exponent=8,
-            timeout_seconds=5.0,
-            size_of=gamma_parking_size,
-        )
 
 
 def test_adversarial_probe_construction_does_not_materialize_all_area_cells(

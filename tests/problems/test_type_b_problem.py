@@ -6,15 +6,12 @@ from collections import Counter, defaultdict
 from math import comb
 from pathlib import Path
 
-import pytest
 
 from qtbench.combinatorics import enumerate_type_b_catalan_paths
 from qtbench.evaluation import (
-    ResourceGateError,
     adversarial_type_b_probes,
     evaluate_type_b_polynomial_checks,
     evaluate_type_b_submission,
-    run_value_audit,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -101,14 +98,3 @@ def test_constant_zero_short_circuits_at_numerical_end_to_end():
     )
     assert not result["passed"]
     assert result["checker_stage"] == "numerical"
-    assert result["value_audit"] is None
-
-
-def test_value_audit_wired_for_type_b_paths():
-    # a genuine small-valued statistic passes; a counting cheat is blocked
-    area_src = "def statistic(path):\n    return len(path.area_word)\n"
-    run_value_audit(area_src, adversarial_type_b_probes(64), value_exponent=8, timeout_seconds=5.0)
-
-    counting = "def statistic(path):\n    total = 1\n    for _ in range(2 * path.n):\n        total = total + total\n    return total % 3\n"
-    with pytest.raises(ResourceGateError, match="magnitude bound|bit integer"):
-        run_value_audit(counting, adversarial_type_b_probes(64), value_exponent=8, timeout_seconds=5.0)

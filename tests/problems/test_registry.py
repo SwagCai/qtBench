@@ -63,7 +63,6 @@ GATE_ORDER = [
     "source_economy",
     "public_q_equals_1_and_exact_polynomials",
     "fresh_namespace_shuffled_replay",
-    "value_audit",
     "resource_probes",
 ]
 
@@ -212,7 +211,6 @@ def test_registry_entries_are_consistent():
                 "source_economy",
                 numerical_gate,
                 "fresh_namespace_shuffled_replay",
-                "value_audit",
                 "resource_and_identity_probes",
             ]
         else:

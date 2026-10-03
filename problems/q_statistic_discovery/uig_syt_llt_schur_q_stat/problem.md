@@ -206,7 +206,7 @@ After the capability and source-economy screens, the evaluator enumerates every 
 exponent, and checks the resulting shape-graded coefficients against
 `data/polynomials.json`, together with the `q = 1` shape marginal. A mismatch
 stops the evaluation. Only a complete match proceeds to fresh-namespace shuffled
-replay, the integer-value audit, and large adversarial objects under CPU and
+replay and large adversarial objects under CPU and
 memory limits. Every stage must pass, though a pass is necessary but not
 sufficient for a genuine statistic (see `docs/checker.md`).
 

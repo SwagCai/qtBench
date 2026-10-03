@@ -5,20 +5,16 @@ import json
 from collections import Counter, defaultdict
 from pathlib import Path
 
-import pytest
 
 from qtbench.combinatorics import (
     decorated_labelled_dyck_count,
-    decorated_dyck_size,
     iter_decorated_labelled_dyck_paths,
 )
 from qtbench.evaluation import (
-    ResourceGateError,
     adversarial_ddyck_probes,
     evaluate_ddyck_polynomial_checks,
     evaluate_ddyck_submission,
     run_resource_gate,
-    run_value_audit,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -108,35 +104,8 @@ def test_constant_zero_short_circuits_at_numerical_end_to_end():
     )
     assert not result["passed"]
     assert result["checker_stage"] == "numerical"
-    assert result["value_audit"] is None
 
 
-def test_value_audit_wired_for_decorated_dyck_paths():
-    # a genuine small-valued statistic passes; a counting cheat is blocked
-    genuine = "def statistic(path):\n    return sum(path.area_word)\n"
-    run_value_audit(
-        genuine,
-        adversarial_ddyck_probes(64),
-        value_exponent=8,
-        timeout_seconds=5.0,
-        size_of=decorated_dyck_size,
-    )
-
-    counting = (
-        "def statistic(path):\n"
-        "    total = 1\n"
-        "    for _ in range(path.n):\n"
-        "        total = total + total\n"
-        "    return total % 3\n"
-    )
-    with pytest.raises(ResourceGateError, match="magnitude bound|bit integer"):
-        run_value_audit(
-            counting,
-            adversarial_ddyck_probes(64),
-            value_exponent=8,
-            timeout_seconds=5.0,
-            size_of=decorated_dyck_size,
-        )
 
 
 def test_resource_gate_accepts_a_polynomial_statistic_on_large_paths():

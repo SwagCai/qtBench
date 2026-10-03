@@ -113,8 +113,8 @@ uv run --frozen python scripts/evaluate/evaluate_scored_submission.py macdonald-
 After capability and source-economy screening, the evaluator enumerates every
 public shape once. It checks valid conjugate-shape images, both round trips,
 both inv/maj exchange identities, and the complete public distribution. Only a
-complete match proceeds to fresh-namespace shuffled replay, the integer-value
-audit, and large standard fillings under CPU and memory limits, where the same
+complete match proceeds to fresh-namespace shuffled replay and large standard
+fillings under CPU and memory limits, where the same
 pointwise identities are checked without a target. Every stage must pass.
 
 Passing is necessary, not sufficient for a genuine bijection: uniform rank

@@ -107,12 +107,13 @@ uv run --frozen python scripts/evaluate/evaluate_scored_submission.py polyomino-
 ## Scoring
 
 After the capability and source-economy screens, the evaluator enumerates every
-public polyomino once. For each polyomino, it checks that `forward` and `inverse`
+public polyomino once, across all 91 published boxes through semiperimeter 14.
+For each polyomino, it checks that `forward` and `inverse`
 produce valid polyominoes in the transposed bounding box, are mutually inverse,
 and preserve both `area` and `bounce`. It then checks the induced `area/bounce`
 distribution against `data/polynomials.json`. A mismatch stops the evaluation.
-Only a complete match proceeds to fresh-namespace shuffled replay, the
-integer-value audit, and large adversarial polyominoes under CPU and memory
+Only a complete match proceeds to fresh-namespace shuffled replay and
+adversarial polyominoes under CPU and memory
 limits, where the transpose identities are checked pointwise again. Every stage
 must pass. Even then, passing is necessary but not sufficient for a genuine bijection
 (see `docs/checker.md`): a construction that rank-matches within equinumerous

@@ -10,8 +10,8 @@
   "evaluator_kind": "asm-q",
   "public_cases": {"size_min": 1, "size_max": 7},
   "scoring": {
-    "gate_order": ["capability_screen", "source_economy", "public_q_equals_1_and_exact_polynomials", "fresh_namespace_shuffled_replay", "value_audit", "resource_probes"],
+    "gate_order": ["capability_screen", "source_economy", "public_q_equals_1_and_exact_polynomials", "fresh_namespace_shuffled_replay", "resource_probes"],
     "case_score": "1 if the statistic distribution on ASMs equals the DPP sum-of-parts q-enumerator, else 0",
-    "problem_score": "all public sizes must match, then shuffled replay, the value audit, and resource gates must pass; passing is necessary, not sufficient"
+    "problem_score": "all public sizes must match, then shuffled replay and resource gates must pass; passing is necessary, not sufficient"
   }
 }

@@ -10,9 +10,9 @@ that every attack has been implemented. It separates three kinds of statement:
 - **residual risk**: the construction is possible under the checker model, but
   no passing implementation is claimed.
 
-The distinction matters. For example, `ACTION-1` is a confirmed lower-level
-all-gates bypass on problem `22`; automatic admission is now disabled for that
-problem. By contrast, saying that a closed target makes ranking
+The distinction matters. For example, `ACTION-1` is a confirmed
+all-gates bypass on problem `22`, including automatic CLI admission; subsequent
+semantic review must detect it. By contrast, saying that a closed target makes ranking
 more plausible does not prove that a short, scalable ranker exists for that
 object family.
 
@@ -21,10 +21,9 @@ object family.
 Status labels describe the current scored checker:
 
 - **blocked**: the ordinary form is rejected;
-- **blocked from automatic admission**: a lower-level reproducer may pass, but
-  the public CLI cannot issue a score and requires expert review;
 - **mitigated**: an important form is rejected, with documented bypasses;
 - **open**: a practical form can still pass;
+- **retired**: a historical gate or its implementation risk is no longer active;
 - **outside scored path/open by design**: the mechanism belongs to an explicitly
   unrestricted diagnostic or generation path and must not be used on untrusted
   input;
@@ -72,21 +71,21 @@ test.
 | CUTOFF-1 | Public-range fitting | Correct code only on scored sizes; trivial output above them | Open | High | especially statistic tasks | Additional exact cases only move the cutoff | none possible |
 | ENUM-1 | Exhaustive search | Enumerate the complete object fiber per input | Mitigated | High | all | Large resource probes | `test_resource_gate_stops_time_and_memory_attacks` |
 | RANK-1 | Uniform rank assignment | Rank an object in its fiber and distribute target exponents by rank | Irreducible | Critical | statistic tasks | No generic behavioral check | none possible |
-| ACTION-1 | Recomputing the defining action | Recompute the group action a target is defined from and read a position off the orbit | Blocked from automatic admission | Critical | `22` confirmed | CLI expert-review gate; the lower-level evaluator retains the reproducer | `test_cli_requires_expert_review_for_promotion`, `test_orbit_position_construction_passes_full_admission` |
+| ACTION-1 | Recomputing the defining action | Recompute the group action a target is defined from and read a position off the orbit | Open | Critical | `22` confirmed | Subsequent judge/source review; mechanical checks do not distinguish the shortcut | `test_cli_scores_promotion`, `test_cli_orbit_position_receives_automatic_pass`, `test_orbit_position_construction_passes_full_admission` |
 | TARGET-1 | Target-directory substitution | Point the scored CLI at attacker-selected compatible target data | Blocked | Critical | all | Scored dispatch uses only the registry-fixed problem directory | `test_scored_cli_rejects_problem_directory_override` |
 | CONFIG-1 | Scoring-configuration override | Reduce probe size or choose favorable time, memory, or seed settings while retaining a scored verdict | Blocked | High | all | Fixed, reported official configuration and checker-selected secrets | `test_scored_cli_rejects_security_configuration_overrides`, `test_scored_main_records_provenance_and_replaces_inherited_seed_overrides` |
 | INPUT-1 | Blocking submission input | Supply a FIFO whose writer keeps the scored reader waiting for EOF | Blocked | Medium | all | Nonblocking open, same-descriptor regular-file check, and bounded read | `test_scored_cli_rejects_fifo_without_waiting_for_eof` |
-| INIT-1 | Unguarded module initialization | Retain allocations or large integers in top-level globals before dynamic guards start | Mitigated | High | all | Trace allocation and profile globals from before module execution; bounded nested-value coverage remains | `test_resource_gate_counts_top_level_retained_allocations`, `test_value_audit_scans_top_level_globals`, `test_value_audit_scans_globals_mutated_by_a_submission_call`, `test_value_audit_padding_cannot_hide_later_roots` |
+| INIT-1 | Unguarded module initialization | Retain allocations in top-level globals before resource measurement starts | Mitigated | High | all | Resource and identity probes trace allocation before submitted module execution; process RSS limits remain for numerical workers | `test_resource_gate_counts_top_level_retained_allocations` |
 | IPC-1 | Parent-side result expansion | Return a compact iterable such as a huge `range` that expands when a validator consumes it in the scorer parent outside the worker resource limits | Blocked | High | `8` confirmed; other statistic tasks reviewed | Validators do not invoke iteration on non-exact containers; exact composition containers are length-bounded before copying | `test_parent_validators_do_not_render_untrusted_results`, `test_compositions_accept_only_bounded_builtin_sequences` |
-| MEM-1 | Aggregate process-envelope exhaustion | Keep a worker under its individual cap while evaluator-parent and IPC allocations push their combined RSS beyond the intended envelope | Blocked | Medium | automatically scored tasks | Official config v2 reserves 192 MiB for the worker and 64 MiB for the parent inside a sampled 256 MiB aggregate budget | `test_aggregate_budget_rejects_incompatible_caps_before_worker_start`, `test_aggregate_preflight_reserves_ipc_before_worker_start`, `test_aggregate_wait_requires_ipc_headroom_before_receiving_payload`, `test_aggregate_wait_rejects_the_combined_parent_and_worker_rss`, `test_aggregate_wait_fails_closed_if_parent_rss_cannot_be_measured`, `test_isolated_worker_rejects_parent_growth_after_deserialization` |
+| MEM-1 | Aggregate process-envelope exhaustion | Keep a worker under its individual cap while evaluator-parent and IPC allocations push their combined RSS beyond the intended envelope | Blocked | Medium | automatically scored tasks | Statistic config v3 and bijection config v4 reserve 192 MiB for the worker and 64 MiB for the parent inside a sampled 256 MiB aggregate budget | `test_aggregate_budget_rejects_incompatible_caps_before_worker_start`, `test_aggregate_preflight_reserves_ipc_before_worker_start`, `test_aggregate_wait_requires_ipc_headroom_before_receiving_payload`, `test_aggregate_wait_rejects_the_combined_parent_and_worker_rss`, `test_aggregate_wait_fails_closed_if_parent_rss_cannot_be_measured`, `test_isolated_worker_rejects_parent_growth_after_deserialization` |
 | SERIAL-1 | Parent integer serialization failure | Return a valid nonnegative resource-probe integer whose decimal form exceeds the runtime limit and aborts official JSON rendering | Blocked | Medium | statistic tasks | Integer and pair validators reject values unavailable to the official JSON encoder | `test_resource_validators_reject_integers_unavailable_to_json`, `test_official_formats_report_json_unavailable_probe_integers` |
 | PROV-1 | Forged scoring receipt | Run a modified launcher/interpreter or edit self-reported JSON to claim an official pass | Open | Critical | all | Trusted external invocation; informational commit, target, and submission hashes | `test_scored_main_records_provenance_and_replaces_inherited_seed_overrides` |
 | DIAG-1 | Unrestricted diagnostic execution | Pass attacker-controlled Python to a diagnostic/generator CLI or loader API | Outside scored path/open by design | Critical | diagnostic/generator CLI/API | Trusted local files only; official scoring never invokes the unrestricted loader | `test_diagnostic_cli_executes_submission_with_caller_privileges`, `test_diagnostic_cli_help_warns_about_unrestricted_execution`, `test_problem_one_generator_help_warns_about_unrestricted_oracle`, `test_scored_cli_does_not_execute_rejected_top_level_side_effect` |
-| INT-1 | Visible big-integer counting | Retain a large built-in `int` in a frame | Mitigated | Medium | all | Integer-value audit | `test_value_audit_blocks_exponential_integer_growth`, `test_value_audit_scans_dictionary_keys`, `test_value_audit_padding_cannot_hide_later_roots` |
-| INT-2 | Ephemeral big integer | Reduce or delete the large value before a profile checkpoint | Open | Medium | all | Current audit observes call/return checkpoints only | none possible |
+| INT-1 | Visible big-integer counting | Retain a large built-in `int` in a frame | Open | Medium | all | No magnitude-specific gate; source, time, and memory limits only | none possible |
+| INT-2 | Ephemeral big integer | Reduce or delete a large value before resource sampling | Open | Medium | all | Time and memory limits only | none possible |
 | INT-3 | Encoded big integer | Store limbs, digits, or a symbolic representation in small values | Open | Medium | all | Resource and source limits only | none possible |
-| INT-4 | Cross-root scan starvation | Exhaust the bounded scan in an early collection so later globals or locals are skipped | Blocked | Medium | all | Unbudgeted direct-root pass and fair per-container quotas | `test_value_audit_padding_cannot_hide_later_roots` |
-| INT-5 | Profile-callback exception interception | Catch a profiler-raised value violation with a broad submission handler | Blocked | High | all | Record the first finding in trusted state and raise only after the submitted call exits | `test_value_audit_violation_cannot_be_swallowed_by_submission_handler` |
+| INT-4 | Cross-root scan starvation | Exhaust the former bounded value scan in an early collection | Retired | Medium | historical | Integer-magnitude inspection removed in checker version 18 | none (retired) |
+| INT-5 | Profile-callback exception interception | Catch a former profiler-raised value violation | Retired | High | historical | Integer-magnitude inspection removed in checker version 18 | none (retired) |
 | PROBE-1 | Probe recognition | Hardcode public objects or known deterministic probes | Mitigated | High | all; acute for `26` | Post-submission random probes | `test_hardened_probes_cover_three_scales`, `test_structural_size_covers_every_registered_probe_kind`, `test_asm_hardened_probes_use_three_effective_capped_scales`, `test_shifted_pq_hardening_uses_three_orders_without_repeating_maximum` |
 | TYPE-1 | Degenerate large output | Return `None`, strings, floats, booleans, undeclared iterable types, or malformed compositions only at scale | Blocked | Low | statistic tasks | Large-probe output validation, including exact tuple/list enforcement for problem `8` | `test_noncrossing_rejects_invalid_outputs_on_large_resource_probes`, `test_compositions_accept_only_bounded_builtin_sequences` |
 | BIJ-1 | Finite bijection fitting | Correct table or enumeration on public bijection sizes | Mitigated | High | bijection tasks | Large pointwise identity gates | `test_identity_gate_rejects_enumeration_bijection_at_scale` |
@@ -97,8 +96,7 @@ test.
 
 For automatically scorable problems, the default CLI makes the following
 concrete claims, all proved by source inspection and covered at the mechanism
-level by the tests named above. Problem `22` instead stops at its expert-review
-status gate:
+level by the tests named above. Problem `22` uses this same pipeline:
 
 1. The admitted source has no imports, I/O, network, process creation,
    reflection, dunder access, dynamic calls, classes, assignment expressions,
@@ -114,12 +112,7 @@ status gate:
 4. The code is loaded again in a fresh namespace, traversed in a secret
    single-cycle order, and every callable is repeated. The keyed object/output
    fingerprint must agree.
-5. At the default audit size 64, built-in integers visible at call/return
-   checkpoints as direct return, global, or local roots, including during module
-   initialization, may not exceed `(size+2)^8`; shallow containers are scanned
-   to depth 2 with a 262,144-element budget divided fairly among distinct roots.
-   Elements beyond a root's quota are not exhaustively inspected.
-6. Fixed resource probes request size 1,024, generally at three scales, with two
+5. Fixed resource probes request size 1,024, generally at three scales, with two
    seconds, 32 MB of traced Python allocation and 8 MB of worker IPC. Official
    isolated execution reserves 192 MiB of process RSS for the worker and 64 MiB
    for the evaluator parent inside a sampled 256 MiB aggregate envelope. Tracing
@@ -129,7 +122,7 @@ status gate:
    effective orders 64, 128, and 256 within the same memory envelope. Problem
    `28` uses orders 256, 512, and 1,024, without generating its maximum shifted
    P/Q level twice.
-7. Large statistic probes have no unknown ground truth and therefore check
+6. Large statistic probes have no unknown ground truth and therefore check
    resources plus output type, except that problem `16` also enforces its exact
    bipartite zero locus pointwise. Large bijection probes additionally recompute
    their pointwise side, shape, inverse, statistic, content, weight, reduction,
@@ -151,7 +144,7 @@ runtime risks above are known; it is not a proof of semantic authenticity.
 
 | ID | Reviewer-facing assessment | Checker defenses and remaining limitation |
 |---:|---|---|
-| 1 | **Critical interpretation risk, proved by inspection:** this is a solved calibration problem and its answer is public in `oracle.py`. A pass demonstrates the pipeline, not discovery. | Full numerical, replay, audit, and resource gates still test the implementation. Discovery reports must exclude it or report it separately. |
+| 1 | **Critical interpretation risk, proved by inspection:** this is a solved calibration problem and its answer is public in `oracle.py`. A pass demonstrates the pipeline, not discovery. | Full numerical, replay, and resource gates still test the implementation. Discovery reports must exclude it or report it separately. |
 | 2 | **Critical residual (`BIJ-2`):** a uniform rank match between the `(area,bounce)` fibers would satisfy the requested exchange while assuming q,t-Catalan symmetry. | Every public path and large adversarial paths receive validity, two-sided round-trip, and both pointwise exchange checks. These reject tables and exhaustive enumerators, not a scalable rank formula. |
 | 3 | **High interpretation and provenance risk, proved by inspection:** targets for `n=7,8,9` are conditional SL2-string completions, and the repository does not include the direct-rank or reconstruction derivation pipeline for `n=5,...,9`. A pass matches the committed targets, not an unconditional independent computation of type B q,t-Catalan. | Exact checks cover all committed coefficients; public aggregate records state the assumptions but do not reproduce their derivation. Generic `RANK-1` and `CUTOFF-1` remain. |
 | 4 | **Critical residual (`BIJ-2`):** rank matching inside polyomino `(area,bounce)` bags can explain neither the map nor the symmetry. | Complete public boxes and large full/random polyominoes are checked pointwise for validity, round trips, and both exchanges. |
@@ -167,17 +160,17 @@ runtime risks above are known; it is not a proof of semantic authenticity.
 | 14 | **High semantic risk (`ANCHOR-1`) with a strong resource lever:** a passing distribution need not equal `maj(T)` tableau by tableau on the complete-graph anchor. The shape marginal at `q=1` is structural only. | Full Schur-coefficient polynomials are exact, and large probes vary graph and tableau shapes. No scalable LLT-to-Schur recomputation is known. Edgeless and one-row/one-column anchors are forced by singleton support, but the complete-graph pointwise formula is not. |
 | 15 | **High semantic risk (`ANCHOR-1`) with a strong resource lever:** the fixed-point-free formula `(n-lds(pi))/2` is a stated objectwise anchor, while scoring only its distribution; a permutation within `M_{n,0}` is invisible. | Exact certified public targets and large probes spread over fixed-point counts and matching shapes. General target recomputation requires orbit-harmonics elimination and is documented as infeasible at probe scale. The `q=1` marginal is only a fiber-size check. |
 | 16 | **Mitigated semantic risk (`ANCHOR-1`):** swapping a zero and a positive exponent within one `(pi,sigma)` fiber preserves the polynomial but violates the Matchings-Jack marker property. | The public enumerator and large resource probes now enforce `mjack(delta)=0` exactly on bipartite matchings. General semantic rank assignment and target-recomputation risks remain. |
-| 17 | **High residual (`RANK-1`) and source-status caveat:** the target recurrence is short and can be recomputed at arbitrary sizes, weakening the target-economy half of the defense. Han--Jouhet--Zeng ask for an interpretation but do not prescribe the Foata--Schuetzenberger objects; this fixed-object task is qtBench-proposed. | Large probes spread across descent counts and extreme/random admissible descent sets; enumeration of `Gamma_{n,k}` is exponential, and visible large counts meet the integer audit. Reviewer judgment remains necessary. |
+| 17 | **High residual (`RANK-1`) and source-status caveat:** the target recurrence is short and can be recomputed at arbitrary sizes, weakening the target-economy half of the defense. Han--Jouhet--Zeng ask for an interpretation but do not prescribe the Foata--Schuetzenberger objects; this fixed-object task is qtBench-proposed. | Large probes spread across descent counts and extreme/random admissible descent sets; enumeration of `Gamma_{n,k}` is exponential, while scalable rank formulas remain a semantic risk. Reviewer judgment remains necessary. |
 | 18 | **High generic risk only:** the public `u=1` eta-graded marginal constrains the missing statistic, but no scalable target formula is documented. | Full eta/`u`/`t` coefficients are checked. Large minimal and random tall gamma-parking selections vary `gamma`, content, and selected cells. |
 | 19 | **High generic risk only:** no problem-specific shortcut is documented for the rooted-tiered-tree Theta target. | Exact joint targets plus one-tier, two-tier, fully tiered, and random large rooted trees. The root model differs from problem `9`, preventing a trivial reuse that ignores root compatibility. |
 | 20 | **High generic risk only:** this has the same generic risks as `18`, with an additional global lattice-word constraint. | The full eta-graded target is checked, and the large generator constructs valid lattice-word probes rather than reusing the ordinary family unchanged. |
 | 21 | **High generic risk with a strong resource lever:** the target has no known scalable q,t-Ehrhart formula, and the requested statistic must use the graph as well as the tree. | Full graph-indexed joint targets are checked. Large probes cover star, complete, intermediate threshold graphs, random trees, and a deepest path. A graph-ignoring rule may pass isolated samples but has no known all-case bypass. |
-| 22 | **Critical confirmed bypass (`ACTION-1`):** promotion-orbit position reproduces the target by definition and passes the lower-level evaluator cheaply. | Automatic scoring is disabled and the registry marks the item `expert_review`; only source review can distinguish an intrinsic statistic. The passing reproducer remains as evidence for the gate. |
+| 22 | **Critical confirmed bypass (`ACTION-1`):** promotion-orbit position reproduces the target by definition and passes the lower-level evaluator cheaply. | The active item receives the ordinary automatic score; subsequent semantic review must distinguish an intrinsic statistic. The passing reproducer records the residual mechanical limitation. |
 | 23 | **High residual (`RANK-1`) and source-status caveat:** the Reiner--Sommers target has a closed formula, but no source was located posing the objectwise statistic question. | The item is labelled a qtBench-proposed natural-statistic challenge. Exact polynomial and large-probe checks remain diagnostic, not evidence that the source posed the challenge. |
 | 24 | **Critical residual (`BIJ-2`):** uniform rank matching across conjugate-shape `(inv,maj)` fibers would pass without explaining Macdonald symmetry. Known hook solutions are excluded, so patching only that family is insufficient. | Complete non-hook public fillings plus large non-hook shapes receive canonicality, conjugate-shape, two-round-trip, and both pointwise exchange checks. |
 | 25 | **Critical residual (`BIJ-2`):** rank matching inside equinumerous parking-function `(area,dinv)` bags would assume the diagonal-coinvariant symmetry. | Complete public sizes and large varied parking functions receive validity, size, both round trips, and both exchange checks. The one-variable zeta map does not satisfy these gates. |
 | 26 | **High specific probe-recognition risk (`PROBE-1`), proved by inspection:** exact general graph checking is capped at seven vertices, which is also the public maximum; genuinely large checks are star/complete pairs whose images are uniquely forced and recognizable. | The earlier all-small collapse is fixed by three large star/complete scales, the only probes above the public range. The randomized graphs alongside them stay inside the exhaustive public enumeration and add no size coverage. A branch that special-cases the extremes remains possible, while arbitrary large canonical graph outputs cannot be validated economically. |
-| 27 | **High residual (`RANK-1`):** the DPP target is public through an exact product/enumerator, but no scalable ASM rank assignment is established. A statistic can exploit public ASM features without being mathematically illuminating. | The complete public ASM distribution is exact; capped resource orders 64, 128, and 256 include permutation and non-permutation ASMs without exceeding the shared memory envelope. Enumeration and large visible counting state face the resource and integer gates. |
+| 27 | **High residual (`RANK-1`):** the DPP target is public through an exact product/enumerator, but no scalable ASM rank assignment is established. A statistic can exploit public ASM features without being mathematically illuminating. | The complete public ASM distribution is exact; capped resource orders 64, 128, and 256 include permutation and non-permutation ASMs without exceeding the shared memory envelope. Enumeration faces the resource gate; there is no integer-magnitude gate. |
 | 28 | **Critical residual (`BIJ-2`):** rank matching by full content between the signed shifted-tableau unions would prove no explicit Chiu--Marberg map. | Both public sides are exhaustive. Resource orders 256, 512, and 1,024 provide distinct valid Q/P scales, with no duplicated maximum, and check canonicality, correct side, complete content, and both round trips; direct enumeration is uneconomic, but a uniform matcher remains semantically irreducible. |
 | 29 | **Critical residual (`BIJ-2`):** weight-by-weight rank matching can use the analytic Andrews--Bressoud equality without giving its requested bijective proof. | Public source and target sides are exhaustive. Large structured and seeded-random probes span all four public `(M,r)` pairs and check side, unchanged parameters and weight, canonicality, and both round trips. Public-only tables fail; a scalable uniform matcher cannot be classified mechanically. |
 | 30 | **Critical residual (`BIJ-2`):** grading-wise rank matching between improper partition matrices and restricted inversion sequences would satisfy the observable identities without explaining Chern--Fu's map. | Both public sides are exhaustive. Large deterministic and random objects check side, size, grading, canonicality, and both round trips. A uniform semantic shortcut remains irreducible. |
@@ -432,7 +425,7 @@ Repository documentation supports the following finer assessment:
 
 These are threat assessments, not complexity theorems. In particular, “closed
 target” does not imply “confirmed passing ranker”: the object-ranking half can
-still require exponential enumeration or large counts caught by `INT-1`.
+still require exponential enumeration. Large integers alone are no longer rejected.
 
 ### ACTION-1 — Recomputing the defining action
 
@@ -450,7 +443,8 @@ also inexpensive: promotion is `O(rows + columns)`, so a full orbit walk on a
 and the cost grows only like `n^{3/2}`. Enlarging the probes therefore does not
 help. A submission that combines this with the published answer on the solved
 sub-family passes every stage of the lower-level evaluator; this has been
-verified. The public CLI now stops before evaluation and requires expert review.
+verified. The public CLI also permits an automatic mechanical pass; it does not
+certify that the statistic is intrinsic.
 
 Two consequences follow. First, distribution checks cannot help: the construction
 and intended statistic agree in distribution on every fiber and differ only
@@ -459,13 +453,39 @@ sub-family of the kind that anchors problems `15`, `17` and `22` constrains
 correctness but cannot exclude a construction that is already correct -- an earlier version of
 problem `22` claimed otherwise and was wrong.
 
-The safe admission mitigation is a mechanical status gate backed by expert
-review, not an opaque semantic heuristic. The defining action is not exposed on
+The mitigation is subsequent semantic review by a judge or expert. It is not a
+mechanically enforced guarantee. The defining action is not exposed on
 the objects, which makes the construction conspicuous in source, and
 `problem.md` states outright why a lower-level evaluator pass is not evidence of
 an answer. This limitation should be considered before
 another problem whose target is defined from an action is added. The benchmark
-can still pose the problem, but it cannot issue an automatic passing score.
+issues an automatic mechanical score, while mathematical acceptance requires
+review. The [inference scaffold](../../inference/README.md) provides that
+checker-before-judge workflow.
+
+### HARNESS-1 — Inference broker and process-boundary escape
+
+Scaffold review confirmed three harness attacks during development;
+none was a bypass of the released scored checker. A solver-controlled file path
+could redirect a naive host broker through a symlink or FIFO, a forged or
+replayed response could mislead a client that failed to bind all request fields,
+and a background process that changed session could outlive a process-group
+timeout. The integrated scaffold holds pre-opened request and response directory
+descriptors, accepts only bounded no-follow single-link regular files, writes
+responses atomically, and binds each client response to the request ID,
+submission ID, and exact source hash. Host success comes only from the in-memory
+judge/checker result, never from a workspace response file. One absolute
+wall-clock deadline covers the full run, and every solver, judge, and checker
+tree runs under a dedicated Linux subreaper that kills and reaps detached
+descendants. The live preflight fails closed unless filesystem/network
+sandboxing, a private sandbox PID namespace, protected control paths, and
+detached-child cleanup all succeed.
+
+Focused regressions live in `inference/tests/test_protocol.py` and
+`inference/tests/test_sandbox.py`. These controls preserve host integrity and
+resource bounds; they cannot make the semantic judge infallible. Solver-authored
+prompt injection and solver self-denial remain review limitations documented in
+the [inference guide](../../inference/README.md).
 
 ### TARGET-1 — Target-directory substitution
 
@@ -512,7 +532,7 @@ its individual limit could therefore make an external aggregate memory limit
 terminate the scorer. This was a confirmed accounting gap and an availability
 risk, not a demonstrated way to manufacture a passing receipt.
 
-Checker version 15 and official scoring configuration v2 cap a worker at
+Checker versions 15–17 and official scoring configurations v2–v3 cap a worker at
 201,326,592 bytes (192 MiB), reserve 67,108,864 bytes (64 MiB) for the evaluator
 parent, and cap their sampled sum at 268,435,456 bytes (256 MiB). Before creating
 each worker, the scorer requires the two configured caps to fit the aggregate
@@ -525,11 +545,11 @@ bytes encoded, confirms clean worker exit, then deserializes and checks the
 parent reserve again; both encoded and decoded payload are resident for that
 final check.
 
-The literal v2/checker-15 values are asserted in successful, gate-error, and
-expert-review receipts by
+The current statistic v3/bijection v4/checker-18 values are asserted in
+successful, gate-error, and promotion numerical-failure receipts by
 `test_scored_main_records_provenance_and_replaces_inherited_seed_overrides`,
 `test_cli_rejects_oversized_source_before_reading_it`, and
-`test_cli_requires_expert_review_for_promotion`.
+`test_cli_scores_promotion`.
 
 The aggregate context is activated by the official scored CLI only. Direct
 lower-level evaluator calls retain their caller-selected per-process contract
@@ -540,28 +560,11 @@ availability limitations, not known score-verdict bypasses.
 
 ### INT-1, INT-2, INT-3, INT-4, INT-5 — Integer representations
 
-The integer-value audit catches a large built-in integer only while it is
-visible at a call/return checkpoint. Direct return, global, and local roots are
-always inspected. Dictionary keys and values are included in the shallow
-container scan. Its depth remains 2 and its 262,144 visited-element budget is
-divided among distinct container roots, preventing an earlier padding collection
-from starving all later roots. Elements beyond an individual root's quota and
-arbitrary object graphs are not exhaustively inspected.
-
-The profile callback records the first observed violation in trusted closure
-state instead of raising it while submitted code is on the stack. The trusted
-wrapper restores whichever profiler was active before the guarded call after
-the submission returns or raises, then reports any stored violation. A broad
-exception handler in the submission therefore cannot clear a finding that the
-profiler has already observed.
-
-It does not observe a temporary that has already been reduced or deleted, and
-it does not reconstruct an integer encoded as small limbs. An integer of
-magnitude `2**n` needs only `O(n)` bits, so aggregate memory limits cannot
-separate such an encoding from ordinary linear-size working state.
-
-The audit is therefore a smoke alarm for naive counting, not a proof that
-ranking did not occur.
+Checker version 18 removed the intermediate integer-magnitude audit. Large
+built-in integers, ephemeral values, and limb encodings face only the unchanged
+source, time, and memory limits. The previous bounded scan and profile callback
+are historical; INT-4 and INT-5 are retired. An integer of magnitude `2**n`
+needs only `O(n)` bits, so memory limits alone cannot exclude it.
 
 ### PROBE-1 — Probe recognition
 

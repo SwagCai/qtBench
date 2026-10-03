@@ -117,14 +117,14 @@ Oracle modules should declare both `PROBLEM_ID = <id>` and
 All target polynomial terms and case identities used for scoring are public.
 After capability and source-economy screens, the scored path compares any
 applicable public marginal and every generated coefficient exactly. A mismatch
-stops immediately. A numerical match is then replayed in a fresh namespace and secret
-shuffled order to verify referential transparency before the integer-value audit
-and adversarial time/memory probes (see `checker.md`).
+stops immediately. A numerical match is then replayed in a fresh namespace and
+secret shuffled order to verify referential transparency before adversarial
+time/memory probes (see `checker.md`).
 
 The public range should be large and varied enough to test the mathematical
 proposal. Its complete numerical comparison and fresh shuffled replay must fit
 the [fixed official scoring configuration](checker.md#stages): a 60-second
-numerical timeout and a 192 MiB worker-process ceiling, with a 64 MiB reserve
+statistic or 480-second bijection numerical timeout and a 192 MiB worker-process ceiling, with a 64 MiB reserve
 for the evaluator parent inside a 256 MiB aggregate process envelope. Resource
 probes should be much larger while remaining cheap for the trusted object
 generator.

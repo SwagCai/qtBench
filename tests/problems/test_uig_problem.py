@@ -10,7 +10,6 @@ import pytest
 from qtbench.combinatorics import (
     iter_uig_permutations_for_vector,
     unit_interval_graph_permutation_count,
-    unit_interval_graph_permutation_size,
 )
 from qtbench.evaluation import (
     ResourceGateError,
@@ -18,7 +17,6 @@ from qtbench.evaluation import (
     evaluate_uig_polynomial_checks,
     evaluate_uig_submission,
     run_resource_gate,
-    run_value_audit,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -137,7 +135,6 @@ def test_valid_but_wrong_statistic_short_circuits_at_numerical_end_to_end():
     )
     assert not result["passed"]
     assert result["checker_stage"] == "numerical"
-    assert result["value_audit"] is None
 
 
 def test_non_composition_output_is_rejected():
@@ -162,35 +159,6 @@ def test_composition_parts_must_be_exact_integers(invalid_part):
         )
 
 
-def test_value_audit_wired_for_unit_interval_graph_permutations():
-    # A genuine small-valued statistic (a valid composition) passes the audit.
-    genuine = (
-        "def statistic(graph_permutation):\n"
-        "    return tuple(1 for _ in range(graph_permutation.n))\n"
-    )
-    run_value_audit(
-        genuine,
-        adversarial_uig_probes(64),
-        value_exponent=8,
-        timeout_seconds=5.0,
-        size_of=unit_interval_graph_permutation_size,
-    )
-
-    counting = (
-        "def statistic(graph_permutation):\n"
-        "    total = 1\n"
-        "    for _ in range(graph_permutation.n):\n"
-        "        total = total + total\n"
-        "    return (total % 3 + 1,) + tuple(1 for _ in range(graph_permutation.n - 1))\n"
-    )
-    with pytest.raises(ResourceGateError, match="magnitude bound|bit integer"):
-        run_value_audit(
-            counting,
-            adversarial_uig_probes(64),
-            value_exponent=8,
-            timeout_seconds=5.0,
-            size_of=unit_interval_graph_permutation_size,
-        )
 
 
 def test_resource_gate_accepts_a_polynomial_statistic_on_large_objects():

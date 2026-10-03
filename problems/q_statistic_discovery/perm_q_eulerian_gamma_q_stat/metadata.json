@@ -12,9 +12,9 @@
     "size_max": 9
   },
   "scoring": {
-    "gate_order": ["capability_screen", "source_economy", "public_q_equals_1_and_exact_polynomials", "fresh_namespace_shuffled_replay", "value_audit", "resource_probes"],
+    "gate_order": ["capability_screen", "source_economy", "public_q_equals_1_and_exact_polynomials", "fresh_namespace_shuffled_replay", "resource_probes"],
     "case_score": "1 if the generated q-distribution over Gamma_{n,k} equals the public coefficient a_{n,k}(q), else 0",
-    "problem_score": "all public (n, k) fibers must match, then shuffled replay, the value audit, and resource gates must pass; passing is necessary, not sufficient"
+    "problem_score": "all public (n, k) fibers must match, then shuffled replay and resource gates must pass; passing is necessary, not sufficient"
   },
   "name": "perm_q_eulerian_gamma_q_stat"
 }

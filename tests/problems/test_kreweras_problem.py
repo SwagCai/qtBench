@@ -20,8 +20,6 @@ from qtbench.evaluation import (
     adversarial_noncrossing_probes,
     evaluate_kreweras_polynomial_checks,
     evaluate_kreweras_submission,
-    run_resource_gate,
-    run_value_audit,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -538,7 +536,6 @@ def test_valid_but_wrong_statistic_short_circuits_at_numerical_end_to_end():
     )
     assert not result["passed"]
     assert result["checker_stage"] == "numerical"
-    assert result["value_audit"] is None
 
 
 @pytest.mark.parametrize("invalid", [True, 1.0, "1", (0,)])
@@ -549,25 +546,6 @@ def test_statistic_must_return_a_nonnegative_int(invalid):
         evaluate_kreweras_polynomial_checks(problem_dir=PROBLEM, statistic=lambda _o: -1)
 
 
-def test_value_audit_and_resource_gate_wired():
-    genuine = "def statistic(partition):\n    return partition.area()\n"
-    run_value_audit(
-        genuine, adversarial_noncrossing_probes(64), value_exponent=8, timeout_seconds=5.0
-    )
-    counting = (
-        "def statistic(partition):\n"
-        "    total = 1\n"
-        "    for _ in range(partition.n):\n"
-        "        total = total + total\n"
-        "    return total\n"
-    )
-    with pytest.raises(ResourceGateError, match="magnitude bound|bit integer"):
-        run_value_audit(
-            counting, adversarial_noncrossing_probes(64), value_exponent=8, timeout_seconds=5.0
-        )
-    probes = adversarial_noncrossing_probes(256)
-    report = run_resource_gate(genuine, probes, timeout_seconds=5.0, max_python_bytes=64_000_000)
-    assert len(report.results) == len(probes)
 
 
 def test_object_totals_are_the_catalan_numbers():

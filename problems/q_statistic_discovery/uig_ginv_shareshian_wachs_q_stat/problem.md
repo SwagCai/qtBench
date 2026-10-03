@@ -169,7 +169,7 @@ After the capability and source-economy screens, the evaluator enumerates every 
 `lambda(theta(sigma))` and by `ginv`, and checks the resulting partition-graded
 coefficients against `data/polynomials.json`, together with the `q = 1`
 partition-multiset marginal. A mismatch stops the evaluation. Only a complete
-match proceeds to fresh-namespace shuffled replay, the integer-value audit, and
+match proceeds to fresh-namespace shuffled replay and
 large adversarial objects under CPU and memory limits. Every stage must pass,
 though a pass is necessary but not sufficient for a genuine statistic (see
 `docs/checker.md`).

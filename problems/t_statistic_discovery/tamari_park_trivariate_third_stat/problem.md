@@ -157,7 +157,7 @@ uv run --frozen python scripts/evaluate/evaluate_scored_submission.py tamari pat
 After the capability and source-economy screens, the evaluator enumerates each
 public size once. From the same submitted values, it checks the explicit
 `q1 = q2 = 1` marginal and every `q1,q2,q3` coefficient. Only a complete match
-proceeds to fresh-namespace shuffled replay, the integer-value audit, and large
+proceeds to fresh-namespace shuffled replay and large
 adversarial pairs under CPU and memory limits. A mismatch stops the evaluation,
 and passing the marginal alone is insufficient. Every stage must pass, though a
 pass is necessary but not sufficient for a genuine statistic (see

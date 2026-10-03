@@ -63,9 +63,9 @@ uv run --frozen python scripts/evaluate/evaluate_scored_submission.py asm-q path
 
 After capability and source-economy screening, the evaluator checks the exact
 distribution on every public size and repeats it in a fresh namespace with a
-secret single-cycle order. It then audits independently generated permutation
-and non-permutation ASMs at sizes far beyond the public range under integer,
-time, and memory limits.
+secret single-cycle order. It then checks independently generated permutation
+and non-permutation ASMs at sizes far beyond the public range under fixed time
+and memory limits.
 
 Passing is necessary, not sufficient for a genuine solution. A uniform ranking
 construction can reproduce a public distribution without explaining the DPP

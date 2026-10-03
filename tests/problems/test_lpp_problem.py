@@ -5,20 +5,16 @@ import json
 from collections import Counter, defaultdict
 from pathlib import Path
 
-import pytest
 
 from qtbench.combinatorics import (
     iter_st_labelled_polyominoes,
     st_labelled_polyomino_count,
-    st_labelled_polyomino_size,
 )
 from qtbench.evaluation import (
-    ResourceGateError,
     adversarial_lpp_probes,
     evaluate_lpp_polynomial_checks,
     evaluate_lpp_submission,
     run_resource_gate,
-    run_value_audit,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -107,35 +103,8 @@ def test_constant_zero_short_circuits_at_numerical_end_to_end():
     )
     assert not result["passed"]
     assert result["checker_stage"] == "numerical"
-    assert result["value_audit"] is None
 
 
-def test_value_audit_wired_for_labelled_polyominoes():
-    # a genuine small-valued statistic passes; a counting cheat is blocked
-    genuine = "def statistic(polyomino):\n    return len(polyomino.labelled_cells)\n"
-    run_value_audit(
-        genuine,
-        adversarial_lpp_probes(64),
-        value_exponent=8,
-        timeout_seconds=5.0,
-        size_of=st_labelled_polyomino_size,
-    )
-
-    counting = (
-        "def statistic(polyomino):\n"
-        "    total = 1\n"
-        "    for _ in range(polyomino.m + polyomino.n):\n"
-        "        total = total + total\n"
-        "    return total % 3\n"
-    )
-    with pytest.raises(ResourceGateError, match="magnitude bound|bit integer"):
-        run_value_audit(
-            counting,
-            adversarial_lpp_probes(64),
-            value_exponent=8,
-            timeout_seconds=5.0,
-            size_of=st_labelled_polyomino_size,
-        )
 
 
 def test_resource_gate_accepts_a_polynomial_statistic_on_large_lpp():

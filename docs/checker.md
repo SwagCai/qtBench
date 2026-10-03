@@ -135,23 +135,7 @@ A scored submission runs these stages in order; the first failure stops.
    directions of a bijection. It rejects call-order schedules, first-call
    behavior, and mutable global assignments while allowing deterministic
    memoization.
-5. **Integer-value audit** — on moderate adversarial objects (default size 64),
-   module initialization and the submission are profiled at function-call and
-   function-return checkpoints.
-   Returned values and direct integers retained as globals or frame locals are
-   always inspected and rejected when they exceed
-   `(size + 2) ** value_exponent` in magnitude (default exponent 8). Shallow
-   built-in containers, including dictionary keys and values, share a bounded
-   scan divided fairly among distinct roots, so one earlier collection cannot
-   hide all later roots. The trusted profile callback records its first finding
-   without raising into submitted code; after the submitted call returns or
-   raises, the trusted wrapper restores the caller's prior profiler and reports
-   the finding.
-   Thus a broad submission exception handler cannot consume an observed
-   violation. This catches ordinary counting/ranking implementations,
-   which accumulate the sizes of exponentially large object fibers; elements
-   beyond a root's bounded quota remain outside the mechanical guarantee.
-6. **Resource gate** — on large adversarial objects (default requested size
+5. **Resource gate** — on large adversarial objects (default requested size
    1024) under
    CPU, wall-clock, and memory limits. Statistic outputs must still have the
    declared type on these probes. Problem `16` additionally enforces the exact
@@ -193,9 +177,8 @@ A scored submission runs these stages in order; the first failure stops.
    reuses the supplied maximum-order objects and generates only the two lower
    orders, rather than duplicating the maximum.
 
-Run it with the appropriate evaluator kind below. Every listed kind except
-`promotion` is automatically scored; `promotion` reports that expert review is
-required because automatic scoring is disabled.
+Run it with the appropriate evaluator kind below. Every listed kind, including
+`promotion`, receives the ordinary automatic mechanical score.
 
 ```bash
 uv run --locked python scripts/evaluate/evaluate_scored_submission.py noncrossing submission.py
@@ -235,26 +218,43 @@ complete machine-readable result, with one record per public case.
 
 Official scoring uses the source-defined configuration reported in every result
 as `scoring_config`: requested probe size 1,024 (subject to the documented
-problem `26` and `27` exceptions above), a two-second probe timeout, a 60-second
-numerical timeout, 32 MB of traced Python allocation on adversarial resource and
+problem `26` and `27` exceptions above), a two-second probe timeout, a
+60-second statistic numerical timeout and a 480-second bijection numerical
+timeout, 32 MB of traced Python allocation on adversarial resource and
 identity probes, a 192 MiB worker-process ceiling (also used as the traced
-allocation ceiling during exhaustive numerical/replay stages), a 64 MiB
+allocation ceiling during statistic numerical/replay stages), a 64 MiB
 evaluator-parent reserve, and a 256 MiB aggregate process envelope. Before each
 official worker starts, the current parent RSS plus the maximum 8 MB IPC message
 must fit the parent reserve and the configured worker/parent caps must fit the
 aggregate envelope. The IPC headroom is checked again before receiving each
-worker result; RSS measurement failures reject the run. The scored CLI
-accepts no overrides for these values. It
-also chooses and reports a fresh `run_seed` and ignores inherited run/replay
-seed environment variables, so a caller cannot select recognizable probes or
-replay order. The unrestricted `evaluate_submission.py` command is available
-only for non-scoring Problem 1 public-data diagnostics and rejects other problem
-directories. It imports the submission in the caller's process with the caller's
-privileges and no checker resource boundary. Use it only for trusted local files,
-or place it in an external operating-system sandbox. Its output is not an
-admission verdict or receipt.
+worker result; RSS measurement failures reject the run. Bijection numerical
+evaluation does not trace individual Python allocations; its worker remains
+subject to the process memory ceiling, and its `numerical_peak_python_bytes`
+field is `null`. The 480-second limit was calibrated with the exact shareable
+Problem 5 submission (SHA-256
+`13962f095d03f4fc6bd5f762ddbc463cbb1c2098a5e91792f913c818ed0bf64f`)
+over the complete 91-box public battery, which contains 1,033,411 polyominoes.
+The numerical check and fresh shuffled replay took 218.5 seconds on the
+calibration Mac, so the limit is about 2.2 times that measured runtime. Timings
+are hardware-specific. An independent official-platform run at commit
+`1349bcb41fd55ab7f6e4f26adb75ef411b270e83` on Linux with Python 3.12.3 and an
+Intel Core i9-14900K took 214.9 seconds for numerical evaluation and replay
+(215.6 seconds total wall time) and passed all 91 cases. The scored CLI accepts
+no overrides for these values. It also chooses and reports a fresh `run_seed`
+and ignores inherited run/replay seed environment variables, so a caller cannot
+select recognizable probes or replay order. The unrestricted
+`evaluate_submission.py` command is available only for non-scoring Problem 1
+public-data diagnostics and rejects other problem directories. It imports the
+submission in the caller's process with the caller's privileges and no checker
+resource boundary. Use it only for trusted local files, or place it in an
+external operating-system sandbox. Its output is not an admission verdict or
+receipt.
 
-Official JSON distinguishes a mechanical verdict from a review-only outcome.
+Official JSON records a mechanical verdict, not mathematical acceptance.
+Problem `22` uses the ordinary boolean `automatic_verdict`, with
+`expert_review_required=false`; this field indicates the absence of a CLI status
+gate, not exemption from subsequent semantic review. The reserved review-only
+outcome remains available for problems without automatic scoring.
 `automatic_verdict` is `true` or `false` only when the automatic scorer issues
 a verdict. For an expert-review problem it is `null`,
 `expert_review_required` is `true`, and `checker_stage` is `expert_review`;
@@ -280,11 +280,10 @@ as proof.
 Together, the stages establish that a passing submission is short, pure,
 capability screened, correct on every public size, repeatable as a function of
 each public object, and within the fixed, reported time and memory budgets on the
-sampled large objects. They also reject oversized integers visible at the
-value-audit checkpoints. This rules out many easy cheats: direct capability escapes, literal
-answer tables, stateful bag assignment, straightforward runtime enumeration of
-the object set, and ordinary big-integer counting DPs. Finite probes do not
-prove an asymptotic complexity bound.
+sampled large objects. This rules out many easy cheats: direct capability
+escapes, literal answer tables, stateful bag assignment, and straightforward
+runtime enumeration of the object set. Finite probes do not prove an asymptotic
+complexity bound or reject big integers solely for their magnitude.
 
 ## Why not more
 
@@ -296,13 +295,9 @@ correctness check can distinguish it from a natural statistic. Other problems
 have no efficiently known target formula; for them target recomputation may be
 the dominant obstruction.
 
-The integer-value audit is the one gate aimed squarely at this cheat: computing
-a rank inside an exponential fiber normally requires forming exponentially
-large integers. It is deliberately cheap rather than airtight. A submission can
-branch on the public size range, discard a large intermediate before a profiling
-checkpoint, or emulate big integers in limb containers. The source-economy cap
-makes such code more conspicuous, but no current mechanical stage decides
-whether the surviving program expresses a genuine combinatorial idea.
+The checker does not inspect intermediate integer magnitudes. A scalable
+counting or ranking construction can pass its mechanical gates; semantic review
+remains necessary.
 
 Referential transparency is narrower and stronger: being a statistic requires
 the same object to have the same value independently of call history. The
@@ -326,10 +321,10 @@ Problems `17` (`q`-Eulerian gamma) and `23` (`q`-Kreweras) are the opposite case
 As their `problem.md` files explain, both targets have closed forms, so they are
 cheap to recompute at any size; the gate only rules out enumerating the fiber.
 
-For problem `22` (promotion cyclic sieving), the lower-level checker **cannot
-distinguish a genuine answer from the known shortcut**. Automatic scoring is
-therefore disabled and the registry marks the item for expert review. This
-should be considered carefully
+For problem `22` (promotion cyclic sieving), the checker **cannot
+distinguish a genuine answer from the known shortcut**. It uses the ordinary
+automatic pipeline and active registry status; subsequent semantic review must
+identify this shortcut. This limitation should be considered carefully
 before another problem of its kind is added. Its target is *defined* from the orbits of a group
 action, so "walk the object's orbit and return its position in it" reproduces
 every public target exactly, with no mathematical content. Nothing in the
@@ -340,8 +335,9 @@ and differ only pointwise. Cost does not help either. Promotion is
 `O(rows + columns)`, so a full orbit walk at `990` cells takes about `0.1`
 seconds against a `2`-second budget, and the cost grows only like `n^{3/2}`. A
 submission combining that with the published rectangular answer passes every
-lower-level stage, which is precisely why the public CLI refuses an automatic
-verdict.
+mechanical stage, including through the public CLI. The
+[inference scaffold](../inference/README.md) invokes this checker first and
+performs semantic assessment only after a passing checker result.
 
 The broader lesson is that **when a target is defined from a group action, no
 distribution check and no resource bound will separate the intended statistic from one
@@ -373,17 +369,13 @@ supplies only:
   single-cycle shuffle to each public fiber for referential-transparency replay;
 - an adversarial probe generator that returns `(function_name, (object,))` calls
   at a requested size;
-- a module-level `size_of(object) -> int` passed to `run_value_audit` (it must
-  be module-level so it survives pickling into the spawned worker);
 - a thin `evaluate_<kind>_submission` that runs the stages in order.
 
 The numerical worker supplies the fresh namespaces, repeated-call wrapper, and
 keyed fingerprint. `check_capability_screen`, `check_source_economy`,
-`run_value_audit`, and `run_resource_gate` remain shared. Before relying on the
-checker for a new problem, confirm the object's numeric labels are bounded by
-its size (so `size_of` and the value bound mean what they should) and judge
-whether the problem's fiber counting is hard enough for the resource gate to be
-decisive.
+`run_resource_gate` remain shared. Before relying on the checker for a new
+problem, judge whether its fiber counting is hard enough for the resource gate
+to be decisive.
 
 The maintained attack catalog, including confirmed bypasses and irreducible
 cases, is in `docs/cheating/taxonomy.md`.

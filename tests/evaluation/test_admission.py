@@ -22,7 +22,6 @@ from qtbench.evaluation import (
     public_area_bounce_terms,
     run_area_bounce_identity_gate,
     run_resource_gate,
-    run_value_audit,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -50,35 +49,6 @@ def statistic(partition):
 """
 
 AREA_ONLY = "def statistic(partition):\n    return partition.area()\n"
-
-# A polynomial-time function that forms exponentially large integers, exactly
-# what a counting/ranking cheat must do. It is numerically meaningless; the
-# value audit is what rejects this shape.
-COUNTING_CHEAT = """\
-def statistic(partition):
-    total = 1
-    for step in range(2 * partition.n):
-        total = total + total
-    return total % 3
-"""
-
-# A numerically meaningless 2-D counting DP (Catalan triangle) to exercise the
-# nested-container branch of the value audit.
-COUNTING_DP_2D = """\
-def statistic(partition):
-    n = partition.n
-    table = [[0] * (n + 1)]
-    table[0][0] = 1
-    for step in range(2 * n):
-        row = [0] * (n + 1)
-        previous = table[step]
-        for height in range(n):
-            row[height + 1] = row[height + 1] + previous[height]
-            if height > 0:
-                row[height - 1] = row[height - 1] + previous[height]
-        table.append(row)
-    return table[2 * n][0] % 5
-"""
 
 # A correct area/bounce bijection built by rank-matching inside (area, bounce)
 # bags. It satisfies every identity, but it enumerates the whole path set, so it
@@ -150,18 +120,6 @@ IDENTITY_MAP = "def forward(path):\n    return path\n\ndef inverse(path):\n    r
 
 def nc_probes(n, count=4):
     return adversarial_noncrossing_probes(n)[:count]
-
-
-# A brand-new object type (permutations) to exercise the reusable core. size_of
-# must be module-level so it survives pickling into the spawned worker.
-def perm_size(perm):
-    return len(perm)
-
-
-def perm_probes(n):
-    identity = tuple(range(1, n + 1))
-    reverse = tuple(range(n, 0, -1))
-    return [("statistic", (identity,)), ("statistic", (reverse,))]
 
 
 class _ReprBomb:
@@ -635,54 +593,10 @@ def test_parent_validators_do_not_render_untrusted_results() -> None:
             validator(report, calls)
 
 
-@pytest.mark.parametrize(
-    "source",
-    [
-        # dinv: nested O(n^2) integer work
-        "def statistic(path):\n    levels=[]\n    x=y=0\n    for s in path:\n        if s=='N':\n            levels.append(y-x); y+=1\n        else:\n            x+=1\n    t=0\n    for i in range(len(levels)):\n        for j in range(i+1,len(levels)):\n            d=levels[i]-levels[j]\n            if d==0 or d==1:\n                t+=1\n    return t\n",
-        # a dict-based statistic (dicts are allowed now)
-        "def statistic(path):\n    seen={}\n    h=0\n    for s in path:\n        h += 1 if s=='N' else -1\n        seen[h]=seen.get(h,0)+1\n    return max(seen.values())\n",
-        # a recursive statistic over the first-return decomposition
-        "def statistic(path):\n    if not path:\n        return 0\n    left,right=first_return(path)\n    return 1+statistic(left)+statistic(right)\n",
-    ],
-)
-def test_value_audit_accepts_diverse_real_statistics(source):
-    dyck_calls = [("statistic", (p,)) for p in adversarial_dyck_paths(64, seed=2)]
-    run_value_audit(source, dyck_calls, value_exponent=8, timeout_seconds=5.0)
 
 
-def test_value_audit_accepts_a_high_degree_statistic():
-    # A genuine O(n^4) statistic (small values) must not be rejected: the guard
-    # is call/return based, so its cost does not scale with the loop count.
-    quartic = (
-        "def statistic(path):\n    n=len(path)\n    t=0\n"
-        "    for a in range(n):\n        for b in range(n):\n"
-        "            for c in range(n):\n                for d in range(n):\n"
-        "                    t=(t+1)%5\n    return t\n"
-    )
-    calls = [("statistic", (p,)) for p in adversarial_dyck_paths(32, seed=3)[:3]]
-    run_value_audit(quartic, calls, value_exponent=8, timeout_seconds=5.0)
 
 
-def test_value_audit_supports_a_new_object_type():
-    inversions = (
-        "def statistic(perm):\n    t=0\n    for i in range(len(perm)):\n"
-        "        for j in range(i+1,len(perm)):\n            if perm[i]>perm[j]:\n"
-        "                t+=1\n    return t\n"
-    )
-    report = run_value_audit(
-        inversions, perm_probes(64), value_exponent=8, timeout_seconds=5.0, size_of=perm_size
-    )
-    assert report.audited_calls == 2
-
-    factorial_cheat = (
-        "def statistic(perm):\n    f=1\n    for i in range(1,len(perm)+1):\n"
-        "        f=f*i\n    return f%7\n"
-    )
-    with pytest.raises(ResourceGateError, match="magnitude bound|bit integer"):
-        run_value_audit(
-            factorial_cheat, perm_probes(64), value_exponent=8, timeout_seconds=5.0, size_of=perm_size
-        )
 
 
 @pytest.mark.parametrize(
@@ -799,199 +713,6 @@ def test_assignment_fingerprint_tracks_objects_not_call_order():
 
     assert forward_state["count"] == reverse_state["count"] == 2
     assert forward_state["fingerprint"] != reverse_state["fingerprint"]
-
-
-# --------------------------------------------------------------------------
-# Value audit (the integer-magnitude bound)
-# --------------------------------------------------------------------------
-
-
-def test_value_audit_accepts_small_valued_statistics():
-    report = run_value_audit(
-        KNOWN_GOOD,
-        nc_probes(64),
-        value_exponent=8,
-        timeout_seconds=5.0,
-    )
-    assert report.audited_calls == len(nc_probes(64))
-    run_value_audit(AREA_ONLY, nc_probes(64), value_exponent=8, timeout_seconds=5.0)
-
-
-def test_value_audit_violation_cannot_be_swallowed_by_submission_handler():
-    source = (
-        "def form_large_integer(partition):\n"
-        "    retained = 1 << (partition.n * partition.n)\n"
-        "    return retained\n"
-        "\n"
-        "def statistic(partition):\n"
-        "    try:\n"
-        "        form_large_integer(partition)\n"
-        "    except:\n"
-        "        return 0\n"
-        "    return 0\n"
-    )
-    with pytest.raises(ResourceGateError, match="bit integer|magnitude bound"):
-        run_value_audit(source, nc_probes(64), value_exponent=8, timeout_seconds=5.0)
-
-
-def test_value_guard_preserves_normal_submission_exception_handling():
-    previous_profiler = sys.getprofile()
-
-    def handles_own_error():
-        try:
-            raise ValueError("expected")
-        except ValueError:
-            return 7
-
-    assert admission._run_call_with_value_guard(handles_own_error, (), 100) == 7
-    assert sys.getprofile() is previous_profiler
-
-
-def test_value_guard_restores_existing_profiler_after_success():
-    previous_profiler = sys.getprofile()
-
-    def existing_profiler(_frame, _event, _argument):
-        return None
-
-    sys.setprofile(existing_profiler)
-    try:
-        assert admission._run_call_with_value_guard(lambda: 7, (), 100) == 7
-        assert sys.getprofile() is existing_profiler
-    finally:
-        sys.setprofile(previous_profiler)
-
-
-def test_value_guard_restores_existing_profiler_after_submission_exception():
-    previous_profiler = sys.getprofile()
-    expected = RuntimeError("expected")
-
-    def existing_profiler(_frame, _event, _argument):
-        return None
-
-    def fail():
-        raise expected
-
-    sys.setprofile(existing_profiler)
-    try:
-        with pytest.raises(RuntimeError) as caught:
-            admission._run_call_with_value_guard(fail, (), 100)
-        assert caught.value is expected
-        assert sys.getprofile() is existing_profiler
-    finally:
-        sys.setprofile(previous_profiler)
-
-
-def test_value_guard_restores_existing_profiler_after_value_violation():
-    previous_profiler = sys.getprofile()
-
-    def existing_profiler(_frame, _event, _argument):
-        return None
-
-    sys.setprofile(existing_profiler)
-    try:
-        with pytest.raises(admission._ValueGateViolation):
-            admission._run_call_with_value_guard(lambda: 101, (), 100)
-        assert sys.getprofile() is existing_profiler
-    finally:
-        sys.setprofile(previous_profiler)
-
-
-@pytest.mark.parametrize("source", [COUNTING_CHEAT, COUNTING_DP_2D])
-def test_value_audit_blocks_exponential_integer_growth(source):
-    with pytest.raises(ResourceGateError, match="bit integer|magnitude bound"):
-        run_value_audit(source, nc_probes(64), value_exponent=8, timeout_seconds=5.0)
-
-
-def test_value_audit_scans_top_level_globals() -> None:
-    source = (
-        "cached_count = 1 << 4096\n"
-        "def statistic(partition):\n"
-        "    return cached_count % 2\n"
-    )
-    with pytest.raises(ResourceGateError, match="bit integer|magnitude bound"):
-        run_value_audit(source, nc_probes(64), value_exponent=8, timeout_seconds=5.0)
-
-
-def test_value_audit_scans_globals_mutated_by_a_submission_call() -> None:
-    source = (
-        "cached_count = 0\n"
-        "def statistic(partition):\n"
-        "    global cached_count\n"
-        "    cached_count = 1 << 4096\n"
-        "    return 0\n"
-    )
-    with pytest.raises(ResourceGateError, match="bit integer|magnitude bound"):
-        run_value_audit(source, nc_probes(64), value_exponent=8, timeout_seconds=5.0)
-
-
-@pytest.mark.parametrize(
-    "source",
-    [
-        (
-            f"padding = [0] * {admission._VALUE_SCAN_BUDGET}\n"
-            "cached_count = 1 << 4096\n"
-            "def statistic(partition):\n"
-            "    return cached_count % 2\n"
-        ),
-        (
-            "def statistic(partition):\n"
-            f"    padding = [0] * {admission._VALUE_SCAN_BUDGET}\n"
-            "    hidden_counts = {1 << 4096: 0}\n"
-            "    return 0\n"
-        ),
-    ],
-)
-def test_value_audit_padding_cannot_hide_later_roots(source) -> None:
-    with pytest.raises(ResourceGateError, match="bit integer|magnitude bound"):
-        run_value_audit(source, nc_probes(64), value_exponent=8, timeout_seconds=5.0)
-
-
-def test_value_audit_accepts_recursive_small_valued_statistic():
-    # Recursion exercises the tracer's call/return frames; a genuine recursive
-    # statistic with small values must pass.
-    source = (
-        "def block_total(blocks):\n"
-        "    if not blocks:\n"
-        "        return 0\n"
-        "    block, rest = split_head(blocks)\n"
-        "    return len(block) + block_total(rest)\n"
-        "\n"
-        "def statistic(partition):\n"
-        "    return block_total(partition.blocks)\n"
-    )
-    report = run_value_audit(source, nc_probes(64), value_exponent=8, timeout_seconds=5.0)
-    assert report.audited_calls == len(nc_probes(64))
-
-
-def test_value_audit_blocks_big_integer_in_dyck_bijection():
-    source = (
-        "def forward(path):\n"
-        "    total = 1\n"
-        "    for step in range(len(path)):\n"
-        "        total = total + total\n"
-        "    return path\n"
-        "\n"
-        "def inverse(path):\n"
-        "    return path\n"
-    )
-    with pytest.raises(ResourceGateError, match="magnitude bound|bit integer"):
-        run_value_audit(source, adversarial_dyck_probes(64), value_exponent=8, timeout_seconds=5.0)
-
-
-def test_value_audit_blocks_a_big_integer_returned_without_a_local():
-    source = "def statistic(partition):\n    return 1 << (partition.n * partition.n)\n"
-    with pytest.raises(ResourceGateError, match="magnitude bound|bit integer"):
-        run_value_audit(source, nc_probes(64), value_exponent=8, timeout_seconds=5.0)
-
-
-def test_value_audit_scans_dictionary_keys():
-    source = (
-        "def statistic(partition):\n"
-        "    table = {1 << (partition.n * partition.n): 0}\n"
-        "    return 0\n"
-    )
-    with pytest.raises(ResourceGateError, match="magnitude bound|bit integer"):
-        run_value_audit(source, nc_probes(64), value_exponent=8, timeout_seconds=5.0)
 
 
 # --------------------------------------------------------------------------
@@ -1694,6 +1415,7 @@ def test_bijection_numerical_stage_reports_determinism():
         max_process_bytes=128_000_000,
     )
     assert numerical["passed"]
+    assert _peak is None
     assert determinism is not None
     assert determinism.fresh_namespaces == 2
     assert determinism.replay_seed is not None
@@ -1770,12 +1492,10 @@ def test_asm_submission_that_passes_numerical_completes_post_numerical_gates(
         timeout_seconds=5.0,
         max_python_bytes=32_000_000,
         max_process_bytes=192 * 1024 * 1024,
-        limits=admission.SourceLimits(value_audit_size=8),
     )
 
     assert result["passed"]
     assert result["checker_stage"] == "complete"
-    assert result["value_audit"].audited_calls > 0
     assert len(result["resources"].results) > 0
 
 
@@ -1792,8 +1512,27 @@ def test_noncrossing_known_good_passes_every_stage():
     assert result["numerical"]["q_equals_1"]["passed"]
     assert result["numerical"]["full_qt"]["passed"]
     assert result["determinism"].checked_objects > 0
+    assert result["numerical_peak_python_bytes"] > 0
     assert result["determinism"].replayed_calls == 2 * result["determinism"].checked_objects
-    assert result["value_audit"].audited_calls > 0
+
+
+def test_noncrossing_allows_intermediate_large_integer_without_audit():
+    source = KNOWN_GOOD.replace(
+        "    return total\n",
+        "    waste = 1\n"
+        "    for step in range(2 * partition.n):\n"
+        "        waste = waste + waste\n"
+        "    return total + waste - waste\n",
+    )
+    result = evaluate_noncrossing_submission(
+        source=source,
+        probes=lambda: adversarial_noncrossing_probes(128),
+        problem_dir=PROBLEM,
+        timeout_seconds=3.0,
+        max_python_bytes=32_000_000,
+    )
+    assert result["passed"]
+    assert "value_audit" not in result
 
 
 def test_noncrossing_area_only_short_circuits_at_numerical():
@@ -1808,28 +1547,9 @@ def test_noncrossing_area_only_short_circuits_at_numerical():
     assert result["checker_stage"] == "numerical"
     assert result["numerical"]["q_equals_1"]["passed"]
     assert not result["numerical"]["full_qt"]["passed"]
-    assert result["value_audit"] is None
     assert result["resources"] is None
 
 
-def test_noncrossing_numerically_correct_but_big_integer_is_blocked():
-    # The known statistic augmented with counting-scale integer work still
-    # reproduces the target, but the value audit rejects it.
-    source = KNOWN_GOOD.replace(
-        "    return total\n",
-        "    waste = 1\n    for step in range(2 * partition.n):\n        waste = waste + waste\n"
-        "    return total + waste - waste\n",
-    )
-    # Numerical passes (waste cancels), but the value audit rejects the
-    # counting-scale integer, so the whole evaluation raises.
-    with pytest.raises(ResourceGateError, match="magnitude bound|bit integer"):
-        evaluate_noncrossing_submission(
-            source=source,
-            probes=lambda: adversarial_noncrossing_probes(128),
-            problem_dir=PROBLEM,
-            timeout_seconds=3.0,
-            max_python_bytes=32_000_000,
-        )
 
 
 def test_noncrossing_rejects_invalid_outputs_on_large_resource_probes():
@@ -1927,10 +1647,6 @@ def test_noncrossing_stage_order(monkeypatch):
             0,
         )
 
-    def value_audit(*args, **kwargs):
-        order.append("value_audit")
-        return object()
-
     def resources(*args, **kwargs):
         order.append("resources")
         return admission.ResourceReport(
@@ -1942,7 +1658,6 @@ def test_noncrossing_stage_order(monkeypatch):
     monkeypatch.setattr(admission, "check_capability_screen", safety)
     monkeypatch.setattr(admission, "check_source_economy", economy)
     monkeypatch.setattr(admission, "_run_numerical_isolated", numerical)
-    monkeypatch.setattr(admission, "run_value_audit", value_audit)
     monkeypatch.setattr(admission, "run_resource_gate", resources)
 
     result = admission.evaluate_noncrossing_submission(
@@ -1953,7 +1668,7 @@ def test_noncrossing_stage_order(monkeypatch):
         max_python_bytes=1_000_000,
     )
     assert result["passed"]
-    assert order == ["safety", "economy", "numerical", "value_audit", "resources"]
+    assert order == ["safety", "economy", "numerical", "resources"]
     # Exhaustive numerical checks include trusted enumeration overhead, so they
     # use the process ceiling; the tighter Python-allocation cap applies to the
     # adversarial resource and identity gates.
@@ -1976,7 +1691,6 @@ def test_area_bounce_identity_map_short_circuits_at_numerical():
     )
     assert not result["passed"]
     assert result["checker_stage"] == "numerical"
-    assert result["value_audit"] is None
 
 
 def test_area_bounce_enumeration_bijection_is_blocked_after_numerical():

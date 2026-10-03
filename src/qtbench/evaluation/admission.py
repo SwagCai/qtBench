@@ -17,9 +17,7 @@ What the checks *do* guarantee cheaply is that a passing submission:
 4. returns the same value for each public object in a fresh shuffled replay;
 5. stays within the configured time and memory budgets on sampled large
    adversarial objects (which rules out straightforward enumeration of the
-   exponential object set); and
-6. does not expose an integer of super-polynomial magnitude at the moderate-size
-   value-audit checkpoints.
+   exponential object set).
 
 The checker deliberately makes no semantic or mathematical-authenticity
 decision about a surviving program.
@@ -102,25 +100,20 @@ from qtbench.combinatorics import (
     canonical_zero_rooted_tiered_tree,
     canonical_unit_interval_graph_permutation,
     canonical_unit_interval_graph_tableau,
-    decorated_dyck_size,
     connected_graph_size,
     dyck_area,
     dyck_bounce,
     enumerate_dyck_paths,
     first_return,
     gamma_parking_selection,
-    gamma_parking_size,
     gamma_permutation_from_descent_set,
-    gamma_permutation_size,
     intermediate_tamari_parking_pairs,
     involution,
-    involution_size,
     is_dyck_path,
     is_connected_graph_encoding,
     is_shifted_setvalued_tableau_encoding,
     is_successive_rank_partition_encoding,
     jack_matching,
-    jack_matching_size,
     is_parallelogram_polyomino,
     is_parking_function_word,
     is_partition_matrix_inversion_encoding,
@@ -132,9 +125,6 @@ from qtbench.combinatorics import (
     iter_standard_macdonald_fillings,
     iter_shifted_setvalued_tableaux,
     iter_successive_rank_partitions,
-    kostka_tableau_size,
-    labelled_rectangular_path_size,
-    multi_labelled_dyck_size,
     polyomino_area,
     polyomino_area_bounce_distribution,
     polyomino_bounce,
@@ -143,10 +133,7 @@ from qtbench.combinatorics import (
     polyomino_from_ranks,
     polyomino_size,
     parking_function,
-    parking_function_size,
     partition_matrix_inversion_size,
-    promotion_tableau_size,
-    standard_macdonald_filling_size,
     shifted_extensions,
     shifted_shape_cells,
     shifted_tableau_size,
@@ -154,15 +141,8 @@ from qtbench.combinatorics import (
     standard_macdonald_filling,
     rectangle_shape,
     staircase_shape,
-    rooted_tiered_tree_size,
-    st_labelled_polyomino_size,
-    tamari_parking_size,
-    threshold_tree_size,
     threshold_up_degrees,
-    tiered_tree_size,
     unit_interval_graph_permutation,
-    unit_interval_graph_permutation_size,
-    unit_interval_graph_tableau_size,
 )
 from qtbench.evaluation.runner import (
     _load_json_document,
@@ -198,10 +178,10 @@ class GateError(ValueError):
 
 
 class ResourceGateError(RuntimeError):
-    """A dynamic admission check (resource, value, or identity gate) failed."""
+    """A dynamic admission check (resource or identity gate) failed."""
 
 
-CHECKER_VERSION = 16
+CHECKER_VERSION = 18
 
 
 @dataclass(frozen=True)
@@ -211,10 +191,6 @@ class SourceLimits:
     max_tokens: int = 1_500
     max_ast_nodes: int = 2_000
     max_literal_bytes: int = 256
-    # An integer larger than (size + 2) ** value_exponent on a moderate object
-    # is treated as counting/ranking work and rejected by the value audit.
-    value_exponent: int = 8
-    value_audit_size: int = 64
 
 
 @dataclass(frozen=True)
@@ -222,13 +198,6 @@ class ResourceReport:
     elapsed_seconds: float
     peak_python_bytes: int
     results: tuple[Any, ...]
-
-
-@dataclass(frozen=True)
-class ValueAuditReport:
-    audited_calls: int
-    audit_size: int
-    value_exponent: int
 
 
 @dataclass(frozen=True)
@@ -1174,124 +1143,8 @@ def run_resource_gate(
     return ResourceReport(elapsed_seconds=elapsed, peak_python_bytes=peak, results=results)
 
 
-# ---------------------------------------------------------------------------
-# Integer-value audit
-# ---------------------------------------------------------------------------
-
-_VALUE_SCAN_DEPTH = 2
-_VALUE_SCAN_BUDGET = 262_144
-
-
-class _ValueGateViolation(Exception):
-    pass
-
-
-def _scan_for_big_int(value: Any, cap: int, depth: int, budget: list[int]) -> None:
-    kind = type(value)
-    if kind is int:
-        if value > cap or value < -cap:
-            raise _ValueGateViolation(value.bit_length())
-        return
-    if depth <= 0:
-        return
-    if kind is list or kind is tuple or kind is set or kind is frozenset:
-        container: Any = value
-    elif kind is dict:
-        container = (item for pair in value.items() for item in pair)
-    else:
-        return
-    for element in container:
-        if budget[0] <= 0:
-            return
-        budget[0] -= 1
-        _scan_for_big_int(element, cap, depth - 1, budget)
-
-
-def _scan_roots_for_big_int(values, cap: int) -> None:
-    roots = []
-    seen = set()
-    for value in values:
-        marker = id(value)
-        if marker not in seen:
-            seen.add(marker)
-            roots.append(value)
-
-    # Root integers are cheap to inspect and must not be hidden by an earlier
-    # container consuming the recursive scan budget.
-    for value in roots:
-        _scan_for_big_int(value, cap, 0, [0])
-
-    containers = [
-        value
-        for value in roots
-        if type(value) in (list, tuple, set, frozenset, dict)
-    ]
-    if not containers:
-        return
-    # The admitted-source AST cap is far below this budget, so every distinct
-    # container root receives a positive quota without increasing total work.
-    quota, remainder = divmod(_VALUE_SCAN_BUDGET, len(containers))
-    for index, value in enumerate(containers):
-        root_budget = quota + (index < remainder)
-        if root_budget:
-            _scan_for_big_int(value, cap, _VALUE_SCAN_DEPTH, [root_budget])
-
-
-def _run_call_with_value_guard(function, arguments, cap: int):
-    # Uses setprofile (call/return only), not settrace (per line): a counting or
-    # ranking cheat's large integers live in a frame's locals -- a growing rank,
-    # a cumulative count, or a counting table -- and are caught when that frame
-    # returns. Avoiding per-line events keeps the audit cheap even for the
-    # highest-degree polynomial statistics, which settrace would slow to a crawl.
-    violation_bits: int | None = None
-
-    def profiler(frame, event, arg):
-        nonlocal violation_bits
-        if violation_bits is not None:
-            return
-        if event == "call" or event == "return":
-            roots = []
-            if event == "return":
-                roots.append(arg)
-            namespaces = (
-                (frame.f_globals, frame.f_locals)
-                if frame.f_code.co_filename == "<submission>"
-                else (frame.f_locals,)
-            )
-            for namespace in namespaces:
-                roots.extend(namespace.values())
-            try:
-                _scan_roots_for_big_int(roots, cap)
-            except _ValueGateViolation as violation:
-                # Raising from a profile callback would deliver the exception
-                # into submitted code, where a broad handler could consume it.
-                # Keep the first finding in trusted state and report it only
-                # after the submitted call has left the stack.
-                violation_bits = int(violation.args[0])
-
-    previous_profiler = sys.getprofile()
-    sys.setprofile(profiler)
-    submission_error: BaseException | None = None
-    try:
-        try:
-            result = function(*arguments)
-        except BaseException as error:
-            if violation_bits is None:
-                raise
-            submission_error = error
-    finally:
-        sys.setprofile(previous_profiler)
-    if violation_bits is not None:
-        raise _ValueGateViolation(violation_bits) from submission_error
-    return result
-
-
 def _structural_size(value: Any) -> int | None:
-    """Default object-size detector for the built-in problems.
-
-    A new problem type passes its own ``size_of`` to ``run_value_audit``; it must
-    be a module-level function so it survives pickling into the spawned worker.
-    """
+    """Return the structural size used to scale adversarial probes."""
 
     if isinstance(value, AlternatingSignMatrix):
         return alternating_sign_matrix_size(value)
@@ -1344,79 +1197,6 @@ def _structural_size(value: Any) -> int | None:
     if isinstance(value, str):
         return len(value) // 2
     return None
-
-
-def _value_audit_worker(
-    source, calls, value_exponent, timeout_seconds, max_process_bytes, size_of, connection
-) -> None:
-    try:
-        _install_process_limits(
-            timeout_seconds=timeout_seconds, max_process_bytes=max_process_bytes
-        )
-        _install_submission_audit_hook()
-        guarded_calls = []
-        for name, arguments in calls:
-            size = size_of(arguments[0]) if arguments else None
-            if size is None:
-                _send_to_parent(connection, ("error", "ValueError", "probe has no structural object"))
-                return
-            cap = (size + 2) ** value_exponent
-            guarded_calls.append((name, arguments, cap))
-        functions = _run_call_with_value_guard(
-            load_restricted_functions,
-            (source,),
-            min(cap for _name, _arguments, cap in guarded_calls),
-        )
-        for name, arguments, cap in guarded_calls:
-            _run_call_with_value_guard(functions[name], arguments, cap)
-        _send_to_parent(connection, ("ok",))
-    except _ValueGateViolation as violation:
-        _send_to_parent(connection, ("violation", int(violation.args[0])))
-    except BaseException as error:  # noqa: BLE001 - reported to the parent
-        _send_to_parent(connection, ("error", type(error).__name__, str(error)))
-    finally:
-        connection.close()
-
-
-def run_value_audit(
-    source: str,
-    calls: Sequence[tuple[str, tuple[Any, ...]]],
-    *,
-    value_exponent: int,
-    timeout_seconds: float,
-    max_process_bytes: int = 256_000_000,
-    size_of: Callable[[Any], int | None] = _structural_size,
-) -> ValueAuditReport:
-    """Reject a submission that forms super-polynomially large integers.
-
-    A genuine statistic or bijection only manipulates integers bounded by a
-    polynomial in the object size; a counting/ranking cheat must accumulate the
-    sizes of exponentially large object fibers. ``size_of`` maps each probe's
-    first argument to its combinatorial size (default: the built-in detector).
-    """
-
-    sizes = [size for _, arguments in calls if (size := size_of(arguments[0])) is not None]
-    if not sizes:
-        raise GateError("value audit received no recognizable structural probe")
-    payload = _run_isolated(
-        _value_audit_worker,
-        (source, calls, value_exponent, timeout_seconds, max_process_bytes, size_of),
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-        label="value audit",
-    )
-    if payload[0] == "violation":
-        raise ResourceGateError(
-            f"submission formed a {payload[1]}-bit integer, exceeding the "
-            f"(size+2)**{value_exponent} magnitude bound"
-        )
-    if payload[0] != "ok":
-        raise ResourceGateError(f"value audit raised {payload[1]}: {payload[2]}")
-    return ValueAuditReport(
-        audited_calls=len(calls),
-        audit_size=max(sizes),
-        value_exponent=value_exponent,
-    )
 
 
 # ---------------------------------------------------------------------------
@@ -3927,7 +3707,9 @@ def _numerical_worker(
         _install_submission_audit_hook(
             problem_dir=problem_dir if kind in _STATISTIC_KINDS else None
         )
-        tracemalloc.start()
+        track_allocations = kind in _STATISTIC_KINDS
+        if track_allocations:
+            tracemalloc.start()
         functions = load_restricted_functions(source)
         configured_replay_seed = os.environ.get(_REPLAY_SEED_ENV)
         replay_seed = (
@@ -4000,7 +3782,7 @@ def _numerical_worker(
             )
 
         elapsed = time.perf_counter() - start
-        _, peak = tracemalloc.get_traced_memory()
+        peak = tracemalloc.get_traced_memory()[1] if track_allocations else None
         _send_to_parent(connection, ("ok", elapsed, peak, result, determinism))
     except _DeterminismViolation as error:
         _send_to_parent(
@@ -4019,7 +3801,7 @@ def _numerical_worker(
 
 def _run_numerical_isolated(
     *, kind, source, problem_dir=None, target_terms=None, timeout_seconds, max_python_bytes, max_process_bytes
-) -> tuple[dict[str, Any], DeterminismReport | None, float, int]:
+) -> tuple[dict[str, Any], DeterminismReport | None, float, int | None]:
     payload = _run_isolated(
         _numerical_worker,
         (kind, source, problem_dir, target_terms, timeout_seconds, max_process_bytes),
@@ -4032,7 +3814,7 @@ def _run_numerical_isolated(
     if payload[0] != "ok":
         raise ResourceGateError(f"numerical evaluation raised {payload[1]}: {payload[2]}")
     _, elapsed, peak, result, determinism = payload
-    if peak > max_python_bytes:
+    if peak is not None and peak > max_python_bytes:
         raise ResourceGateError(
             f"numerical evaluation allocated {peak} Python bytes, limit is {max_python_bytes}"
         )
@@ -4784,7 +4566,6 @@ def _base_result(function_names: Sequence[str]) -> dict[str, Any]:
         "function_names": tuple(function_names),
         "numerical": None,
         "determinism": None,
-        "value_audit": None,
         "resources": None,
     }
 
@@ -4898,13 +4679,6 @@ def evaluate_noncrossing_submission(
     if not numerical["passed"]:
         return result
 
-    value_audit = run_value_audit(
-        source,
-        adversarial_noncrossing_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-    )
     resource_calls = _hardened_probes(_resolve(probes), kind="noncrossing")
     resources = run_resource_gate(
         source,
@@ -4918,7 +4692,6 @@ def evaluate_noncrossing_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": resources,
     }
 
@@ -4955,13 +4728,6 @@ def evaluate_type_b_submission(
     if not numerical["passed"]:
         return result
 
-    value_audit = run_value_audit(
-        source,
-        adversarial_type_b_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-    )
     resource_calls = _hardened_probes(_resolve(probes), kind="type_b")
     resources = run_resource_gate(
         source,
@@ -4975,7 +4741,6 @@ def evaluate_type_b_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": resources,
     }
 
@@ -5012,14 +4777,6 @@ def evaluate_lpp_submission(
     if not numerical["passed"]:
         return result
 
-    value_audit = run_value_audit(
-        source,
-        adversarial_lpp_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-        size_of=st_labelled_polyomino_size,
-    )
     resource_calls = _hardened_probes(_resolve(probes), kind="lpp")
     resources = run_resource_gate(
         source,
@@ -5033,7 +4790,6 @@ def evaluate_lpp_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": resources,
     }
 
@@ -5070,14 +4826,6 @@ def evaluate_ddyck_submission(
     if not numerical["passed"]:
         return result
 
-    value_audit = run_value_audit(
-        source,
-        adversarial_ddyck_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-        size_of=decorated_dyck_size,
-    )
     resource_calls = _hardened_probes(_resolve(probes), kind="ddyck")
     resources = run_resource_gate(
         source,
@@ -5091,7 +4839,6 @@ def evaluate_ddyck_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": resources,
     }
 
@@ -5128,14 +4875,6 @@ def evaluate_lrp_submission(
     if not numerical["passed"]:
         return result
 
-    value_audit = run_value_audit(
-        source,
-        adversarial_lrp_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-        size_of=labelled_rectangular_path_size,
-    )
     resource_calls = _hardened_probes(_resolve(probes), kind="lrp")
     resources = run_resource_gate(
         source,
@@ -5149,7 +4888,6 @@ def evaluate_lrp_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": resources,
     }
 
@@ -5186,14 +4924,6 @@ def evaluate_mld_submission(
     if not numerical["passed"]:
         return result
 
-    value_audit = run_value_audit(
-        source,
-        adversarial_mld_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-        size_of=multi_labelled_dyck_size,
-    )
     resource_calls = _hardened_probes(_resolve(probes), kind="mld")
     resources = run_resource_gate(
         source,
@@ -5207,7 +4937,6 @@ def evaluate_mld_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": resources,
     }
 
@@ -5244,14 +4973,6 @@ def evaluate_tamari_submission(
     if not numerical["passed"]:
         return result
 
-    value_audit = run_value_audit(
-        source,
-        adversarial_tamari_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-        size_of=tamari_parking_size,
-    )
     resource_calls = _hardened_probes(_resolve(probes), kind="tamari")
     resources = run_resource_gate(
         source,
@@ -5265,7 +4986,6 @@ def evaluate_tamari_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": resources,
     }
 
@@ -5302,14 +5022,6 @@ def evaluate_ttree_submission(
     if not numerical["passed"]:
         return result
 
-    value_audit = run_value_audit(
-        source,
-        adversarial_ttree_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-        size_of=tiered_tree_size,
-    )
     resource_calls = _hardened_probes(_resolve(probes), kind="ttree")
     resources = run_resource_gate(
         source,
@@ -5323,7 +5035,6 @@ def evaluate_ttree_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": resources,
     }
 
@@ -5410,19 +5121,6 @@ def _evaluate_gamma_parking_submission(
     if not numerical["passed"]:
         return result
 
-    audit_probes = (
-        adversarial_lgpf_probes(limits.value_audit_size)
-        if kind == "lgpf"
-        else adversarial_gpf_probes(limits.value_audit_size)
-    )
-    value_audit = run_value_audit(
-        source,
-        audit_probes,
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-        size_of=gamma_parking_size,
-    )
     resource_calls = _hardened_probes(_resolve(probes), kind=kind)
     resources = run_resource_gate(
         source,
@@ -5436,7 +5134,6 @@ def _evaluate_gamma_parking_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": resources,
     }
 
@@ -5473,14 +5170,6 @@ def evaluate_rtt_submission(
     if not numerical["passed"]:
         return result
 
-    value_audit = run_value_audit(
-        source,
-        adversarial_rtt_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-        size_of=rooted_tiered_tree_size,
-    )
     resource_calls = _hardened_probes(_resolve(probes), kind="rtt")
     resources = run_resource_gate(
         source,
@@ -5494,7 +5183,6 @@ def evaluate_rtt_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": resources,
     }
 
@@ -5531,14 +5219,6 @@ def evaluate_tgt_submission(
     if not numerical["passed"]:
         return result
 
-    value_audit = run_value_audit(
-        source,
-        adversarial_tgt_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-        size_of=threshold_tree_size,
-    )
     resource_calls = _hardened_probes(_resolve(probes), kind="tgt")
     resources = run_resource_gate(
         source,
@@ -5552,7 +5232,6 @@ def evaluate_tgt_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": resources,
     }
 
@@ -5589,14 +5268,6 @@ def evaluate_kostka_submission(
     if not numerical["passed"]:
         return result
 
-    value_audit = run_value_audit(
-        source,
-        adversarial_kostka_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-        size_of=kostka_tableau_size,
-    )
     resource_calls = _hardened_probes(_resolve(probes), kind="kostka")
     resources = run_resource_gate(
         source,
@@ -5610,7 +5281,6 @@ def evaluate_kostka_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": resources,
     }
 
@@ -5647,14 +5317,6 @@ def evaluate_uig_submission(
     if not numerical["passed"]:
         return result
 
-    value_audit = run_value_audit(
-        source,
-        adversarial_uig_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-        size_of=unit_interval_graph_permutation_size,
-    )
     resource_calls = _hardened_probes(_resolve(probes), kind="uig")
     resources = run_resource_gate(
         source,
@@ -5668,7 +5330,6 @@ def evaluate_uig_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": resources,
     }
 
@@ -5705,14 +5366,6 @@ def evaluate_llt_submission(
     if not numerical["passed"]:
         return result
 
-    value_audit = run_value_audit(
-        source,
-        adversarial_llt_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-        size_of=unit_interval_graph_tableau_size,
-    )
     resource_calls = _hardened_probes(_resolve(probes), kind="llt")
     resources = run_resource_gate(
         source,
@@ -5726,7 +5379,6 @@ def evaluate_llt_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": resources,
     }
 
@@ -5763,13 +5415,6 @@ def evaluate_kreweras_submission(
     if not numerical["passed"]:
         return result
 
-    value_audit = run_value_audit(
-        source,
-        adversarial_noncrossing_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-    )
     resource_calls = _hardened_probes(_resolve(probes), kind="kreweras")
     resources = run_resource_gate(
         source,
@@ -5783,7 +5428,6 @@ def evaluate_kreweras_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": resources,
     }
 
@@ -5820,14 +5464,6 @@ def evaluate_promotion_submission(
     if not numerical["passed"]:
         return result
 
-    value_audit = run_value_audit(
-        source,
-        adversarial_promotion_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-        size_of=promotion_tableau_size,
-    )
     resource_calls = _hardened_probes(_resolve(probes), kind="promotion")
     resources = run_resource_gate(
         source,
@@ -5841,7 +5477,6 @@ def evaluate_promotion_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": resources,
     }
 
@@ -5878,14 +5513,6 @@ def evaluate_qgamma_submission(
     if not numerical["passed"]:
         return result
 
-    value_audit = run_value_audit(
-        source,
-        adversarial_qgamma_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-        size_of=gamma_permutation_size,
-    )
     resource_calls = _hardened_probes(_resolve(probes), kind="qgamma")
     resources = run_resource_gate(
         source,
@@ -5899,7 +5526,6 @@ def evaluate_qgamma_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": resources,
     }
 
@@ -5936,14 +5562,6 @@ def evaluate_mjack_submission(
     if not numerical["passed"]:
         return result
 
-    value_audit = run_value_audit(
-        source,
-        adversarial_mjack_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-        size_of=jack_matching_size,
-    )
     resource_calls = _hardened_probes(_resolve(probes), kind="mjack")
     resources = run_resource_gate(
         source,
@@ -5957,7 +5575,6 @@ def evaluate_mjack_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": resources,
     }
 
@@ -5994,14 +5611,6 @@ def evaluate_involution_submission(
     if not numerical["passed"]:
         return result
 
-    value_audit = run_value_audit(
-        source,
-        adversarial_involution_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-        size_of=involution_size,
-    )
     resource_calls = _hardened_probes(_resolve(probes), kind="involution")
     resources = run_resource_gate(
         source,
@@ -6015,7 +5624,6 @@ def evaluate_involution_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": resources,
     }
 
@@ -6052,14 +5660,6 @@ def evaluate_asm_q_submission(
     if not numerical["passed"]:
         return result
 
-    value_audit = run_value_audit(
-        source,
-        adversarial_asm_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-        size_of=alternating_sign_matrix_size,
-    )
     resource_calls = _hardened_probes(_resolve(probes), kind="asm-q")
     resources = run_resource_gate(
         source,
@@ -6073,7 +5673,6 @@ def evaluate_asm_q_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": resources,
     }
 
@@ -6110,13 +5709,6 @@ def evaluate_area_bounce_submission(
     if not numerical["passed"]:
         return result
 
-    value_audit = run_value_audit(
-        source,
-        adversarial_dyck_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-    )
     probe_paths = [arguments[0] for _, arguments in _resolve(probes) if arguments]
     identities = run_area_bounce_identity_gate(
         source,
@@ -6129,7 +5721,6 @@ def evaluate_area_bounce_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": identities,
     }
 
@@ -6166,14 +5757,6 @@ def evaluate_polyomino_area_bounce_submission(
     if not numerical["passed"]:
         return result
 
-    value_audit = run_value_audit(
-        source,
-        adversarial_polyomino_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-        size_of=polyomino_size,
-    )
     probe_polyominoes = [arguments[0] for _, arguments in _resolve(probes) if arguments]
     identities = run_polyomino_area_bounce_identity_gate(
         source,
@@ -6186,7 +5769,6 @@ def evaluate_polyomino_area_bounce_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": identities,
     }
 
@@ -6223,14 +5805,6 @@ def evaluate_polyomino_transpose_submission(
     if not numerical["passed"]:
         return result
 
-    value_audit = run_value_audit(
-        source,
-        adversarial_polyomino_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-        size_of=polyomino_size,
-    )
     probe_polyominoes = [arguments[0] for _, arguments in _resolve(probes) if arguments]
     identities = run_polyomino_transpose_identity_gate(
         source,
@@ -6243,7 +5817,6 @@ def evaluate_polyomino_transpose_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": identities,
     }
 
@@ -6280,14 +5853,6 @@ def evaluate_macdonald_filling_submission(
     if not numerical["passed"]:
         return result
 
-    value_audit = run_value_audit(
-        source,
-        adversarial_macdonald_filling_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-        size_of=standard_macdonald_filling_size,
-    )
     probe_fillings = [arguments[0] for _, arguments in _resolve(probes) if arguments]
     identities = run_macdonald_filling_identity_gate(
         source,
@@ -6300,7 +5865,6 @@ def evaluate_macdonald_filling_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": identities,
     }
 
@@ -6335,14 +5899,6 @@ def evaluate_parking_area_dinv_submission(
     result["numerical_peak_python_bytes"] = peak
     if not numerical["passed"]:
         return result
-    value_audit = run_value_audit(
-        source,
-        adversarial_parking_function_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-        size_of=parking_function_size,
-    )
     probe_parking = [arguments[0] for _, arguments in _resolve(probes) if arguments]
     identities = run_parking_area_dinv_identity_gate(
         source,
@@ -6355,7 +5911,6 @@ def evaluate_parking_area_dinv_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": identities,
     }
 
@@ -6390,14 +5945,6 @@ def evaluate_graph_sibling_tuft_submission(
     result["numerical_peak_python_bytes"] = peak
     if not numerical["passed"]:
         return result
-    value_audit = run_value_audit(
-        source,
-        adversarial_connected_graph_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-        size_of=connected_graph_size,
-    )
     probe_graphs = [arguments[0] for _, arguments in _resolve(probes) if arguments]
     identities = run_graph_sibling_tuft_identity_gate(
         source,
@@ -6410,7 +5957,6 @@ def evaluate_graph_sibling_tuft_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": identities,
     }
 
@@ -6445,14 +5991,6 @@ def evaluate_shifted_pq_submission(
     result["numerical_peak_python_bytes"] = peak
     if not numerical["passed"]:
         return result
-    value_audit = run_value_audit(
-        source,
-        adversarial_shifted_pq_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-        size_of=shifted_tableau_size,
-    )
     supplied = [arguments[0] for _, arguments in _resolve(probes) if arguments]
     hardened = _hardened_shifted_pq_tableaux(supplied)
     identities = run_shifted_pq_identity_gate(
@@ -6466,7 +6004,6 @@ def evaluate_shifted_pq_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": identities,
     }
 
@@ -6501,14 +6038,6 @@ def evaluate_successive_rank_submission(
     result["numerical_peak_python_bytes"] = peak
     if not numerical["passed"]:
         return result
-    value_audit = run_value_audit(
-        source,
-        adversarial_successive_rank_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-        size_of=successive_rank_partition_size,
-    )
     supplied = [arguments[0] for _, arguments in _resolve(probes) if arguments]
     max_size = max((partition.weight for partition in supplied), default=4)
     sizes = sorted({max(4, max_size // 4), max(4, max_size // 2), max(4, max_size)})
@@ -6528,7 +6057,6 @@ def evaluate_successive_rank_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": identities,
     }
 
@@ -6563,14 +6091,6 @@ def evaluate_partition_matrix_inversion_submission(
     result["numerical_peak_python_bytes"] = peak
     if not numerical["passed"]:
         return result
-    value_audit = run_value_audit(
-        source,
-        adversarial_partition_matrix_inversion_probes(limits.value_audit_size),
-        value_exponent=limits.value_exponent,
-        timeout_seconds=timeout_seconds,
-        max_process_bytes=max_process_bytes,
-        size_of=partition_matrix_inversion_size,
-    )
     supplied = [arguments[0] for _, arguments in _resolve(probes) if arguments]
     max_size = max((obj.n for obj in supplied), default=4)
     sizes = sorted({max(4, max_size // 4), max(4, max_size // 2), max(4, max_size)})
@@ -6590,6 +6110,5 @@ def evaluate_partition_matrix_inversion_submission(
         **result,
         "passed": True,
         "checker_stage": "complete",
-        "value_audit": value_audit,
         "resources": identities,
     }

@@ -184,9 +184,8 @@ def statistic(tableau) -> tuple[int, int]:
 The return value must be a `tuple` of exactly two nonnegative integers, the
 exponent of `q` first and the exponent of `t` second. See `docs/checker.md` for
 the admission checks. The checker adapter is `kostka`; the resource probes are
-tableaux of `1024` cells and the value audit runs at `64` cells, in both cases
-across row, column, hook, two-row, staircase and random shapes for `lambda` and
-`mu`, with both the row- and the column-superstandard tableau of each shape.
+tableaux of `1024` cells across row, column, hook, two-row, staircase,
+and random shapes for `lambda` and `mu`, with both the row- and the column-superstandard tableau of each shape.
 
 To score it:
 
@@ -199,7 +198,7 @@ uv run --frozen python scripts/evaluate/evaluate_scored_submission.py kostka pat
 After the capability and source-economy screens, the evaluator enumerates each
 public fiber `SYT(lambda) x {mu}` once. From the same submitted pairs, it checks
 the explicit `q = 1` marginal and every `q,t` coefficient. Only a complete match
-proceeds to fresh-namespace shuffled replay, the integer-value audit, and large
+proceeds to fresh-namespace shuffled replay and large
 adversarial tableaux under CPU and memory limits. A mismatch stops the
 evaluation, and passing the marginal alone is insufficient. Every stage must
 pass, though a pass is necessary but not sufficient for a genuine pair of

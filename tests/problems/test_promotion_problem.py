@@ -9,16 +9,12 @@ import pytest
 from qtbench.combinatorics import (
     iter_promotion_tableaux_for_shape,
     promotion_modulus,
-    promotion_tableau_size,
 )
 from qtbench.evaluation import (
-    ResourceGateError,
     adversarial_promotion_probes,
     adversarial_promotion_tableaux,
     evaluate_promotion_polynomial_checks,
     evaluate_promotion_submission,
-    run_resource_gate,
-    run_value_audit,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -210,7 +206,6 @@ def test_valid_but_wrong_statistic_short_circuits_at_numerical_end_to_end():
     )
     assert not result["passed"]
     assert result["checker_stage"] == "numerical"
-    assert result["value_audit"] is None
 
 
 @pytest.mark.parametrize("invalid", [True, 1.0, "1", (0,)])
@@ -230,35 +225,6 @@ def test_probes_cover_both_shape_families():
         adversarial_promotion_tableaux(2)
 
 
-def test_value_audit_and_resource_gate_wired():
-    genuine = (ROOT / "examples" / "promotion_rectangle_maj_submission.py").read_text()
-    run_value_audit(
-        genuine,
-        adversarial_promotion_probes(64),
-        value_exponent=8,
-        timeout_seconds=5.0,
-        size_of=promotion_tableau_size,
-    )
-    counting = (
-        "def statistic(tableau):\n"
-        "    total = 1\n"
-        "    for _ in range(tableau.n):\n"
-        "        total = total + total\n"
-        "    return total\n"
-    )
-    with pytest.raises(ResourceGateError, match="magnitude bound|bit integer"):
-        run_value_audit(
-            counting,
-            adversarial_promotion_probes(64),
-            value_exponent=8,
-            timeout_seconds=5.0,
-            size_of=promotion_tableau_size,
-        )
-    report = run_resource_gate(
-        genuine, adversarial_promotion_probes(256), timeout_seconds=5.0,
-        max_python_bytes=64_000_000,
-    )
-    assert len(report.results) == len(adversarial_promotion_probes(256))
 
 
 ORBIT_POSITION_SOURCE = """\
@@ -266,43 +232,43 @@ def statistic(tableau):
     shape = tableau.shape
     n = tableau.n
     modulus = tableau.modulus
-    current = [[int(value) for value in row] for row in tableau.rows]
-    orbit = []
+    origin = tableau.rows
+    current = [list(row) for row in origin]
+    best = origin
+    start = 0
+    size = 0
     for _ in range(modulus):
-        orbit.append(tuple(tuple(r) for r in current))
-        grid = [[int(value) for value in row] for row in current]
         i = 0
         j = 0
-        grid[0][0] = 0
         while True:
-            right = grid[i][j + 1] if j + 1 < shape[i] else 0
-            below = grid[i + 1][j] if i + 1 < len(shape) and j < shape[i + 1] else 0
+            right = current[i][j + 1] if j + 1 < shape[i] else 0
+            below = current[i + 1][j] if i + 1 < len(shape) and j < shape[i + 1] else 0
             if right == 0 and below == 0:
                 break
             if below == 0 or (right != 0 and right < below):
-                grid[i][j] = right
-                grid[i][j + 1] = 0
+                current[i][j] = right
                 j = j + 1
             else:
-                grid[i][j] = below
-                grid[i + 1][j] = 0
+                current[i][j] = below
                 i = i + 1
-        grid[i][j] = n + 1
-        current = [[v - 1 for v in r] for r in grid]
-        if tuple(tuple(r) for r in current) == orbit[0]:
+        size = size + 1
+        current[i][j] = n + size
+        if all(current[r][c] - size == origin[r][c]
+               for r in range(len(shape)) for c in range(shape[r])):
             break
-    size = len(orbit)
-    best = min(orbit)
-    start = 0
-    for index in range(size):
-        if orbit[index] == best:
-            start = index
-    here = 0
-    target = tuple(tuple(r) for r in tableau.rows)
-    for index in range(size):
-        if orbit[index] == target:
-            here = index
-    return ((here - start) % size) * (modulus // size)
+        comparison = 0
+        for r in range(len(shape)):
+            for c in range(shape[r]):
+                value = current[r][c] - size
+                if value != best[r][c]:
+                    comparison = -1 if value < best[r][c] else 1
+                    break
+            if comparison != 0:
+                break
+        if comparison < 0:
+            best = tuple(tuple(v - size for v in row) for row in current)
+            start = size
+    return ((-start) % size) * (modulus // size)
 """
 
 
@@ -362,3 +328,46 @@ def test_walking_an_orbit_is_cheap_so_no_gate_excludes_the_construction():
 
 def test_object_totals():
     assert sum(case["count"] for case in _polynomials()["cases"]) == 41894
+
+
+def test_cli_orbit_position_receives_automatic_pass(tmp_path):
+    """A mechanical pass is not mathematical acceptance of the orbit shortcut."""
+    import subprocess
+    import sys
+
+    submission = tmp_path / "orbit_position.py"
+    # Use the known rectangular answer and reconstruct only staircase orbits,
+    # as documented in ACTION-1. The orbit walk retains only its minimum.
+    source = ORBIT_POSITION_SOURCE.replace(
+        "    shape = tableau.shape",
+        "    shape = tableau.shape\n"
+        "    if tableau.is_rectangle:\n"
+        "        charge = sum(i * part for i, part in enumerate(shape))\n"
+        "        return (tableau.maj() - charge) % tableau.modulus",
+    )
+    submission.write_text(source, encoding="utf-8")
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts/evaluate/evaluate_scored_submission.py"),
+            "promotion",
+            str(submission),
+            "--format",
+            "json",
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+        timeout=300,
+    )
+    result = json.loads(completed.stdout)
+    assert completed.returncode == 0, result
+    assert result["passed"] is True
+    assert result["automatic_verdict"] is True
+    assert result["expert_review_required"] is False
+    assert result["checker_stage"] == "complete"
+    assert result["provenance"]["problem_id"] == 22
+    assert result["provenance"]["problem_name"] == PROBLEM_NAME
+    assert result["provenance"]["evaluator_kind"] == "promotion"
+    assert "review_reason" not in result

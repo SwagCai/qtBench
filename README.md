@@ -14,6 +14,7 @@ qtBench turns these questions into three kinds of discovery tasks:
 - [**bijection discovery**](docs/task_types.md#bijection-discovery): Construct a natural bijection that explains a given equality or symmetry on the combinatorial objects.
 
 The benchmark contains 29 unsolved challenges and one solved calibration problem.
+See [`problems.md`](problems.md) for the full list of problems.
 A statistic problem specifies the
 objects and target polynomials, then asks for the missing statistic(s). A bijection problem asks for an explicit map explaining a symmetry
 of a q,t-enumerator. Most of the problems come from open questions in the
@@ -161,7 +162,7 @@ uv run --locked python scripts/evaluate/evaluate_scored_submission.py \
 ```
 
 A working setup ends with `PASSED` and reports that the marginal, full target,
-replay, value audit, and resource checks all pass.
+replay, and resource checks all pass.
 
 To see how the evaluator reports an incorrect candidate, run:
 
@@ -174,7 +175,7 @@ This command is expected to report `did not pass (stopped at: numerical)` and
 exit with status `1`; it demonstrates a numerical rejection, not an installation
 failure. To try your own statistic, copy that short template, edit its
 `statistic` function, and pass your file to the same command. For other
-problems, use the evaluator kind in [`docs/problems.md`](docs/problems.md) and
+problems, use the evaluator kind in [`problems.md`](problems.md) and
 the submission contract in the problem's `problem.md`.
 
 To regenerate the public data or run the tests, install the development
@@ -206,9 +207,10 @@ validation.
 - [`docs/checker.md`](docs/checker.md): the checker, stage by stage, including its deliberate limitations.
 - [`docs/reporting.md`](docs/reporting.md): how to report reproducible per-problem results and preserve benchmark qualifiers.
 - [`docs/cheating/taxonomy.md`](docs/cheating/taxonomy.md): known attacks, confirmed bypasses, and cases that no mechanical checker can settle.
-- [`docs/ai_judge.md`](docs/ai_judge.md): technical protocol and provider-adapter notes for the optional advisory AI judge.
+- [`inference/README.md`](inference/README.md): solver/judge scaffold setup, isolation model, evidence, and tests.
+- [`docs/ai_judge.md`](docs/ai_judge.md): compatibility protocol for the standalone advisory AI judge.
 - [`docs/task_types.md`](docs/task_types.md): the inputs, submission interfaces, and evaluation rules for each task type.
-- [`docs/problems.md`](docs/problems.md): the catalogue and status of all 30 benchmark problems.
+- [`problems.md`](problems.md): the catalogue and status of all 30 benchmark problems.
 - [`docs/data_generation.md`](docs/data_generation.md): how public target files are regenerated or re-emitted, including derivation exceptions.
 - [`docs/problem_authoring.md`](docs/problem_authoring.md) and [`problems/problem_template.md`](problems/problem_template.md): how to add a problem.
 - [`docs/problem_bank_plan.md`](docs/problem_bank_plan.md): plans for extending the problem bank.
@@ -230,8 +232,8 @@ interface includes `n`, `blocks`, `blocks_by_max`, `block_maxima`,
 `block_sizes_by_max`, `nonmaximal_elements`, and `area()`.
 
 A statistic submission must pass capability screening, source-economy limits,
-exact numerical checks, fresh-namespace replay, an integer-value audit, and a
-resource gate on large objects. For bijections, the checker repeatedly verifies
+exact numerical checks, fresh-namespace replay, and a resource gate on large
+objects. For bijections, the checker repeatedly verifies
 the forward and inverse identities pointwise. Passing is necessary but not
 sufficient for a mathematical solution; see [`docs/checker.md`](docs/checker.md)
 and the attack catalogue in
@@ -267,48 +269,45 @@ used for scoring because it loads ordinary, unrestricted Python.
 
 As we mentioned above, we are not looking for just **any** function that satisfies the constraints, but for one that is *natural*. There is no formal definition of naturalness, and no algorithmic checker can perfectly distinguish a genuine combinatorial construction from a sufficiently clever way of cheating. Our checker therefore has an asymmetric goal: **accept genuine natural solutions that conform to the submission contract while rejecting as many obvious cheating strategies as possible.** For this reason, passing the checker is necessary, but not sufficient, for a proposed solution to count as a genuine mathematical discovery.
 
-We maintain a [cheating taxonomy](docs/cheating/taxonomy.md) describing the shortcuts we know about and which ones can or cannot be detected mechanically. An optional **LLM judge** can provide an additional advisory review with the problem, proposed solution, and cheating taxonomy in context, but its verdict is non-authoritative. The next section explains how.
+We maintain a [cheating taxonomy](docs/cheating/taxonomy.md) describing the shortcuts we know about and which ones can or cannot be detected mechanically. This repository includes an inference scaffold that gives a solver isolated public inputs, runs the authoritative checker on each exact candidate, and reviews only passing candidates in a fresh semantic-judge context. Human mathematical review is still necessary.
 
-## AI judge
+## Inference scaffold
 
-The optional AI judge asks a selected provider and model to flag possible
-cheating. Install the matching UV extra and set its API-key environment variable:
-
-| Provider | UV extra | API-key environment variable |
-| --- | --- | --- |
-| OpenAI | `ai-judge-openai` | `OPENAI_API_KEY` |
-| Anthropic | `ai-judge-anthropic` | `ANTHROPIC_API_KEY` |
-| Gemini | `ai-judge-google` | `GEMINI_API_KEY` or `GOOGLE_API_KEY` |
-
-Then run, for example:
+This repository includes a runnable solver and
+judge workflow under `inference/`. It requires Linux with `bubblewrap`, or WSL2
+when the same preflight passes; macOS is unsupported. From a clean Git
+checkout, verify the local sandbox without an API call, then start a short run
+by setting one key:
 
 ```bash
-uv sync --extra ai-judge-anthropic --locked
-uv run --extra ai-judge-anthropic --locked qtbench-ai-judge \
-  1 path/to/submission.py --provider anthropic --model MODEL_ID
+npm install --global @openai/codex@0.156.1
+uv sync --locked
+uv run --locked python inference/run.py 5 --check-only
+export OPENAI_API_KEY='your-api-key'
+uv run --locked python inference/run.py 5 --minutes 10 --offline
 ```
 
-Use `--prompt-for-credential` to enter the selected credential at a hidden TTY
-prompt, or run `qtbench-ai-judge --help` for all command options.
+The solver and every judge use separate restricted workspaces. Shell network is
+disabled; credentials stay in a temporary host-only Codex home; every candidate
+is captured and hash-bound before review; and only a pass from the repository's scored
+checker reaches semantic review. Results and receipts are stored under
+`~/.qtbench-inference/runs/`. The default run is 120 total wall-clock minutes
+and can incur material API usage and cost. See
+[`inference/README.md`](inference/README.md) for platform requirements, model
+options, evidence layout, isolation details, and offline tests.
 
-The verdict is advisory and non-authoritative: it neither runs nor replaces the
-deterministic checker, proves naturalness, nor provides a security guarantee.
-For an attempted review, exit status `0` means that a structured advisory report
-was produced, even when its overall risk level is `high` or it contains a
-`critical` finding; it is not a passing verdict. Status `1` means the provider
-request or response failed, and status `2` means command usage, local input,
-credentials, SDK initialization, or configuration failed. The normal exception
-is `--help`, which exits `0` after printing usage without producing a report.
-See [`docs/ai_judge.md`](docs/ai_judge.md) for the technical protocol, privacy
-considerations, and provider-adapter details.
+The existing `qtbench-ai-judge` command remains available as a standalone
+non-authoritative advisory review; its compatibility protocol is documented in
+[`docs/ai_judge.md`](docs/ai_judge.md).
 
 ## Layout
 
 - `src/qtbench/`: reusable combinatorial objects and evaluator code. Coxeter families are grouped under `combinatorics/type_a/`, `combinatorics/type_b/`, and `combinatorics/type_d/`.
 - `problems/`: statements, metadata, public targets, generators, and problem-specific oracles, organized by task type.
 - `scripts/`: shared entry points for data generation and evaluation.
-- `examples/`: scorer-compatible examples. The solved calibration example passes; the remaining files are interface templates, most of which stop at the numerical stage. The promotion example requires expert review because automatic scoring is disabled. See [`examples/README.md`](examples/README.md).
+- `examples/`: scorer-compatible examples. The solved calibration example passes; the remaining files are interface templates, most of which stop at the numerical stage. The promotion example passes the rectangular targets and fails the staircase targets; a mechanical pass still requires semantic review. See [`examples/README.md`](examples/README.md).
 - `tests/`: checker regressions and, under `tests/problems/`, problem-specific consistency and reproduction checks.
+- `inference/`: solver and semantic-judge scaffold, host gate, prompts, and focused tests.
 - `docs/`: benchmark design and problem-authoring documentation.
 - `docs/cheating/`: the threat model and taxonomy of cheating attempts.
 

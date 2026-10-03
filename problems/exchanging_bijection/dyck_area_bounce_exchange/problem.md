@@ -80,7 +80,7 @@ public Dyck path once. For each path, it checks that `forward` and `inverse`
 produce valid paths of the same size, are mutually inverse, and satisfy both
 exchange identities. It then checks the induced `area/bounce` distribution
 against `data/polynomials.json`. A mismatch stops the evaluation. Only a complete
-match proceeds to fresh-namespace shuffled replay, the integer-value audit, and
+match proceeds to fresh-namespace shuffled replay and
 large adversarial paths under CPU and memory limits, where both exchange
 identities are checked pointwise again. Every stage must pass. Even then, passing
 is necessary but not sufficient for a genuine bijection (see
