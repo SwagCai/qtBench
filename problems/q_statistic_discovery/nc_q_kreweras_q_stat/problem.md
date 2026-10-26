@@ -1,10 +1,8 @@
-# qtBench-Proposed q-Kreweras Natural-Statistic Challenge
+# q-Kreweras Statistic on Noncrossing Partitions
 
 ## Task
 
-This is a **qtBench-proposed natural-statistic challenge**, not an objectwise
-open problem located in Reiner--Sommers or another primary source. Find a
-statistic `statistic(partition)` on noncrossing partitions that returns a
+Find a statistic `statistic(partition)` on noncrossing partitions that returns a
 **nonnegative integer** `krewstat(pi)` such that, for every `n >= 1` and every
 partition `lambda` of `n`,
 
@@ -56,12 +54,31 @@ over `lambda` to the MacMahon `q`-Catalan number
 sum_{lambda |- n} Krew_lambda(q) = (1 / [n+1]_q) [ 2n ; n ]_q.
 ```
 
-What Reiner and Sommers establish about them is a **cyclic sieving phenomenon**:
-evaluated at roots of unity they count noncrossing partitions fixed by powers of the
-rotation. That is an identity at finitely many points, not a statistic. We are not
-aware of a rule assigning an exponent to each individual noncrossing partition.
-Finding one is the benchmark-derived challenge posed here; the source establishes
-the polynomials and cyclic sieving identities, not this objectwise-statistic request.
+Reiner and Sommers also establish a **cyclic sieving phenomenon**: evaluated at
+roots of unity these polynomials count noncrossing partitions fixed by powers of
+rotation. This does not supply an objectwise statistic.
+
+Bodnar and Rhoades state explicitly that no such objectwise statistic is known in the
+proof of Theorem 5.1 of the published version of "Cyclic sieving and rational
+Catalan theory". This task considers the classical specialization
+`(a, b) = (n, n + 1)`, where their rational noncrossing partitions are `NC(n)`
+and block ranks agree with block sizes (Proposition 3.6). Writing
+`k = l(lambda)`, their polynomial in this specialization is related to our target by
+
+```text
+B_lambda(q) = [n]_q! / ([n + 1 - k]_q! prod_j [m_j(lambda)]_q!),
+D_lambda = (n + 1)(n - k) - c(lambda),
+Krew_lambda(q) = q^{D_lambda} B_lambda(q).
+```
+
+Reiner--Sommers Remark 6.1 explains this normalization difference. Adding the
+nonnegative type-dependent constant `D_lambda` to a statistic for `B_lambda(q)`
+gives one for this task; conversely, subtracting `D_lambda` from a solution of
+this task gives a statistic for `B_lambda(q)`, so the two problems are equivalent.
+Only the classical specialization is requested here.
+
+We thank Theodosios Douvropoulos for pointing out the discussion in
+Bodnar--Rhoades and correcting our attribution of the statistic problem.
 
 **Anchors the answer must satisfy**, all verified by the generator over the whole
 public range:
@@ -173,6 +190,11 @@ out is enumerating the fiber, which the ranking cheat needs and which is exponen
 Judge a proposal on whether it expresses a combinatorial idea.
 
 ## References
+- Michelle Bodnar and Brendon Rhoades, "Cyclic sieving and rational Catalan theory",
+  Electronic Journal of Combinatorics 23(2) (2016), #P2.4,
+  https://doi.org/10.37236/5681. The proof of Theorem 5.1 in the published version
+  explicitly discusses the missing objectwise statistic; its classical
+  specialization is the problem considered here, up to the type-dependent shift.
 - Victor Reiner and Eric Sommers, "Weyl group `q`-Kreweras numbers and cyclic
   sieving", Annals of Combinatorics 22 (2018), 819-874,
   arXiv:1605.09172, https://arxiv.org/abs/1605.09172. Defines the `q`-Kreweras numbers for every finite

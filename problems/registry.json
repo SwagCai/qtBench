@@ -223,7 +223,7 @@
     },
     {
       "id": 23,
-      "title": "qtBench-proposed q-Kreweras natural-statistic challenge",
+      "title": "q-Kreweras statistic on noncrossing partitions",
       "task_type": "q_statistic_discovery",
       "object_family": "noncrossing_partitions",
       "status": "active",

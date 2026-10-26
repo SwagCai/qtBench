@@ -63,10 +63,11 @@ Current problems:
   numerical gate without mathematical content. The ordinary automatic checker
   issues a mechanical verdict; subsequent semantic review must detect this
   shortcut before mathematical acceptance.
-- id `23`, `nc_q_kreweras_q_stat`: a QtBench-proposed natural-statistic challenge,
-  not a source-verified open problem. Its objects are noncrossing partitions --
-  the object family of problem `1` -- and its target is the type A `q`-Kreweras
-  numbers of Reiner and Sommers, graded by the block type read off the object.
+- id `23`, `nc_q_kreweras_q_stat`: the classical specialization of the objectwise
+  statistic problem discussed by Bodnar--Rhoades, in the Reiner--Sommers
+  normalization. Its objects are noncrossing partitions -- the object family of
+  problem `1` -- and its target is the type A `q`-Kreweras numbers, graded by the
+  block type read off the object. The statement explains the type-dependent shift.
 - id `27`, `asm_dpp_weight_q_stat`: alternating sign matrices, no known
   statistic, target the sum-of-parts q-enumerator of descending plane
   partitions. Stanton's Open Problem 1.4 asks for exactly this statistic; the
