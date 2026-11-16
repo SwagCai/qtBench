@@ -51,8 +51,8 @@ Current problems:
   `q`-analogue of the Eulerian `gamma`-expansion for Carlitz's `q`-Eulerian
   polynomial. The fiber index `(n, k)` is the size and one more than the descent
   count, read off the object. Han, Jouhet and Zeng prove `a_{n,k}(q) in N[q]` by a
-  recurrence and ask for a combinatorial interpretation, but do not prescribe
-  these objects; the fixed-object statistic task is a QtBench-proposed strengthening.
+  recurrence and ask for a combinatorial interpretation in their Problem 11,
+  without fixing these objects.
 - id `22`, `syt_promotion_csp_q_stat`: standard Young tableaux of rectangular or
   staircase shape, no known statistic, target the least-degree cyclic sieving
   polynomial of Schuetzenberger promotion. The shape is read off the object. The

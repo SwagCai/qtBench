@@ -16,9 +16,9 @@ with ``a_{n,k}(q)`` in ``N[q]``, satisfying
     a_{n,k}(q) = [k]_q a_{n-1,k}(q)
                + (1 + q^{k-1}) q^{k-1} [n + 2 - 2k]_q a_{n-1,k-1}(q),             (2.4)
 
-``a_{1,1}(q) = 1``. Han, Jouhet and Zeng ask for a combinatorial interpretation
-of ``a_{n,k}(q)`` without prescribing an object family. Problem 17 is qtBench's
-stronger proposal to realize it by a statistic on the Foata--Schuetzenberger
+``a_{1,1}(q) = 1``. Problem 11 of Han, Jouhet and Zeng asks for combinatorial
+interpretations of ``a_{n,k}(q)`` and of the type B analogue without fixing an
+object family; problem 17 uses the type A coefficients, on the Foata--Schuetzenberger
 permutations that count ``a_{n,k}(1)``.
 
 Everything here is exact integer arithmetic on coefficient lists. The module offers

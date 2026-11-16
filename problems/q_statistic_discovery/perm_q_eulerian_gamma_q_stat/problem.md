@@ -1,4 +1,4 @@
-# qtBench-Proposed q-Eulerian Gamma Statistic Challenge
+# q-Eulerian Gamma Statistic on Permutations
 
 ## Task
 
@@ -20,11 +20,10 @@ Gamma_{n,k} = { sigma in S_n : des(sigma) = k - 1, sigma has no double descent
 
 is the Foata-Schuetzenberger set that realizes the coefficients at `q = 1`.
 
-This is a **qtBench-proposed strengthening** of the open interpretation question
-posed by Han, Jouhet and Zeng. Their paper asks for a combinatorial interpretation
-of `a_{n,k}(q)`, but does not prescribe `Gamma_{n,k}` or an objectwise statistic on
-that set. qtBench fixes these objects because they give the classical interpretation
-at `q = 1`; the exact task above was not stated in the cited paper.
+This task uses the type `A` coefficients from Problem 11 of Han, Jouhet and Zeng
+(arXiv:1203.6736), which asks for combinatorial interpretations of `a_{n,k}(q)`
+and of its type `B` analogue `b_{n,k}(q)`. Their problem does not fix the objects;
+qtBench uses `Gamma_{n,k}` because it gives the classical interpretation at `q = 1`.
 
 This `q_statistic_discovery` task has **no** public statistic. The single graded
 exponent is the whole task, so `metadata.json` carries
@@ -72,11 +71,10 @@ a_{n,k}(q) = [k]_q a_{n-1,k}(q) + (1 + q^{k-1}) q^{k-1} [n + 2 - 2k]_q a_{n-1,k-
 
 so it establishes positivity without producing any statistic. The paper asks for
 combinatorial interpretations of these polynomials without fixing an object family.
-qtBench proposes the Foata-Schützenberger objects above as the type `A` family on
-which to seek a statistic. Han, Jouhet and Zeng prove the same expansion for
-Chow-Gessel's `q`-Eulerian polynomials of type `B`, whose coefficients
-`b_{n,k}(q)` are equally uninterpreted; only the type `A` strengthening is posed
-here.
+The benchmark uses the Foata-Schützenberger objects above as the type `A` family
+on which to seek a statistic. Han, Jouhet and Zeng also prove a type `B` expansion
+for Chow-Gessel's `q`-Eulerian polynomials, with coefficients `b_{n,k}(q)`;
+only the type `A` case is posed here.
 
 **Anchors the answer must satisfy**, all verified by the generator over the whole
 public range:
@@ -223,8 +221,8 @@ Judge a proposal on whether it expresses a combinatorial idea, not on the gate a
 - Guo-Niu Han, Frederic Jouhet, and Jiang Zeng, "Two new triangles of `q`-integers
   via `q`-Eulerian polynomials of type `A` and `B`", The Ramanujan Journal 31
   (2013), 115-127, arXiv:1203.6736, https://arxiv.org/abs/1203.6736. Proves the expansion used here,
-  its type `B` analogue for Chow-Gessel's polynomials, and states the open problem
-  of a combinatorial interpretation for `a_{n,k}(q)` and `b_{n,k}(q)`.
+  its type `B` analogue for Chow-Gessel's polynomials, and asks for combinatorial
+  interpretations of `a_{n,k}(q)` and `b_{n,k}(q)` in Problem 11.
 - Leonard Carlitz, "`q`-Bernoulli and Eulerian numbers", Transactions of the
   American Mathematical Society 76 (1954), 332-350. The `q`-Eulerian polynomials
   `A_n(t, q)` and the identity that defines them.
@@ -243,9 +241,7 @@ Judge a proposal on whether it expresses a combinatorial idea, not on the gate a
 - Dominique Foata and Guo-Niu Han, "Doubloons and new `q`-tangent numbers", The
   Quarterly Journal of Mathematics 62 (2011), 417-432. The `q`-tangent numbers that
   appear as `q^{-binom(k,2)} a_{2m+1,m+1}(q)`, proved positive there by the
-  combinatorics of doubloons -- the one sub-family of these coefficients that does
-  have a combinatorial reading.
+  combinatorics of doubloons.
 - Chak-On Chow and Ira M. Gessel, "On the descent numbers and major indices for the
   hyperoctahedral group", Advances in Applied Mathematics 38 (2007), 275-301. The
-  type `B` `q`-Eulerian polynomials whose `gamma`-coefficients `b_{n,k}(q)` are the
-  companion open problem.
+  type `B` `q`-Eulerian polynomials used in Han-Jouhet-Zeng's companion expansion.

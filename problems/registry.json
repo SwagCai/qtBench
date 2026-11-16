@@ -163,7 +163,7 @@
     },
     {
       "id": 17,
-      "title": "qtBench-proposed q-Eulerian gamma statistic challenge",
+      "title": "q-Eulerian gamma statistic on permutations",
       "task_type": "q_statistic_discovery",
       "object_family": "gamma_permutations",
       "status": "active",

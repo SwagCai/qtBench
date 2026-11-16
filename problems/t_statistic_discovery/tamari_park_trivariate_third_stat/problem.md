@@ -9,7 +9,7 @@ and a Tamari-smaller Dyck path such that the joint distribution
 sum_{(f, alpha)} q1^chain(f, alpha) q2^dinv(f) q3^statistic(f, alpha)
 ```
 
-matches qtBench's unrefined target polynomial `H_n(q1, q2, q3)` for every
+matches the unrefined target polynomial `H_n(q1, q2, q3)` for every
 tested size `n`.
 
 This `t_statistic_discovery` task is the only one with **two** public statistics:
@@ -20,14 +20,14 @@ a task type. It is the length of `known_statistics` in `metadata.json`, and the
 problem remains in the ordinary `t_statistic_discovery` folder.
 
 The target is the trigraded Hilbert-series shadow of the space `Harm_n` of
-**trivariate diagonal harmonics** of Bergeron and Preville-Ratelle,
+**trivariate diagonal harmonics** studied by Bergeron and Preville-Ratelle,
 
 ```text
 H_n(q1, q2, q3) = sum_{d in N^3} dim(Harm_{n,d}) q1^{d1} q2^{d2} q3^{d3},
 ```
 
 where `Harm_n` is the space of polynomials in three sets of `n` variables killed
-by every polarized power sum. Their Equation (49) asks for a statistic
+by every polarized power sum. Equation (49) of arXiv:1105.3738v6 asks for a statistic
 `nu(f, alpha)` completing their conjecture to a full combinatorial description,
 
 ```text
@@ -40,14 +40,18 @@ and the unrefined scalar target above is what that identity becomes once every `
 representation is replaced by its dimension: on the left each `s_lambda(w)` of
 `Frob(Harm_n)` becomes the number `f^lambda` of standard Young tableaux of shape
 `lambda`, and on the right each `Q_{co(f)}(w)` becomes `1`, leaving exactly one
-monomial per pair `(f, alpha)`. The paper writes "such a statistic still has to
-be found, even in the case `r = 1`", which is the case published here.
+monomial per pair `(f, alpha)`. This task uses the paper's `r = 1` case.
 
-**Scope of the executable challenge.** This specialization forgets the
+Preville-Ratelle's thesis poses a Hilbert-series version of this question. Its
+Probleme 5 asks for the third statistic on unlabelled intervals, with target the
+trigraded Hilbert series of the alternating component; the thesis then proposes
+extending the statistic to labelled intervals, the objects of this problem.
+
+**Scope of the executable challenge.** The scalar target forgets the
 fundamental-quasisymmetric factor `Q_{co(f)}(w)`. The checker therefore does not
 retain the `co(f)` refinement and cannot certify Equation (49) itself: values may
 be reassigned between different `co(f)` classes while preserving every scored
-coefficient. Problem `12` is consequently a weaker qtBench-derived scalar
+coefficient. Problem `12` is consequently a weaker scalar
 challenge. Passing it must not be reported as solving the cited Frobenius problem.
 
 Two specializations are pinned down and are exactly the checks the public data is
@@ -166,9 +170,15 @@ pass is necessary but not sufficient for a genuine statistic (see
 ## References
 - Francois Bergeron and Louis-Francois Preville-Ratelle, "Higher trivariate
   diagonal harmonics via generalized Tamari posets", Journal of Combinatorics 3
-  (2012), 317-341, arXiv:1105.3738, https://arxiv.org/abs/1105.3738. Defines the `r`-Tamari poset,
+  (2012), 317-341, arXiv:1105.3738v6, https://arxiv.org/abs/1105.3738v6. Defines the `r`-Tamari poset,
   states Conjecture 1, tabulates the trigraded Frobenius characteristics used as
-  the target, and poses the open problem of the third statistic in Equation (49).
+  the target, and poses the third-statistic question in Equation (49) of that arXiv version.
+- Louis-Francois Preville-Ratelle, "Combinatoire des espaces coinvariants
+  trivaries du groupe symetrique", PhD thesis, Universite du Quebec a Montreal,
+  2012, https://archipel.uqam.ca/5360/. Probleme 5 in Chapter VI (pp. 134-135)
+  asks for the third statistic for the Hilbert series of the alternating
+  component, on unlabelled intervals, and the text proposes extending it to
+  labelled intervals.
 - James Haglund, Mark Haiman, Nicholas Loehr, Jeffrey B. Remmel, and
   Alexander Ulyanov, "A combinatorial formula for the character of the diagonal
   coinvariants", Duke Mathematical Journal 126 (2005), 195-232,
